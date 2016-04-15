@@ -11,7 +11,6 @@ $app->group('/api', function () use ($app) {
     // GET PLANT BY ID
     $app->get($resource . "/:id", function ($id) use ($app) {
 
-
     });
 
 

@@ -5,35 +5,63 @@ namespace orchid_site\src\Model;
 class Plants
 {
     public $id;
+    public $accession_number;
+    public $class_id;
+    public $tribe_id;
+    public $subtribe_id;
+    public $genus_id;
+    public $species_id;
+    public $variety_id;
+    public $authority;
+    public $distribution;
+    public $habitat;
+    public $culture;
+    public $donars;
+    public $date_received;
+    public $received_from;
+    public $description;
+    public $username;
+    public $new;
+    public $inactive_code;
+    public $inactive_date;
+    public $inactive_comment;
+    public $size;
+    public $value;
+    public $parent_one;
+    public $parent_two;
+    public $grex_status;
+    public $hybrid_status;
 
 
     function __construct($data)
     {
-        $this->id     = isset($data['id']) ? intval($data['id']) : null;
+        $this->id                  = isset($data['id']) ? intval($data['id']) : null;
+        $this->accession_number    = isset($data['accession_number']) ? intval($data['accession_number']) : null;
+        
     }
 
-    public static function createFromData($data){
+    static function createFromData($data){
 
     }
 
-    public static function createFromPlant($plant){
+    static function createFromPlant($plant){
 
     }
     //GET ALL
-    public static function getAll(){
+    static function getAll(){
 
     }
     // GET BY ID
-    public static function getPlantById($plant_id){
+    static function getPlantById($plant_id){
 
     }
 
     // UPDATE
-    public static function update($id){
+    static function update($id){
 
     }
     //DELETE
-    public static function delete($id){
+   static function delete($id){
 
     }
 
