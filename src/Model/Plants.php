@@ -2,7 +2,7 @@
 
 namespace orchid_site\src\Model;
 
-class Plants
+class Plants implements JsonSerializable
 {
     public $id;
     public $accession_number;
@@ -32,61 +32,89 @@ class Plants
     public $grex_status;
     public $hybrid_status;
 
-
-    function __construct($data)
+    public function __construct($data)
     {
-        $this->id                  = isset($data['id']) ? intval($data['id']) : null;
-        $this->accession_number    = isset($data['accession_number']) ? intval($data['accession_number']) : null;
-        $this->class_id            = isset($data['class_id']) ? intval($data['class_id']) : null;
-        $this->tribe_id            = isset($data['tribe_id']) ? intval($data['tribe_id']) : null;
-        $this->subtribe_id         = isset($data['subtribe_id ']) ? intval($data['subtribe_id ']) : null;
-        $this->genus_id            = isset($data['genus_id']) ? intval($data['genus_id']) : null;
-        $this->species_id          = isset($data['species_id']) ? intval($data['species_id']) : null;
-        $this->variety_id          = isset($data['variety_id']) ? intval($data['variety_id']) : null;
-        $this->authority           = isset($data['authority']) ? $data['authority'] : null;
-        $this->distribution        = isset($data['distribution']) ? $data['distribution'] : null;
-        $this->habitat             = isset($data['habitat']) ? $data['habitat'] : null;
-        $this->culture             = isset($data['culture']) ? $data['culture'] : null;
-        $this->donars              = isset($data['donars']) ? $data['donars'] : null;
-        $this->date_received       = isset($data['date_received']) ? $data['date_received'] : null;
-        $this->received_from       = isset($data['received_from']) ? $data['variety_id'] : null;
-        $this->description         = isset($data['description']) ? $data['description'] : null;
-        $this->username            = isset($data['username']) ? $data['username'] : null;
-        $this->new                 = isset($data['new']) ? $data['new'] : null;
-        $this->inactive_code       = isset($data['inactive_code']) ? intval(data['inactive_code']) : null;
-        $this->inactive_date       = isset($data['inactive_date']) ? (new \DateTime($data['inactive_date']))->format('Y-m-d H:i:s') : (new \DateTime('now'))->format('Y-m-d H:i:s');
-        $this->inactive_comment    = isset($data['inactive_comment']) ? $data['inactive_comment'] : null;
-        $this->size                = isset($data['size']) ? $data['size'] : null;
-        $this->value               = isset($data['value']) ? $data['value'] : null;
-        $this->parent_one          = isset($data['parent_one']) ? $data['parent_one'] : null;
-        $this->parent_two          = isset($data['parent_two']) ? $data['parent_two'] : null;
-        $this->grex_status         = isset($data['grex_status']) ? $data['grex_status'] : null;
-        $this->hybrid_status       = isset($data['hybrid_status']) ? $data['hybrid_status'] : null;
+        if (is_array($data)) {
+            $this->id = intval($data['id']);
+            $this->accession_number = intval($data['accession_number']);
+            $this->class_id = intval($data['class_id']);
+            $this->tribe_id = intval($data['tribe_id']);
+            $this->subtribe_id = intval($data['subtribe_id ']);
+            $this->genus_id = intval($data['genus_id']);
+            $this->species_id = intval($data['species_id']);
+            $this->variety_id = intval($data['variety_id']);
+            $this->authority = $data['authority'];
+            $this->distribution = $data['distribution'];
+            $this->habitat = $data['habitat'];
+            $this->culture = $data['culture'];
+            $this->donars = $data['donars'];
+            $this->date_received = $data['date_received'];
+            $this->received_from = $data['variety_id'];
+            $this->description = $data['description'];
+            $this->username = $data['username'];
+            $this->new = $data['new'];
+            $this->inactive_code = intval(data['inactive_code']);
+            $this->inactive_date = $data['inactive_date'];
+            $this->inactive_comment = $data['inactive_comment'];
+            $this->size = $data['size'];
+            $this->value = $data['value'];
+            $this->parent_one = $data['parent_one'];
+            $this->parent_two = $data['parent_two'];
+            $this->grex_status = $data['grex_status'];
+            $this->hybrid_status = $data['hybrid_status'];
+        }
     }
 
-    static function createFromData($data){
-
+    function jsonSerialize()
+    {
+        return [
+            'id'               => $this->id,
+            'accession_number' => $this->accession_number,
+            'class_id'         => Class::findById($this->class_id),
+            'tribe_id'         => Tribe::findById($this->tribe_id),
+            'subtribe_id'      => Subtribe::findById($this->subtribe_id),
+            'genus_id'         => Genus::findById($this->genus_id),
+            'species_id'       => Species::findById($this->species_id),
+            'variety_id'       => Variety::findById($this->variety_id),
+            'authority'        => $this->authority,
+            'distribution'     => $this->distribution,
+            'habitat'          => $this->habitat,
+            'culture'          => $this->culture,
+            'donars'           => $this->donars,
+            'date_received'    => $this->date_received,
+            'received_from'    => $this->received_from,
+            'description'      => $this->description,
+            'username'         => $this->username,
+            'new'              => $this->new,
+            'inactive_code'    => $this->inactive_code,
+            'inactive_date'    => $this->inactive_date,
+            'inactive_comment' => $this->inactive_comment,
+            'size'             => $this->size,
+            'value'            => $this->value,
+            'parent_one'       => $this->parent_one,
+            'parent_two'       => $this->parent_two,
+            'grex_status'      => $this->grex_status,
+            'hybrid_status'    => $this->hybrid_status
+        ];
     }
-
-    static function createFromPlant($plant){
+    static function create($body){
 
     }
     //GET ALL
-    static function getAll(){
-
+    static function getAll()
+    {
     }
     // GET BY ID
-    static function getPlantById($plant_id){
-
+    static function getById($id)
+    {
     }
 
     // UPDATE
-    static function update($id){
-
+    static function update($id)
+    {
     }
     //DELETE
-   static function delete($id){
-
-    }
-
-  }
+    static function delete($id)
+   {
+   }
+}
