@@ -30,6 +30,14 @@ class Variety implements JsonSerializable{
       }
     }
 
+    static function getAll()
+    {
+      $db = DB::getInstance();
+  		$variety = $db->select('variety','*');
+  		if (!$reservations){
+  			return array();
+    }
+
     }
 
 

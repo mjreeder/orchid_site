@@ -30,6 +30,14 @@ class Tribe implements JsonSerializable{
       }
     }
 
+    static function getAll()
+    {
+      $db = DB::getInstance();
+  		$tribe = $db->select('tribe','*');
+  		if (!$reservations){
+  			return array();
+    }
+
     }
 
 

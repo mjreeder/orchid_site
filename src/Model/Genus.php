@@ -32,6 +32,12 @@ class Genus implements JsonSerializable{
 
 
   }
+  static function getAll(){
+		$db = DB::getInstance();
+		$genus = $db->select('genus','*');
+		if (!$reservations){
+			return array();
+		}
 
 
 }

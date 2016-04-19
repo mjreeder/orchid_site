@@ -103,6 +103,10 @@ class Plants implements JsonSerializable
     //GET ALL
     static function getAll()
     {
+      $db = DB::getInstance();
+  		$plants = $db->select('plants','*');
+  		if (!$reservations){
+  			return array();
     }
     // GET BY ID
     static function getById($id)

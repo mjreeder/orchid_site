@@ -29,6 +29,15 @@ class Species implements JsonSerializable{
            throw new Exception('Multiple species with id '.$id.' found.', 400);
       }
     }
+    static function getAll()
+    {
+      $db = DB::getInstance();
+  		$species = $db->select('species','*');
+  		if (!$reservations){
+  			return array();
+    }
+
+
 
     }
 
