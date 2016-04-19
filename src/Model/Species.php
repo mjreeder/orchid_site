@@ -19,6 +19,16 @@ class Species implements JsonSerializable{
     ];
     }
     static function getById($id){
+      $db = DB::getInstance();
+      $species = $db->select('species','*',['id' => $id]);
+      if (size($species) == 1) {
+        return new Species($species[0]);
+      } else if (!$species) {
+           throw new Exception('Species with id '.$id.' not found.', 404);
+      } else {
+           throw new Exception('Multiple species with id '.$id.' found.', 400);
+      }
+    }
 
     }
 

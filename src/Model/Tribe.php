@@ -19,6 +19,16 @@ class Tribe implements JsonSerializable{
     ];
     }
     static function getById($id){
+      $db = DB::getInstance();
+      $tribe = $db->select('tribe','*',['id' => $id]);
+      if (size($genus) == 1) {
+        return new Tribe($tribe[0]);
+      } else if (!$tribe) {
+           throw new Exception('Tribe with id '.$id.' not found.', 404);
+      } else {
+           throw new Exception('Multiple tribes with id '.$id.' found.', 400);
+      }
+    }
 
     }
 

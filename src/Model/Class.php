@@ -18,7 +18,17 @@ class Class implements JsonSerializable{
       'name'     => $this->name
 		];
     }
+
     static function getById($id){
+      $db = DB::getInstance();
+		  $class = $db->select('class','*',['id' => $id]);
+		  if (size($class) == 1) {
+			  return new Class($class[0]);
+		  } else if (!$class) {
+			     throw new Exception('Class with id '.$id.' not found.', 404);
+		  } else {
+			     throw new Exception('Multiple classes with id '.$id.' found.', 400);
+		  }
 
     }
 

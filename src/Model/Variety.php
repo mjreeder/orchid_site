@@ -19,6 +19,16 @@ class Variety implements JsonSerializable{
     ];
     }
     static function getById($id){
+      $db = DB::getInstance();
+      $variety = $db->select('variety','*',['id' => $id]);
+      if (size($variety) == 1) {
+        return new Variety($genus[0]);
+      } else if (!$variety) {
+           throw new Exception('Variety with id '.$id.' not found.', 404);
+      } else {
+           throw new Exception('Multiple varities with id '.$id.' found.', 400);
+      }
+    }
 
     }
 

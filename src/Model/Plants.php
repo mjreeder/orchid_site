@@ -107,6 +107,16 @@ class Plants implements JsonSerializable
     // GET BY ID
     static function getById($id)
     {
+      $db = DB::getInstance();
+      plants = $db->select('plants','*',['id' => $id]);
+      if (size($plants) == 1) {
+        return new Plants($plants[0]);
+      } else if (!$plants) {
+           throw new Exception('Plant with id '.$id.' not found.', 404);
+      } else {
+           throw new Exception('Multiple plants with id '.$id.' found.', 400);
+      }
+    }
     }
 
     // UPDATE

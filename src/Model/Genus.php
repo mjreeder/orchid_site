@@ -19,7 +19,15 @@ class Genus implements JsonSerializable{
     ];
     }
     static function getById($id){
-
+      $db = DB::getInstance();
+      $genus = $db->select('genus','*',['id' => $id]);
+      if (size($genus) == 1) {
+        return new Genus($genus[0]);
+      } else if (!$genus) {
+           throw new Exception('Genus with id '.$id.' not found.', 404);
+      } else {
+           throw new Exception('Multiple genera with id '.$id.' found.', 400);
+      }
     }
 
 
