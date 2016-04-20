@@ -30,6 +30,7 @@ class Variety implements JsonSerializable{
       }
     }
 
+<<<<<<< 204185d0d74bef4dfb2ab68c3dfe7289d8b83979
     static function varietyWithNameExists($name) {
         $db = DB::getInstance();
         $variety = $db->select('variety', '*', ['name' => $name]);
@@ -38,6 +39,26 @@ class Variety implements JsonSerializable{
         }
         else {
           return false;
+=======
+    static function delete($id){
+      $db = DB::getInstance();
+      if(!$id){
+        throw new Exception('Missing required information', 400);
+      }
+      if(!Class::classExistsForId($id)){
+        throw new Exception('Class with id '.$id.' not found', 404);
+      }
+      $db->delete('class', ['id' => $id]);
+    }
+
+    static function classExistsForId($id){
+      $db = DB::getInstance();
+        $class = $db->select('class', '*', ['id' => $id]);
+        if (sizeof($class) > 0) {
+            return true;
+        } else {
+            return false;
+>>>>>>> Add delete functions to existing model
         }
     }
 

@@ -30,6 +30,26 @@ class Genus implements JsonSerializable{
       }
     }
 
+    static function delete($id){
+      $db = DB::getInstance();
+      if(!$id){
+        throw new Exception('Missing required information', 400);
+      }
+      if(!Class::classExistsForId($id)){
+        throw new Exception('Genus with id '.$id.' not found', 404);
+      }
+      $db->delete('genus', ['id' => $id]);
+    }
+
+    static function classExistsForId($id){
+      $db = DB::getInstance();
+        $genus = $db->select('genus', '*', ['id' => $id]);
+        if (sizeof($genus) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
   }
   static function getAll(){

@@ -30,6 +30,7 @@ class Tribe implements JsonSerializable{
       }
     }
 
+<<<<<<< 204185d0d74bef4dfb2ab68c3dfe7289d8b83979
     static function tribeWithNameExists($name) {
         $db = DB::getInstance();
         $tribe = $db->select('tribe', '*', ['name' => $name]);
@@ -41,6 +42,29 @@ class Tribe implements JsonSerializable{
         }
     }
 
+=======
+    static function delete($id){
+      $db = DB::getInstance();
+      if(!$id){
+        throw new Exception('Missing required information', 400);
+      }
+      if(!Class::classExistsForId($id)){
+        throw new Exception('Class with id '.$id.' not found', 404);
+      }
+      $db->delete('class', ['id' => $id]);
+    }
+
+    static function classExistsForId($id){
+      $db = DB::getInstance();
+        $class = $db->select('class', '*', ['id' => $id]);
+        if (sizeof($class) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+>>>>>>> Add delete functions to existing model
     static function getAll()
     {
       $db = DB::getInstance();

@@ -30,6 +30,27 @@ class Subtribe implements JsonSerializable{
       }
     }
 
+    static function delete($id){
+      $db = DB::getInstance();
+      if(!$id){
+        throw new Exception('Missing required information', 400);
+      }
+      if(!Class::classExistsForId($id)){
+        throw new Exception('Class with id '.$id.' not found', 404);
+      }
+      $db->delete('class', ['id' => $id]);
+    }
+
+    static function classExistsForId($id){
+      $db = DB::getInstance();
+        $class = $db->select('class', '*', ['id' => $id]);
+        if (sizeof($class) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     static function getAll()
     {
       $db = DB::getInstance();
