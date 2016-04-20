@@ -30,6 +30,17 @@ class Variety implements JsonSerializable{
       }
     }
 
+    static function varietyWithNameExists($name) {
+        $db = DB::getInstance();
+        $variety = $db->select('variety', '*', ['name' => $name]);
+        if (sizeof($variety) > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+    }
+
     static function getAll()
     {
       $db = DB::getInstance();
@@ -49,7 +60,7 @@ class Variety implements JsonSerializable{
     }
     $db = DB::getInstance();
     $id = $db->insert('variety',['name'=>$body['name']]);
-    $variety = Variety::getVarietybyId($id);
+    $variety = Variety::getById($id);
     return $variety;
     }
 

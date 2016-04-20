@@ -40,6 +40,17 @@ class Class implements JsonSerializable{
 		        }
     }
 
+    static function classWithNameExists($name) {
+        $db = DB::getInstance();
+        $class = $db->select('class', '*', ['name' => $name]);
+        if (sizeof($class) > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+    }
+
     static function create($body) {
       if (!$body['name']){
 			throw new Exception('Missing required information', 400);
@@ -49,7 +60,7 @@ class Class implements JsonSerializable{
 		}
 		$db = DB::getInstance();
 		$id = $db->insert('class',['name'=>$body['name']]);
-		$class = Class::getClassbyID($id);
+		$class = Class::getById($id);
 		return $class;
     }
 

@@ -40,6 +40,17 @@ class Subtribe implements JsonSerializable{
 
     }
 
+    static function subtribeWithNameExists($name) {
+        $db = DB::getInstance();
+        $subtribe = $db->select('subtribe', '*', ['name' => $name]);
+        if (sizeof($subtribe) > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+    }
+
     static function create($body) {
       if (!$body['name']){
       throw new Exception('Missing required information', 400);
@@ -49,7 +60,7 @@ class Subtribe implements JsonSerializable{
     }
     $db = DB::getInstance();
     $id = $db->insert('subtribe',['name'=>$body['name']]);
-    $subtribe = Subtribe::getSubtribebyId($id);
+    $subtribe = Subtribe::getById($id);
     return $subtribe;
     }
 

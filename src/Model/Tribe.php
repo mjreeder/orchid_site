@@ -30,6 +30,17 @@ class Tribe implements JsonSerializable{
       }
     }
 
+    static function tribeWithNameExists($name) {
+        $db = DB::getInstance();
+        $tribe = $db->select('tribe', '*', ['name' => $name]);
+        if (sizeof($tribe) > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+    }
+
     static function getAll()
     {
       $db = DB::getInstance();
@@ -49,7 +60,7 @@ class Tribe implements JsonSerializable{
     }
     $db = DB::getInstance();
     $id = $db->insert('tribe',['name'=>$body['name']]);
-    $tribe = Tribe::getTribebyId($id);
+    $tribe = Tribe::getById($id);
     return $tribe;
     }
 

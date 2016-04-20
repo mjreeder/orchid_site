@@ -38,19 +38,28 @@ class Genus implements JsonSerializable{
 		if (!$reservations){
 			return array();
 		}
-
-
 }
+
+  static function genusWithNameExists($name) {
+      $db = DB::getInstance();
+      $genus = $db->select('genus', '*', ['name' => $name]);
+      if (sizeof($genus) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
+  }
 
 static function create($body) {
   if (!$body['name']){
   throw new Exception('Missing required information', 400);
 }
-if (Class::classWithNameExists($body['name'])){
+if (Genus::genusWithNameExists($body['name'])){
   throw new Exception('Genus already exists', 400);
 }
 $db = DB::getInstance();
 $id = $db->insert('genus',['name'=>$body['name']]);
-$genus = Genus::getGenusbyId($id);
+$genus = Genus::getById($id);
 return $genus;
 }

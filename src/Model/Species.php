@@ -41,6 +41,17 @@ class Species implements JsonSerializable{
 
     }
 
+    static function speciesWithNameExists($name) {
+        $db = DB::getInstance();
+        $species = $db->select('species', '*', ['name' => $name]);
+        if (sizeof($species) > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+    }
+
     static function create($body) {
       if (!$body['name']){
       throw new Exception('Missing required information', 400);
@@ -50,7 +61,7 @@ class Species implements JsonSerializable{
     }
     $db = DB::getInstance();
     $id = $db->insert('species',['name'=>$body['name']]);
-    $species = Species::getSpeciesbyId($id);
+    $species = Species::getById($id);
     return $species;
     }
 

@@ -49,6 +49,19 @@ class PlantStatus implements JsonSerializable{
 
   }
 
+
+
+  static function plantStatusWithNameExists($name) {
+      $db = DB::getInstance();
+      $plantStatus = $db->select('plantStatus', '*', ['name' => $name]);
+      if (sizeof($plantStatus) > 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
+  }
+
   static function create($body) {
     if (!$body['name']){
     throw new Exception('Missing required information', 400);
