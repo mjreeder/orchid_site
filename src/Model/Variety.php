@@ -40,6 +40,19 @@ class Variety implements JsonSerializable{
 
     }
 
+    static function create($body) {
+      if (!$body['name']){
+      throw new Exception('Missing required information', 400);
+    }
+    if (Variety::varietyWithNameExists($body['name'])){
+      throw new Exception('Variety already exists', 400);
+    }
+    $db = DB::getInstance();
+    $id = $db->insert('variety',['name'=>$body['name']]);
+    $variety = Variety::getVarietybyId($id);
+    return $variety;
+    }
+
 
   }
 

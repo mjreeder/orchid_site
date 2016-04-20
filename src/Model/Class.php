@@ -37,10 +37,23 @@ class Class implements JsonSerializable{
 		    $class = $db->select('class','*');
 		    if (!$reservations){
 			      return array();
+		        }
+    }
+
+    static function create($body) {
+      if (!$body['name']){
+			throw new Exception('Missing required information', 400);
 		}
+		if (Class::classWithNameExists($body['name'])){
+			throw new Exception('Class already exists', 400);
+		}
+		$db = DB::getInstance();
+		$id = $db->insert('class',['name'=>$body['name']]);
+		$class = Class::getClassbyID($id);
+		return $class;
+    }
 
 
-  }
 
 
 }

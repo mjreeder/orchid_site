@@ -40,6 +40,19 @@ class Tribe implements JsonSerializable{
 
     }
 
+    static function create($body) {
+      if (!$body['name']){
+      throw new Exception('Missing required information', 400);
+    }
+    if (Tribe::tribeWithNameExists($body['name'])){
+      throw new Exception('Tribe already exists', 400);
+    }
+    $db = DB::getInstance();
+    $id = $db->insert('tribe',['name'=>$body['name']]);
+    $tribe = Tribe::getTribebyId($id);
+    return $tribe;
+    }
+
 
   }
 

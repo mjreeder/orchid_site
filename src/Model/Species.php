@@ -41,6 +41,19 @@ class Species implements JsonSerializable{
 
     }
 
+    static function create($body) {
+      if (!$body['name']){
+      throw new Exception('Missing required information', 400);
+    }
+    if (Species::speciesWithNameExists($body['name'])){
+      throw new Exception('Species already exists', 400);
+    }
+    $db = DB::getInstance();
+    $id = $db->insert('species',['name'=>$body['name']]);
+    $species = Species::getSpeciesbyId($id);
+    return $species;
+    }
+
 
   }
 
