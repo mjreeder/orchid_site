@@ -39,7 +39,6 @@ class PlantStatus implements JsonSerializable{
 
     }
 
-<<<<<<< 204185d0d74bef4dfb2ab68c3dfe7289d8b83979
     static function getAll($id){
       $db = DB::getInstance();
   		$plantStatus = $db->select('plant status','*');
@@ -50,7 +49,6 @@ class PlantStatus implements JsonSerializable{
 
   }
 
-=======
     static function delete($id){
       $db = DB::getInstance();
       if(!$id){
@@ -71,7 +69,6 @@ class PlantStatus implements JsonSerializable{
             return false;
         }
     }
->>>>>>> Add delete functions to existing model
 
 
   static function plantStatusWithNameExists($name) {

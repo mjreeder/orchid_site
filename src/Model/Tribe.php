@@ -30,7 +30,6 @@ class Tribe implements JsonSerializable{
       }
     }
 
-<<<<<<< 204185d0d74bef4dfb2ab68c3dfe7289d8b83979
     static function tribeWithNameExists($name) {
         $db = DB::getInstance();
         $tribe = $db->select('tribe', '*', ['name' => $name]);
@@ -42,7 +41,6 @@ class Tribe implements JsonSerializable{
         }
     }
 
-=======
     static function delete($id){
       $db = DB::getInstance();
       if(!$id){
@@ -64,7 +62,6 @@ class Tribe implements JsonSerializable{
         }
     }
     
->>>>>>> Add delete functions to existing model
     static function getAll()
     {
       $db = DB::getInstance();

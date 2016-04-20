@@ -30,7 +30,6 @@ class Variety implements JsonSerializable{
       }
     }
 
-<<<<<<< 204185d0d74bef4dfb2ab68c3dfe7289d8b83979
     static function varietyWithNameExists($name) {
         $db = DB::getInstance();
         $variety = $db->select('variety', '*', ['name' => $name]);
@@ -39,7 +38,6 @@ class Variety implements JsonSerializable{
         }
         else {
           return false;
-=======
     static function delete($id){
       $db = DB::getInstance();
       if(!$id){
@@ -58,7 +56,6 @@ class Variety implements JsonSerializable{
             return true;
         } else {
             return false;
->>>>>>> Add delete functions to existing model
         }
     }
 
