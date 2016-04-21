@@ -70,12 +70,12 @@ class Plants implements JsonSerializable
         return [
             'id'               => $this->id,
             'accession_number' => $this->accession_number,
-            'class_id'         => Class::findById($this->class_id),
-            'tribe_id'         => Tribe::findById($this->tribe_id),
-            'subtribe_id'      => Subtribe::findById($this->subtribe_id),
-            'genus_id'         => Genus::findById($this->genus_id),
-            'species_id'       => Species::findById($this->species_id),
-            'variety_id'       => Variety::findById($this->variety_id),
+            'class_id'         => Class::getById($this->class_id),
+            'tribe_id'         => Tribe::getById($this->tribe_id),
+            'subtribe_id'      => Subtribe::getById($this->subtribe_id),
+            'genus_id'         => Genus::getById($this->genus_id),
+            'species_id'       => Species::getById($this->species_id),
+            'variety_id'       => Variety::getById($this->variety_id),
             'authority'        => $this->authority,
             'distribution'     => $this->distribution,
             'habitat'          => $this->habitat,
@@ -126,6 +126,8 @@ class Plants implements JsonSerializable
     // UPDATE
     static function update($id)
     {
+      $db = DB::getInstance();
+
     }
     //DELETE
     static function delete($id){
