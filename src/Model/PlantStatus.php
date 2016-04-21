@@ -60,7 +60,7 @@ class PlantStatus implements JsonSerializable{
       $db->delete('class', ['id' => $id]);
     }
 
-    static function classExistsForId($id){
+    static function plantStatusExistsForId($id){
       $db = DB::getInstance();
         $class = $db->select('class', '*', ['id' => $id]);
         if (sizeof($class) > 0) {
@@ -83,15 +83,15 @@ class PlantStatus implements JsonSerializable{
   }
 
   static function create($body) {
-    if (!$body['name']){
+    if (!$body['name'] || !$body['bloom'] || !$body['pests'] || !$body['timestamp']){
     throw new Exception('Missing required information', 400);
   }
   if (PlantStatus::plantStatusWithNameExists($body['name'])){
     throw new Exception('Plant Status already exists', 400);
   }
   $db = DB::getInstance();
-  $id = $db->insert('plant status',['name'=>$body['name']]);
-  $plantStatus = PlantStatus::getPlantStatusbyId($id);
+  $id = $db->insert('plant status',['name'=>$body['name'], 'bloom'=>$body['bloom'], 'pests'=>$body['pests'], 'timestamp'=>$body['timestamp']]);
+  $plantStatus = PlantStatus::getById($id);
   return $plantStatus;
   }
 
