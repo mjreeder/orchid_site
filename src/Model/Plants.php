@@ -131,6 +131,7 @@ class Plants implements JsonSerializable
   		if (!$reservations){
   			return array();
     }
+  }
     // GET BY ID
     static function getById($id)
     {
@@ -144,13 +145,24 @@ class Plants implements JsonSerializable
            throw new Exception('Multiple plants with id '.$id.' found.', 400);
       }
     }
+
+    // GET BY ACCESSION_NUMBER
+    static function getByAccessionNumber($accession_number)
+    {
+      $db = DB::getInstance();
+      plants = $db->select('plants','*',['accession_number' => $accession_number]);
+      if (size($plants) == 1) {
+        return new Plants($plants[0]);
+      } else if (!$plants) {
+           throw new Exception('Plant with accession_number '.$accession_number.' not found.', 404);
+      } else {
+           throw new Exception('Multiple plants with accession_number '.$id.' found.', 400);
+      }
     }
 
     // UPDATE
     static function update($id)
     {
-      $db = DB::getInstance();
-
     }
     //DELETE
     static function delete($id){
