@@ -160,10 +160,27 @@ class Plants implements JsonSerializable
       }
     }
 
-    // UPDATE
-    static function update($id)
-    {
+    //UPDATE
+    static function update($body){
+      $db = DB::getInstance();
+      plants = $db->select('plants', '*', ['id' => $body['id']]);
+      if (size($plants) == 1) {
+        $db->update('plants', ['accession_number'=>$body['accession_number'],'class_id'=>$body['class_id'],'tribe_id'=>$body['tribe_id'],
+                                    'subtribe_id'=>$body['subtribe_id'], 'genus_id'=>$body['genus_id'],'variety_id'=>$body['variety_id'],
+                                    'authority'=>$body['authority'], 'distribution'=>$body['distribution'],'habitat'=>$body['habitat'],
+                                    'culture'=>$body['culture'], 'donars'=>$body['donars'],'date_received'=>$body['date_received'],
+                                    'received_from'=>$body['received_from'], 'description'=>$body['description'],'username'=>$body['username'],
+                                    'new'=>$body['new'], 'inactive_code'=>$body['inactive_code'],'inactive_date'=>$body['inactive_date'],
+                                    'inactive_comment'=>$body['inactive_comment'], 'size'=>$body['size'],'value'=>$body['value'],
+                                    'parent_one'=>$body['parent_one'], 'parent_two'=>$body['parent_two'],'grex_status'=>$body['grex_status'],
+                                    'hybrid_status'=>$body['hybrid_status']], ['id' => $body['id']]);
+      } else if (!$plants) {
+           throw new Exception('Plant with id '.$id.' not found.', 404);
+      } else {
+           throw new Exception('Multiple plants with id '.$id.' found.', 400);
+      }
     }
+
     //DELETE
     static function delete($id){
       $db = DB::getInstance();
