@@ -56,7 +56,7 @@ class Class implements JsonSerializable{
     static function getAll(){
 		    $db = DB::getInstance();
 		    $class = $db->select('class','*');
-		    if (!$reservations){
+		    if (!$class){
 			      return array();
 		        }
     }

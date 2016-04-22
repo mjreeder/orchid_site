@@ -50,12 +50,12 @@ class Species implements JsonSerializable{
             return false;
         }
     }
-    
+
     static function getAll()
     {
       $db = DB::getInstance();
   		$species = $db->select('species','*');
-  		if (!$reservations){
+  		if (!$species){
   			return array();
     }
 

@@ -50,12 +50,12 @@ class Subtribe implements JsonSerializable{
             return false;
         }
     }
-    
+
     static function getAll()
     {
       $db = DB::getInstance();
   		$subtribe = $db->select('subtribe','*');
-  		if (!$reservations){
+  		if (!$subtribe){
   			return array();
     }
 

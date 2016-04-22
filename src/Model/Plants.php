@@ -128,15 +128,15 @@ class Plants implements JsonSerializable
     {
       $db = DB::getInstance();
   		$plants = $db->select('plants','*');
-  		if (!$reservations){
+  		if (!$plants){
   			return array();
     }
   }
     // GET BY ID
     static function getById($id)
     {
-      $db = DB::getInstance();
-      plants = $db->select('plants','*',['id' => $id]);
+      $statement = $database->prepare("SELECT * FROM plants WHERE id = ?");
+      $statement->execute(array($id))
       if (size($plants) == 1) {
         return new Plants($plants[0]);
       } else if (!$plants) {

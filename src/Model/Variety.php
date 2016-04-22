@@ -63,7 +63,7 @@ class Variety implements JsonSerializable{
     {
       $db = DB::getInstance();
   		$variety = $db->select('variety','*');
-  		if (!$reservations){
+  		if (!$variety){
   			return array();
     }
 
