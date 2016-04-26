@@ -19,11 +19,11 @@ class Variety implements JsonSerializable{
     ];
     }
     static function getById($id){
-      $db = DB::getInstance();
-      $variety = $db->select('variety','*',['id' => $id]);
-      if (size($variety) == 1) {
-        return new Variety($genus[0]);
-      } else if (!$variety) {
+      $statement = $database->prepare("SELECT * FROM variety WHERE id = $id");
+      $statement->execute(array($id))
+      if (size($statement) == 1) {
+        return new Variety($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Variety with id '.$id.' not found.', 404);
       } else {
            throw new Exception('Multiple varities with id '.$id.' found.', 400);
@@ -31,28 +31,31 @@ class Variety implements JsonSerializable{
     }
 
     static function varietyWithNameExists($name) {
-        $db = DB::getInstance();
-        $variety = $db->select('variety', '*', ['name' => $name]);
+        $statement = $database->prepare("SELECT * FROM variety WHERE name = $name");
+        $statement->execute(array($id))
         if (sizeof($variety) > 0) {
           return true;
         }
         else {
           return false;
+        }
+      }
+
     static function delete($id){
-      $db = DB::getInstance();
+      $statement = $database->prepare("DELETE * FROM variety WHERE id = $id");
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $db->delete('class', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function classExistsForId($id){
-      $db = DB::getInstance();
-        $class = $db->select('class', '*', ['id' => $id]);
-        if (sizeof($class) > 0) {
+        $statement = $database->prepare("SELECT * FROM variety WHERE id = $id");
+        $statement->execute(array($id))
+        if (sizeof($statement) > 0) {
             return true;
         } else {
             return false;
@@ -61,9 +64,9 @@ class Variety implements JsonSerializable{
 
     static function getAll()
     {
-      $db = DB::getInstance();
-  		$variety = $db->select('variety','*');
-  		if (!$variety){
+      $statement = $database->prepare("SELECT * FROM variety");
+      $statement->execute(array($id))
+  		if (!$statement){
   			return array();
     }
 

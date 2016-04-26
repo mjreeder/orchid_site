@@ -20,11 +20,11 @@ class Class implements JsonSerializable{
     }
 
     static function getById($id){
-      $db = DB::getInstance();
-		  $class = $db->select('class','*',['id' => $id]);
-		  if (size($class) == 1) {
-			  return new Class($class[0]);
-		  } else if (!$class) {
+      $statement = $database->prepare("SELECT * FROM class WHERE id = $id");
+      $statement->execute(array($id))
+		  if (size($statement) == 1) {
+			  return new Class($statement[0]);
+		  } else if (!$statement) {
 			     throw new Exception('Class with id '.$id.' not found.', 404);
 		  } else {
 			     throw new Exception('Multiple classes with id '.$id.' found.', 400);
@@ -33,19 +33,19 @@ class Class implements JsonSerializable{
     }
 
     static function delete($id){
-      $db = DB::getInstance();
+      $statement = $database->prepare("DELETE * FROM class WHERE id = $id");
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $db->delete('class', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function classExistsForId($id){
-      $db = DB::getInstance();
-        $class = $db->select('class', '*', ['id' => $id]);
+        $statement = $database->prepare("SELECT * FROM class WHERE id = $id");
+        $statement->execute(array($id))
         if (sizeof($class) > 0) {
             return true;
         } else {
@@ -54,17 +54,17 @@ class Class implements JsonSerializable{
     }
 
     static function getAll(){
-		    $db = DB::getInstance();
-		    $class = $db->select('class','*');
-		    if (!$class){
+      $statement = $database->prepare("SELECT * FROM class");
+      $statement->execute(array($id))
+		    if (!$statement){
 			      return array();
 		        }
     }
 
     static function classWithNameExists($name) {
-        $db = DB::getInstance();
-        $class = $db->select('class', '*', ['name' => $name]);
-        if (sizeof($class) > 0) {
+        $statement = $database->prepare("SELECT * FROM class WHERE name = $name");
+        $statement->execute(array($id))
+        if (sizeof($statement) > 0) {
           return true;
         }
         else {

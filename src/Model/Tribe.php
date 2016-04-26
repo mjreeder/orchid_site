@@ -19,11 +19,11 @@ class Tribe implements JsonSerializable{
     ];
     }
     static function getById($id){
-      $db = DB::getInstance();
-      $tribe = $db->select('tribe','*',['id' => $id]);
-      if (size($genus) == 1) {
-        return new Tribe($tribe[0]);
-      } else if (!$tribe) {
+      $statement = $database->prepare("SELECT * FROM tribe WHERE id = $id");
+      $statement->execute(array($id))
+      if (size($statement) == 1) {
+        return new Tribe($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Tribe with id '.$id.' not found.', 404);
       } else {
            throw new Exception('Multiple tribes with id '.$id.' found.', 400);
@@ -31,9 +31,9 @@ class Tribe implements JsonSerializable{
     }
 
     static function tribeWithNameExists($name) {
-        $db = DB::getInstance();
-        $tribe = $db->select('tribe', '*', ['name' => $name]);
-        if (sizeof($tribe) > 0) {
+        $statement = $database->prepare("SELECT * FROM tribe WHERE name = $name");
+        $statement->execute(array($id))
+        if (sizeof($statement) > 0) {
           return true;
         }
         else {
@@ -42,19 +42,19 @@ class Tribe implements JsonSerializable{
     }
 
     static function delete($id){
-      $db = DB::getInstance();
+      $statement = $database->prepare("DELETE * FROM tribe WHERE id = $id");
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $db->delete('class', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function classExistsForId($id){
-      $db = DB::getInstance();
-        $class = $db->select('class', '*', ['id' => $id]);
+        $statement = $database->prepare("SELECT * FROM tribe WHERE id = $id");
+        $statement->execute(array($id))
         if (sizeof($class) > 0) {
             return true;
         } else {
@@ -64,6 +64,8 @@ class Tribe implements JsonSerializable{
 
     static function getAll()
     {
+      $statement = $database->prepare("SELECT * FROM tribe");
+      $statement->execute(array($id))
       $db = DB::getInstance();
   		$tribe = $db->select('tribe','*');
   		if (!$tribe){

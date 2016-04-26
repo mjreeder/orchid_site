@@ -19,11 +19,11 @@ class Genus implements JsonSerializable{
     ];
     }
     static function getById($id){
-      $db = DB::getInstance();
-      $genus = $db->select('genus','*',['id' => $id]);
-      if (size($genus) == 1) {
-        return new Genus($genus[0]);
-      } else if (!$genus) {
+      $statement = $database->prepare("SELECT * FROM genus WHERE id = $id");
+      $statement->execute(array($id))
+      if (size($statement) == 1) {
+        return new Genus($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Genus with id '.$id.' not found.', 404);
       } else {
            throw new Exception('Multiple genera with id '.$id.' found.', 400);
@@ -31,20 +31,20 @@ class Genus implements JsonSerializable{
     }
 
     static function delete($id){
-      $db = DB::getInstance();
-      if(!$id){
+      $statement = $database->prepare("DELETE * FROM genus WHERE id = $id");
+      if(!$statement){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Genus with id '.$id.' not found', 404);
       }
-      $db->delete('genus', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function classExistsForId($id){
-      $db = DB::getInstance();
-        $genus = $db->select('genus', '*', ['id' => $id]);
-        if (sizeof($genus) > 0) {
+        $statement = $database->prepare("SELECT * FROM genus WHERE id = $id");
+        $statement->execute(array($id))
+        if (sizeof($statement) > 0) {
             return true;
         } else {
             return false;
@@ -53,17 +53,17 @@ class Genus implements JsonSerializable{
 
   }
   static function getAll(){
-		$db = DB::getInstance();
-		$genus = $db->select('genus','*');
-		if (!$genus){
-			return array();
-		}
-}
+      $statement = $database->prepare("SELECT * FROM genus");
+      $statement->execute(array($id))
+		  if (!$statement){
+			       return array();
+		  }
+  }
 
   static function genusWithNameExists($name) {
-      $db = DB::getInstance();
-      $genus = $db->select('genus', '*', ['name' => $name]);
-      if (sizeof($genus) > 0) {
+      $statement = $database->prepare("SELECT * FROM genus WHERE name = $name");
+      $statement->execute(array($id))
+      if (sizeof($statement) > 0) {
         return true;
       }
       else {

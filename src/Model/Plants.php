@@ -126,20 +126,20 @@ class Plants implements JsonSerializable
     //GET ALL
     static function getAll()
     {
-      $db = DB::getInstance();
-  		$plants = $db->select('plants','*');
-  		if (!$plants){
+      $statement = $database->prepare("SELECT * FROM plants");
+      $statement->execute(array($id))
+  		if (!$statement){
   			return array();
     }
   }
     // GET BY ID
     static function getById($id)
     {
-      $statement = $database->prepare("SELECT * FROM plants WHERE id = ?");
+      $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
       $statement->execute(array($id))
-      if (size($plants) == 1) {
-        return new Plants($plants[0]);
-      } else if (!$plants) {
+      if (size($statment) == 1) {
+        return new Plants($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Plant with id '.$id.' not found.', 404);
       } else {
            throw new Exception('Multiple plants with id '.$id.' found.', 400);
@@ -149,11 +149,11 @@ class Plants implements JsonSerializable
     // GET BY ACCESSION_NUMBER
     static function getByAccessionNumber($accession_number)
     {
-      $db = DB::getInstance();
-      plants = $db->select('plants','*',['accession_number' => $accession_number]);
-      if (size($plants) == 1) {
-        return new Plants($plants[0]);
-      } else if (!$plants) {
+      $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
+      $statement->execute(array($accession_number))
+      if (size($statement) == 1) {
+        return new Plants($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Plant with accession_number '.$accession_number.' not found.', 404);
       } else {
            throw new Exception('Multiple plants with accession_number '.$id.' found.', 400);
@@ -183,19 +183,19 @@ class Plants implements JsonSerializable
 
     //DELETE
     static function delete($id){
-      $db = DB::getInstance();
+      $statement = $database->prepare("DELETE * FROM plants WHERE id = $id");
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $db->delete('class', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function plantExistsForId($id){
-      $db = DB::getInstance();
-        $class = $db->select('class', '*', ['id' => $id]);
+        $statement = $database->prepare("DELETE * FROM plants WHERE id = $id");
+        $statement->execute(array($id))
         if (sizeof($class) > 0) {
             return true;
         } else {

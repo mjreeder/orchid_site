@@ -19,11 +19,11 @@ class Species implements JsonSerializable{
     ];
     }
     static function getById($id){
-      $db = DB::getInstance();
-      $species = $db->select('species','*',['id' => $id]);
-      if (size($species) == 1) {
-        return new Species($species[0]);
-      } else if (!$species) {
+      $statement = $database->prepare("SELECT * FROM species WHERE id = $id");
+      $statement->execute(array($id))
+      if (size($statement) == 1) {
+        return new Species($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Species with id '.$id.' not found.', 404);
       } else {
            throw new Exception('Multiple species with id '.$id.' found.', 400);
@@ -31,19 +31,19 @@ class Species implements JsonSerializable{
     }
 
     static function delete($id){
-      $db = DB::getInstance();
+      $statement = $database->prepare("DELETE * FROM species WHERE id = $id");
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $db->delete('class', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function classExistsForId($id){
-      $db = DB::getInstance();
-        $class = $db->select('class', '*', ['id' => $id]);
+        $statement = $database->prepare("SELECT * FROM species WHERE id = $id");
+        $statement->execute(array($id))
         if (sizeof($class) > 0) {
             return true;
         } else {
@@ -53,9 +53,9 @@ class Species implements JsonSerializable{
 
     static function getAll()
     {
-      $db = DB::getInstance();
-  		$species = $db->select('species','*');
-  		if (!$species){
+      $statement = $database->prepare("SELECT * FROM species");
+      $statement->execute(array($id))
+  		if (!$statement){
   			return array();
     }
 
@@ -64,8 +64,8 @@ class Species implements JsonSerializable{
     }
 
     static function speciesWithNameExists($name) {
-        $db = DB::getInstance();
-        $species = $db->select('species', '*', ['name' => $name]);
+        $statement = $database->prepare("SELECT * FROM species WHERE name = $name");
+        $statement->execute(array($id))
         if (sizeof($species) > 0) {
           return true;
         }

@@ -19,11 +19,11 @@ class Subtribe implements JsonSerializable{
     ];
     }
     static function getById($id){
-      $db = DB::getInstance();
-      $subtribe = $db->select('subtribe','*',['id' => $id]);
-      if (size($subtribe) == 1) {
-        return new Subtribe($subtribe[0]);
-      } else if (!$subtribe) {
+      $statement = $database->prepare("SELECT * FROM subtribe WHERE id = $id");
+      $statement->execute(array($id))
+      if (size($statement) == 1) {
+        return new Subtribe($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Subtribe with id '.$id.' not found.', 404);
       } else {
            throw new Exception('Multiple subtribes with id '.$id.' found.', 400);
@@ -31,19 +31,19 @@ class Subtribe implements JsonSerializable{
     }
 
     static function delete($id){
-      $db = DB::getInstance();
+      $statement = $database->prepare("DELETE * FROM subtribe WHERE id = $id");
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $db->delete('class', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function classExistsForId($id){
-      $db = DB::getInstance();
-        $class = $db->select('class', '*', ['id' => $id]);
+        $statement = $database->prepare("SELECT * FROM subtribe WHERE id = $id");
+        $statement->execute(array($id))
         if (sizeof($class) > 0) {
             return true;
         } else {
@@ -53,8 +53,8 @@ class Subtribe implements JsonSerializable{
 
     static function getAll()
     {
-      $db = DB::getInstance();
-  		$subtribe = $db->select('subtribe','*');
+      $statement = $database->prepare("SELECT * FROM subtribe");
+      $statement->execute(array($id))
   		if (!$subtribe){
   			return array();
     }
@@ -62,8 +62,8 @@ class Subtribe implements JsonSerializable{
     }
 
     static function subtribeWithNameExists($name) {
-        $db = DB::getInstance();
-        $subtribe = $db->select('subtribe', '*', ['name' => $name]);
+        $statement = $database->prepare("SELECT * FROM subtribe WHERE name = $name");
+        $statement->execute(array($id))
         if (sizeof($subtribe) > 0) {
           return true;
         }

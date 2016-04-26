@@ -27,11 +27,11 @@ class PlantStatus implements JsonSerializable{
 		];
     }
     static function getById($id){
-      $db = DB::getInstance();
-      $plantStatus = $db->select('plant status','*',['id' => $id]);
-      if (size($plantStatus) == 1) {
-        return new PlantStatus($plantStatus[0]);
-      } else if (!$plantStatus) {
+      $statement = $database->prepare("SELECT * FROM plant status WHERE id = $id");
+      $statement->execute(array($id))
+      if (size($statement) == 1) {
+        return new PlantStatus($statement[0]);
+      } else if (!$statement) {
            throw new Exception('Plant Status with id '.$id.' not found.', 404);
       } else {
            throw new Exception('Multiple plant statuses with id '.$id.' found.', 400);
@@ -40,9 +40,9 @@ class PlantStatus implements JsonSerializable{
     }
 
     static function getAll($id){
-      $db = DB::getInstance();
-  		$plantStatus = $db->select('plant status','*');
-  		if (!$plantStatus){
+      $statement = $database->prepare("SELECT * FROM plant status");
+      $statement->execute(array($id))
+  		if (!$statement){
   			return array();
     }
 
@@ -50,20 +50,20 @@ class PlantStatus implements JsonSerializable{
   }
 
     static function delete($id){
-      $db = DB::getInstance();
+      $statement = $database->prepare("DELETE * FROM plant status");
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
       if(!Class::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $db->delete('class', ['id' => $id]);
+      $statement->execute(array($id))
     }
 
     static function plantStatusExistsForId($id){
-      $db = DB::getInstance();
-        $class = $db->select('class', '*', ['id' => $id]);
-        if (sizeof($class) > 0) {
+      $statement = $database->prepare("SELECT * FROM plant status WHERE id = $id");
+      $statement->execute(array($id))
+        if (sizeof($statement) > 0) {
             return true;
         } else {
             return false;
@@ -72,9 +72,8 @@ class PlantStatus implements JsonSerializable{
 
 
   static function plantStatusWithNameExists($name) {
-      $db = DB::getInstance();
-      $plantStatus = $db->select('plantStatus', '*', ['name' => $name]);
-      if (sizeof($plantStatus) > 0) {
+      $statement = $database->prepare("SELECT * FROM plant status WHERE name = $name");
+      if (sizeof($statement) > 0) {
         return true;
       }
       else {
