@@ -1,8 +1,9 @@
 <?php
-
 namespace orchid_site\src\Model;
 
-class Plants implements JsonSerializable
+error_reporting( E_ALL);
+ini_set("display_errors", true);
+class Plants implements \JsonSerializable
 {
     public $id;
     public $accession_number;
@@ -70,7 +71,7 @@ class Plants implements JsonSerializable
         return [
             'id'               => $this->id,
             'accession_number' => $this->accession_number,
-            'class_id'         => Class::getById($this->class_id),
+            'class_id'         => PlantClass::getById($this->class_id),
             'tribe_id'         => Tribe::getById($this->tribe_id),
             'subtribe_id'      => Subtribe::getById($this->subtribe_id),
             'genus_id'         => Genus::getById($this->genus_id),
@@ -127,7 +128,7 @@ class Plants implements JsonSerializable
     static function getAll()
     {
       $statement = $database->prepare("SELECT * FROM plants");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
   		if (!$statement){
   			return array();
     }
@@ -135,8 +136,9 @@ class Plants implements JsonSerializable
     // GET BY ID
     static function getById($id)
     {
+      var_dump('here');
       $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
       if (size($statment) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -150,7 +152,7 @@ class Plants implements JsonSerializable
     static function getByAccessionNumber($accession_number)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
-      $statement->execute(array($accession_number))
+      $statement->execute(array($accession_number));
       if (size($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -164,7 +166,7 @@ class Plants implements JsonSerializable
     static function getByClassId($class_id)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE class_id = $class_id");
-      $statement->execute(array($class_id))
+      $statement->execute(array($class_id));
       if (size($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -178,7 +180,7 @@ class Plants implements JsonSerializable
     static function getByTribeId($tribe_id)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE tribe_id = $tribe_id");
-      $statement->execute(array($tribe_id))
+      $statement->execute(array($tribe_id));
       if (size($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -192,7 +194,7 @@ class Plants implements JsonSerializable
     static function getBySubTribeId($subtribe_id)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE subtribe_id = $subtribe_id");
-      $statement->execute(array($subtribe_id))
+      $statement->execute(array($subtribe_id));
       if (size($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -206,7 +208,7 @@ class Plants implements JsonSerializable
     static function getByGenusId($genus_id)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE genus_id = $genus_id");
-      $statement->execute(array($genus_id))
+      $statement->execute(array($genus_id));
       if (size($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -220,7 +222,7 @@ class Plants implements JsonSerializable
     static function getBySpeciesId($species_id)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE species_id = $species_id");
-      $statement->execute(array($species_id))
+      $statement->execute(array($species_id));
       if (size($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -234,7 +236,7 @@ class Plants implements JsonSerializable
     static function getByVarietyId($variety_id)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE variety_id = $variety_id");
-      $statement->execute(array($variety_id))
+      $statement->execute(array($variety_id));
       if (size($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
@@ -247,7 +249,7 @@ class Plants implements JsonSerializable
     //UPDATE
     static function update($body){
       $db = DB::getInstance();
-      plants = $db->select('plants', '*', ['id' => $body['id']]);
+      $plants = $db->select('plants', '*', ['id' => $body['id']]);
       if (size($plants) == 1) {
         $db->update('plants', ['accession_number'=>$body['accession_number'],'class_id'=>$body['class_id'],'tribe_id'=>$body['tribe_id'],
                                     'subtribe_id'=>$body['subtribe_id'], 'genus_id'=>$body['genus_id'],'variety_id'=>$body['variety_id'],
@@ -271,15 +273,15 @@ class Plants implements JsonSerializable
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
-      if(!Class::classExistsForId($id)){
+      if(!PlantClass::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $statement->execute(array($id))
+      $statement->execute(array($id));
     }
 
     static function plantExistsForId($id){
         $statement = $database->prepare("DELETE * FROM plants WHERE id = $id");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($class) > 0) {
             return true;
         } else {

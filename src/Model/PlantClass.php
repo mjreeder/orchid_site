@@ -1,8 +1,10 @@
 <?php
-
 namespace orchid_site\src\Model;
 
-class Class implements JsonSerializable{
+error_reporting( E_ALL);
+ini_set("display_errors", true);
+class PlantClass implements \JsonSerializable
+{
   public $id;
   public $name;
 
@@ -12,18 +14,19 @@ class Class implements JsonSerializable{
       $this->id    = intval($data['id']);
       $this->name  = $data['name'];
     }
+
     function jsonSerialize(){
       return [
 			'id'       => $this->id,
       'name'     => $this->name
 		];
     }
-
+  }
     static function getById($id){
       $statement = $database->prepare("SELECT * FROM class WHERE id = $id");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
 		  if (size($statement) == 1) {
-			  return new Class($statement[0]);
+			  return new PlantClass($statement[0]);
 		  } else if (!$statement) {
 			     throw new Exception('Class with id '.$id.' not found.', 404);
 		  } else {
@@ -37,15 +40,15 @@ class Class implements JsonSerializable{
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
-      if(!Class::classExistsForId($id)){
+      if(!PlantClass::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $statement->execute(array($id))
+      $statement->execute(array($id));
     }
 
     static function classExistsForId($id){
         $statement = $database->prepare("SELECT * FROM class WHERE id = $id");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($class) > 0) {
             return true;
         } else {
@@ -55,7 +58,7 @@ class Class implements JsonSerializable{
 
     static function getAll(){
       $statement = $database->prepare("SELECT * FROM class");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
 		    if (!$statement){
 			      return array();
 		        }
@@ -63,7 +66,7 @@ class Class implements JsonSerializable{
 
     static function classWithNameExists($name) {
         $statement = $database->prepare("SELECT * FROM class WHERE name = $name");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($statement) > 0) {
           return true;
         }
@@ -76,17 +79,12 @@ class Class implements JsonSerializable{
       if (!$body['name']){
 			throw new Exception('Missing required information', 400);
 		}
-		if (Class::classWithNameExists($body['name'])){
+		if (PlantClass::classWithNameExists($body['name'])){
 			throw new Exception('Class already exists', 400);
 		}
 		$db = DB::getInstance();
 		$id = $db->insert('class',['name'=>$body['name']]);
-		$class = Class::getById($id);
+		$class = PlantClass::getById($id);
 		return $class;
     }
-
-
-
-
-}
 }

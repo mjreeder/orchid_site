@@ -1,4 +1,5 @@
 <?php
+
 $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
     $resource = '/plants';
@@ -9,8 +10,13 @@ $app->group('/api', function () use ($app) {
     });
 
     // GET PLANT BY ID
-    $app->get($resource . "/:id", function ($id) use ($app) {
-
+    $app->get('/{id}', function ($request, $response, $args) use ($app) {
+      var_dump('derpy derp');
+      $plant = Plants::getById($args['id']);
+      var_dump($plant);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+      var_dump($response);
     });
 
 

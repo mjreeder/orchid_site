@@ -25,5 +25,20 @@ require __DIR__ . '/../src/middleware.php';
 // Register routes
 require __DIR__ . '/../src/api/plants/plants.php';
 
+//Register mcrypt_module_close
+
+//Register Models
+require __DIR__ . '/../src/Model/Plants.php';
+require __DIR__ . '/../src/Model/PlantClass.php';
+require __DIR__ . '/../src/Model/Genus.php';
+require __DIR__ . '/../src/Model/PestControl.php';
+require __DIR__ . '/../src/Model/PlantStatus.php';
+require __DIR__ . '/../src/Model/Potting.php';
+require __DIR__ . '/../src/Model/species.php';
+require __DIR__ . '/../src/Model/Subtribe.php';
+require __DIR__ . '/../src/Model/Tribe.php';
+require __DIR__ . '/../src/Model/Variety.php';
+
+
 // Run app
 $app->run();
