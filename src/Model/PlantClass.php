@@ -14,6 +14,7 @@ class PlantClass implements \JsonSerializable
       $this->id    = intval($data['id']);
       $this->name  = $data['name'];
     }
+  }
 
     function jsonSerialize(){
       return [
@@ -21,7 +22,7 @@ class PlantClass implements \JsonSerializable
       'name'     => $this->name
 		];
     }
-  }
+
     static function getById($id){
       $statement = $database->prepare("SELECT * FROM class WHERE id = $id");
       $statement->execute(array($id));

@@ -2,7 +2,7 @@
 
 namespace orchid_site\src\Model;
 
-class Species implements JsonSerializable{
+class Species implements \JsonSerializable{
   public $id;
   public $name;
 
@@ -11,16 +11,19 @@ class Species implements JsonSerializable{
     if (is_array($data)){
       $this->id    = intval($data['id']);
       $this->name  = $data['name'];
+     }
     }
+
     function jsonSerialize(){
       return [
       'id'       => $this->id,
       'name'     => $this->name
-    ];
+      ];
     }
+
     static function getById($id){
       $statement = $database->prepare("SELECT * FROM species WHERE id = $id");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
       if (size($statement) == 1) {
         return new Species($statement[0]);
       } else if (!$statement) {
@@ -35,15 +38,15 @@ class Species implements JsonSerializable{
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
-      if(!Class::classExistsForId($id)){
+      if(!Species::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $statement->execute(array($id))
+      $statement->execute(array($id));
     }
 
     static function classExistsForId($id){
         $statement = $database->prepare("SELECT * FROM species WHERE id = $id");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($class) > 0) {
             return true;
         } else {
@@ -54,18 +57,15 @@ class Species implements JsonSerializable{
     static function getAll()
     {
       $statement = $database->prepare("SELECT * FROM species");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
   		if (!$statement){
   			return array();
-    }
-
-
-
+     }
     }
 
     static function speciesWithNameExists($name) {
         $statement = $database->prepare("SELECT * FROM species WHERE name = $name");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($species) > 0) {
           return true;
         }
@@ -86,9 +86,4 @@ class Species implements JsonSerializable{
     $species = Species::getById($id);
     return $species;
     }
-
-
-  }
-
-
 }

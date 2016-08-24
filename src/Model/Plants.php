@@ -54,7 +54,7 @@ class Plants implements \JsonSerializable
             $this->description = $data['description'];
             $this->username = $data['username'];
             $this->new = $data['new'];
-            $this->inactive_code = intval(data['inactive_code']);
+            $this->inactive_code = intval($data['inactive_code']);
             $this->inactive_date = $data['inactive_date'];
             $this->inactive_comment = $data['inactive_comment'];
             $this->size = $data['size'];
@@ -98,6 +98,7 @@ class Plants implements \JsonSerializable
             'hybrid_status'    => $this->hybrid_status
         ];
     }
+
     static function create($body){
       if (!$body['accession_number'] || !$body['class_id'] || !$body['tribe_id'] || !$body['subtribe_id'] ||
           !$body['genus_id'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||

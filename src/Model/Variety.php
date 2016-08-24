@@ -2,16 +2,17 @@
 
 namespace orchid_site\src\Model;
 
-class Variety implements JsonSerializable{
+class Variety implements \JsonSerializable{
   public $id;
   public $name;
-
 
    function __construct($data){
     if (is_array($data)){
       $this->id    = intval($data['id']);
       $this->name  = $data['name'];
     }
+  }
+
     function jsonSerialize(){
       return [
       'id'       => $this->id,
@@ -20,7 +21,7 @@ class Variety implements JsonSerializable{
     }
     static function getById($id){
       $statement = $database->prepare("SELECT * FROM variety WHERE id = $id");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
       if (size($statement) == 1) {
         return new Variety($statement[0]);
       } else if (!$statement) {
@@ -32,7 +33,7 @@ class Variety implements JsonSerializable{
 
     static function varietyWithNameExists($name) {
         $statement = $database->prepare("SELECT * FROM variety WHERE name = $name");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($variety) > 0) {
           return true;
         }
@@ -46,15 +47,15 @@ class Variety implements JsonSerializable{
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
-      if(!Class::classExistsForId($id)){
+      if(!Variety::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $statement->execute(array($id))
+      $statement->execute(array($id));
     }
 
     static function classExistsForId($id){
         $statement = $database->prepare("SELECT * FROM variety WHERE id = $id");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($statement) > 0) {
             return true;
         } else {
@@ -65,7 +66,7 @@ class Variety implements JsonSerializable{
     static function getAll()
     {
       $statement = $database->prepare("SELECT * FROM variety");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
   		if (!$statement){
   			return array();
     }
@@ -84,9 +85,4 @@ class Variety implements JsonSerializable{
     $variety = Variety::getById($id);
     return $variety;
     }
-
-
-  }
-
-
 }

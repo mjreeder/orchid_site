@@ -1,4 +1,7 @@
 <?php
+error_reporting( E_ALL);
+ini_set("display_errors", true);
+use \Model\Plants;
 
 $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
@@ -18,9 +21,5 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
       var_dump($response);
     });
-
-
-
   });
-
 });

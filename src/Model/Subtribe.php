@@ -2,7 +2,7 @@
 
 namespace orchid_site\src\Model;
 
-class Subtribe implements JsonSerializable{
+class Subtribe implements \JsonSerializable{
   public $id;
   public $name;
 
@@ -12,15 +12,16 @@ class Subtribe implements JsonSerializable{
       $this->id    = intval($data['id']);
       $this->name  = $data['name'];
     }
+  }
     function jsonSerialize(){
       return [
       'id'       => $this->id,
       'name'     => $this->name
-    ];
+      ];
     }
     static function getById($id){
       $statement = $database->prepare("SELECT * FROM subtribe WHERE id = $id");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
       if (size($statement) == 1) {
         return new Subtribe($statement[0]);
       } else if (!$statement) {
@@ -35,15 +36,15 @@ class Subtribe implements JsonSerializable{
       if(!$id){
         throw new Exception('Missing required information', 400);
       }
-      if(!Class::classExistsForId($id)){
+      if(!Subtribe::classExistsForId($id)){
         throw new Exception('Class with id '.$id.' not found', 404);
       }
-      $statement->execute(array($id))
+      $statement->execute(array($id));
     }
 
     static function classExistsForId($id){
         $statement = $database->prepare("SELECT * FROM subtribe WHERE id = $id");
-        $statement->execute(array($id))
+        $statement->execute(array($id));
         if (sizeof($class) > 0) {
             return true;
         } else {
@@ -54,7 +55,7 @@ class Subtribe implements JsonSerializable{
     static function getAll()
     {
       $statement = $database->prepare("SELECT * FROM subtribe");
-      $statement->execute(array($id))
+      $statement->execute(array($id));
   		if (!$subtribe){
   			return array();
     }
@@ -64,7 +65,7 @@ class Subtribe implements JsonSerializable{
     static function subtribeWithNameExists($name) {
         $statement = $database->prepare("SELECT * FROM subtribe WHERE name = $name");
         $statement->execute(array($id))
-        if (sizeof($subtribe) > 0) {
+;        if (sizeof($subtribe) > 0) {
           return true;
         }
         else {
@@ -84,9 +85,4 @@ class Subtribe implements JsonSerializable{
     $subtribe = Subtribe::getById($id);
     return $subtribe;
     }
-
-
-  }
-
-
 }
