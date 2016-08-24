@@ -1,8 +1,10 @@
 <?php
 namespace orchid_site\src\Model;
 
+
 error_reporting( E_ALL);
 ini_set("display_errors", true);
+require_once "../utilities/database.php";
 class Plants implements \JsonSerializable
 {
     public $id;
@@ -32,6 +34,7 @@ class Plants implements \JsonSerializable
     public $parent_two;
     public $grex_status;
     public $hybrid_status;
+
 
     public function __construct($data)
     {
@@ -96,6 +99,7 @@ class Plants implements \JsonSerializable
             'parent_two'       => $this->parent_two,
             'grex_status'      => $this->grex_status,
             'hybrid_status'    => $this->hybrid_status
+
         ];
     }
 
@@ -137,16 +141,24 @@ class Plants implements \JsonSerializable
     // GET BY ID
     static function getById($id)
     {
-      var_dump('here');
+      global $database;
       $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
       $statement->execute(array($id));
-      if (size($statment) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with id '.$id.' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with id '.$id.' found.', 400);
+      $test = $statement->rowCount();
+      var_dump("test", $test);
+      if($statement->rowCount()<=0){
+          var_dump('derp');
+          return null;
       }
+      return new Plants($statement->fetch(PDO::FETCH_ASSOC));
+
+      // if (sizeof($statement) == 1) {
+      //   return new Plants($statement[0]);
+      // } else if (!$statement) {
+      //      throw new Exception('Plant with id '.$id.' not found.', 404);
+      // } else {
+      //      throw new Exception('Multiple plants with id '.$id.' found.', 400);
+      // }
     }
 
     // GET BY ACCESSION_NUMBER
@@ -154,7 +166,7 @@ class Plants implements \JsonSerializable
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
       $statement->execute(array($accession_number));
-      if (size($statement) == 1) {
+      if (sizeof($statement) == 1) {
         return new Plants($statement[0]);
       } else if (!$statement) {
            throw new Exception('Plant with accession_number '. $accession_number .' not found.', 404);
