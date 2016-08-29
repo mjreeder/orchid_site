@@ -8,9 +8,11 @@ $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
     $resource = '/plants';
 
-    // GET ALL PLANTS
-    $app->get('', function() use ($app) {
-      var_dump("derp");
+    // GET ALL
+    $app->get('', function($request, $response, $args) use ($app) {
+      $plants = Plants::getAll();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
     });
 
     // GET PLANT BY ID
@@ -19,5 +21,6 @@ $app->group('/api', function () use ($app) {
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
+
   });
 });

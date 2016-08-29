@@ -9,17 +9,12 @@ class Plants implements \JsonSerializable
 {
     public $id;
     public $accession_number;
-    public $class_id;
-    public $tribe_id;
-    public $subtribe_id;
-    public $genus_id;
-    public $species_id;
     public $variety_id;
     public $authority;
     public $distribution;
     public $habitat;
     public $culture;
-    public $donars;
+    public $donation;
     public $date_received;
     public $received_from;
     public $description;
@@ -34,6 +29,9 @@ class Plants implements \JsonSerializable
     public $parent_two;
     public $grex_status;
     public $hybrid_status;
+    public $table_id;
+    public $area_id;
+    public $dead;
 
 
     public function __construct($data)
@@ -41,17 +39,12 @@ class Plants implements \JsonSerializable
         if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->accession_number = intval($data['accession_number']);
-            $this->class_id = intval($data['class_id']);
-            $this->tribe_id = intval($data['tribe_id']);
-            $this->subtribe_id = intval($data['subtribe_id ']);
-            $this->genus_id = intval($data['genus_id']);
-            $this->species_id = intval($data['species_id']);
             $this->variety_id = intval($data['variety_id']);
             $this->authority = $data['authority'];
             $this->distribution = $data['distribution'];
             $this->habitat = $data['habitat'];
             $this->culture = $data['culture'];
-            $this->donars = $data['donars'];
+            $this->donation = $data['donation'];
             $this->date_received = $data['date_received'];
             $this->received_from = $data['variety_id'];
             $this->description = $data['description'];
@@ -66,6 +59,9 @@ class Plants implements \JsonSerializable
             $this->parent_two = $data['parent_two'];
             $this->grex_status = $data['grex_status'];
             $this->hybrid_status = $data['hybrid_status'];
+            $this->table_id = intval($data['table_id']);
+            $this->area_id = intval($data['area_id']);
+            $this->dead = $data['dead'];
         }
     }
 
@@ -74,17 +70,12 @@ class Plants implements \JsonSerializable
         return [
             'id'               => $this->id,
             'accession_number' => $this->accession_number,
-            'class_id'         => PlantClass::getById($this->class_id),
-            'tribe_id'         => Tribe::getById($this->tribe_id),
-            'subtribe_id'      => Subtribe::getById($this->subtribe_id),
-            'genus_id'         => Genus::getById($this->genus_id),
-            'species_id'       => Species::getById($this->species_id),
             'variety_id'       => Variety::getById($this->variety_id),
             'authority'        => $this->authority,
             'distribution'     => $this->distribution,
             'habitat'          => $this->habitat,
             'culture'          => $this->culture,
-            'donars'           => $this->donars,
+            'donation'         => $this->donation,
             'date_received'    => $this->date_received,
             'received_from'    => $this->received_from,
             'description'      => $this->description,
@@ -98,10 +89,14 @@ class Plants implements \JsonSerializable
             'parent_one'       => $this->parent_one,
             'parent_two'       => $this->parent_two,
             'grex_status'      => $this->grex_status,
-            'hybrid_status'    => $this->hybrid_status
-
+            'hybrid_status'    => $this->hybrid_status,
+            'table_id'         => $this->table_id,
+            'area_id'          => $this->area_id,
+            'dead'             => $this->dead
         ];
     }
+
+    //TODO fix create function-to many fields atm
 
     static function create($body){
       if (!$body['accession_number'] || !$body['class_id'] || !$body['tribe_id'] || !$body['subtribe_id'] ||
@@ -129,15 +124,21 @@ class Plants implements \JsonSerializable
     return $plants;
 
     }
+
     //GET ALL
     static function getAll()
     {
+      global $database;
       $statement = $database->prepare("SELECT * FROM plants");
-      $statement->execute(array($id));
-  		if (!$statement){
-  			return array();
+      $statement->execute();
+      $allPlants = array();
+      if($statement->rowCount()<=0){
+          return null;
+      }
+      $test = $statement->fetch();
+      var_dump($test);
     }
-  }
+
     // GET BY ID
     static function getById($id)
     {
@@ -145,20 +146,10 @@ class Plants implements \JsonSerializable
       $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
       $statement->execute(array($id));
       $test = $statement->rowCount();
-      var_dump("test", $test);
       if($statement->rowCount()<=0){
-          var_dump('derp');
           return null;
       }
-      return new Plants($statement->fetch(PDO::FETCH_ASSOC));
-
-      // if (sizeof($statement) == 1) {
-      //   return new Plants($statement[0]);
-      // } else if (!$statement) {
-      //      throw new Exception('Plant with id '.$id.' not found.', 404);
-      // } else {
-      //      throw new Exception('Multiple plants with id '.$id.' found.', 400);
-      // }
+      return new Plants($statement->fetch());
     }
 
     // GET BY ACCESSION_NUMBER
