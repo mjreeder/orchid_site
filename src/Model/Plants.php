@@ -135,8 +135,14 @@ class Plants implements \JsonSerializable
       if($statement->rowCount()<=0){
           return null;
       }
-      $test = $statement->fetch();
-      var_dump($test);
+      $plants = $statement->fetch(PDO::FETCH_ASSOC);
+
+      $plantsArray = array();
+      for ($i = 0; $i < sizeof($plants); $i++) {
+        $plant = $plants[$i];
+        array_push($plantsArray, $plant);
+      }
+      return $plantsArray;
     }
 
     // GET BY ID
