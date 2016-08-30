@@ -1,5 +1,7 @@
 <?php
 
+
+
 class Config
 {
     public static function database(){
