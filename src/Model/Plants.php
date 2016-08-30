@@ -5,6 +5,7 @@ namespace orchid_site\src\Model;
 error_reporting( E_ALL);
 ini_set("display_errors", true);
 require_once "../utilities/database.php";
+use PDO;
 class Plants implements \JsonSerializable
 {
     public $id;
@@ -70,7 +71,7 @@ class Plants implements \JsonSerializable
         return [
             'id'               => $this->id,
             'accession_number' => $this->accession_number,
-            'variety_id'       => Variety::getById($this->variety_id),
+            'variety_id'      => 1,
             'authority'        => $this->authority,
             'distribution'     => $this->distribution,
             'habitat'          => $this->habitat,
@@ -135,14 +136,11 @@ class Plants implements \JsonSerializable
       if($statement->rowCount()<=0){
           return null;
       }
-      $plants = $statement->fetch(PDO::FETCH_ASSOC);
-
-      $plantsArray = array();
-      for ($i = 0; $i < sizeof($plants); $i++) {
-        $plant = $plants[$i];
-        array_push($plantsArray, $plant);
-      }
-      return $plantsArray;
+      $plants = [];
+      while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $plants[] = new Plants($row);
+        }
+      return $plants;
     }
 
     // GET BY ID
