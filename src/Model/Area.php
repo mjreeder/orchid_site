@@ -4,6 +4,7 @@ error_reporting( E_ALL);
 ini_set("display_errors", true);
 require_once "../utilities/response.php";
 require_once "../utilities/database.php";
+use PDO;
 
 class Area implements \JsonSerializable
 {
@@ -43,16 +44,11 @@ class Area implements \JsonSerializable
             return null;
         };
 
-        $areas = $statement->fetchAll();
-
-        $areaArray = array();
-        for ($i = 0; $i < sizeof($areas); $i++) {
-            $singleArea = $areas[$i];
-            var_dump($singleArea);
-            array_push($areaArray, $singleArea);
+        $areas = [];
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $areas[] = new Area($row);
         }
-        return $areaArray;
-        //var_dump($areaArray);
+        return $areas;
     }
 
     static function getByID($id)
@@ -65,6 +61,6 @@ class Area implements \JsonSerializable
         }
         return new Area($statement->fetch());
     }
-    
+
 }
 ?>

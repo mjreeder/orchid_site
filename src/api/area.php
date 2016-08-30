@@ -10,8 +10,14 @@ $app->group('/api', function () use ($app) {
 
 
         // GET ALL
-        $app->get('/', function($request, $response, $args) use ($app) {
+        $app->get('', function($request, $response, $args) use ($app) {
             $area = Area::getAll();
+            $output = new Response($area);
+            $response->getBody()->write(json_encode($output));
+        });
+
+        $app->get('/{id}', function($request, $response, $args) use ($app) {
+            $area = Area::getByID($args["id"]);
             $output = new Response($area);
             $response->getBody()->write(json_encode($output));
         });
