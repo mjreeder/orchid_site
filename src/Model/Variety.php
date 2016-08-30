@@ -20,9 +20,10 @@ class Variety implements \JsonSerializable{
     ];
     }
     static function getById($id){
+      global $database;
       $statement = $database->prepare("SELECT * FROM variety WHERE id = $id");
       $statement->execute(array($id));
-      if (size($statement) == 1) {
+      if (sizeof($statement) == 1) {
         return new Variety($statement[0]);
       } else if (!$statement) {
            throw new Exception('Variety with id '.$id.' not found.', 404);
