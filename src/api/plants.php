@@ -8,7 +8,6 @@ $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
     $resource = '/plants';
 
-    // GET ALL
     $app->get('', function($request, $response, $args) use ($app) {
       $plants = Plants::getAll();
       $output = new Response($plants);

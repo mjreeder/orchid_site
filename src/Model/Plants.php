@@ -100,32 +100,20 @@ class Plants implements \JsonSerializable
         ];
     }
 
-    //TODO fix create function-to many fields atm
-
-    static function create($body){
-      if (!$body['accession_number'] || !$body['class_id'] || !$body['tribe_id'] || !$body['subtribe_id'] ||
-          !$body['genus_id'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||
+    static function createPlant($body){
+      if (!$body['accession_number'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||
           !$body['habitat'] || !$body['culture'] || !$body['donars'] || !$body['date_received'] ||
           !$body['received_from'] || !$body['description'] || !$body['username'] || !$body['new'] ||
           !$body['inactive_code'] || !$body['inactive_date'] || !$body['inactive_comment'] || !$body['size'] ||
-          !$body['value'] || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_status']){
+          !$body['value'] || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_status'] || !$body["area_id"] || !$body["table_id"]){
       throw new Exception('Missing required information', 400);
     }
-    if (Plants::plantExistsForId($body['id'])){
-      throw new Exception('Plant already exists', 400);
-    }
-    $db = DB::getInstance();
-    $id = $db->insert('plants',['accession_number'=>$body['accession_number'],'class_id'=>$body['class_id'],'tribe_id'=>$body['tribe_id'],
-                                'subtribe_id'=>$body['subtribe_id'], 'genus_id'=>$body['genus_id'],'variety_id'=>$body['variety_id'],
-                                'authority'=>$body['authority'], 'distribution'=>$body['distribution'],'habitat'=>$body['habitat'],
-                                'culture'=>$body['culture'], 'donars'=>$body['donars'],'date_received'=>$body['date_received'],
-                                'received_from'=>$body['received_from'], 'description'=>$body['description'],'username'=>$body['username'],
-                                'new'=>$body['new'], 'inactive_code'=>$body['inactive_code'],'inactive_date'=>$body['inactive_date'],
-                                'inactive_comment'=>$body['inactive_comment'], 'size'=>$body['size'],'value'=>$body['value'],
-                                'parent_one'=>$body['parent_one'], 'parent_two'=>$body['parent_two'],'grex_status'=>$body['grex_status'],
-                                'hybrid_status'=>$body['hybrid_status']]);
-    $plants = Plants::getById($id);
-    return $plants;
+    $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation, date_received, received_from, description, username, new, inactive_code, inactive_date, inactive_comment, size, value, parent_one, parent_two, grex_status, table_id, area_id, dead) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)");
+    $statement->execute(array($name, $summary_url, $thumbnail_url, $header_url, $footer_url));
+    $id = $database->lastInsertId();
+    $statement->closeCursor();
+
+    return $id;
 
     }
 
