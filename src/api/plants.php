@@ -29,5 +29,12 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    // CREATE PLANT
+    $app->post('', function ($request, $response, $args) use ($app) {
+      $plant = Plants::createPlant($args);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
   });
 });

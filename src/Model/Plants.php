@@ -175,7 +175,7 @@ class Plants implements \JsonSerializable
       return $plants;
     }
 
-    // GET BY ACCESSION_NUMBER
+    // GET BY ACCESSION_NUMBER TODO likely doesn't work
     static function getByAccessionNumber($accession_number)
     {
       $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
@@ -186,76 +186,6 @@ class Plants implements \JsonSerializable
            throw new Exception('Plant with accession_number '. $accession_number .' not found.', 404);
       } else {
            throw new Exception('Multiple plants with accession_number '. $accession_number .' found.', 400);
-      }
-    }
-
-    // GET BY CLASS_ID
-    static function getByClassId($class_id)
-    {
-      $statement = $database->prepare("SELECT * FROM plants WHERE class_id = $class_id");
-      $statement->execute(array($class_id));
-      if (size($statement) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with class_id '. $class_id .' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with class_id '. $class_id .' found.', 400);
-      }
-    }
-
-    // GET BY TRIBE_ID
-    static function getByTribeId($tribe_id)
-    {
-      $statement = $database->prepare("SELECT * FROM plants WHERE tribe_id = $tribe_id");
-      $statement->execute(array($tribe_id));
-      if (size($statement) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with tribe_id '. $tribe_id .' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with tribe_id '. $tribe_id .' found.', 400);
-      }
-    }
-
-    // GET BY SUBTRIBE_ID
-    static function getBySubTribeId($subtribe_id)
-    {
-      $statement = $database->prepare("SELECT * FROM plants WHERE subtribe_id = $subtribe_id");
-      $statement->execute(array($subtribe_id));
-      if (size($statement) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with subtribe_id '. $subtribe_id .' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with subtribe_id '. $subtribe_id .' found.', 400);
-      }
-    }
-
-    // GET BY GENUS_ID
-    static function getByGenusId($genus_id)
-    {
-      $statement = $database->prepare("SELECT * FROM plants WHERE genus_id = $genus_id");
-      $statement->execute(array($genus_id));
-      if (size($statement) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with genus_id '. $genus_id .' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with genus_id '. $genus_id .' found.', 400);
-      }
-    }
-
-    // GET BY SPECIES_ID
-    static function getBySpeciesId($species_id)
-    {
-      $statement = $database->prepare("SELECT * FROM plants WHERE species_id = $species_id");
-      $statement->execute(array($species_id));
-      if (size($statement) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with species_id '. $species_id .' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with species_id '. $species_id .' found.', 400);
       }
     }
 
