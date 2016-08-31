@@ -8,7 +8,6 @@ $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
     $resource = '/plants';
 
-    // GET ALL
     $app->get('', function($request, $response, $args) use ($app) {
       $plants = Plants::getAll();
       $output = new Response($plants);
@@ -25,6 +24,13 @@ $app->group('/api', function () use ($app) {
     // GET PLANT BY ID
     $app->get('/{id}', function ($request, $response, $args) use ($app) {
       $plant = Plants::getById($args["id"]);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    // CREATE PLANT
+    $app->post('', function ($request, $response, $args) use ($app) {
+      $plant = Plants::createPlant($args);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
