@@ -15,6 +15,13 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    //Get page of plants alphbetically
+    $app->get('/alpha/{alpha}/{index}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getPaginatedPlants($args["alpha"], $args["index"]);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     // GET PLANT BY ID
     $app->get('/{id}', function ($request, $response, $args) use ($app) {
       $plant = Plants::getById($args["id"]);
