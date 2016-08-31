@@ -21,15 +21,12 @@ class Variety implements \JsonSerializable{
     }
     static function getById($id){
       global $database;
-      $statement = $database->prepare("SELECT * FROM variety WHERE id = $id");
+      $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
       $statement->execute(array($id));
-      if (sizeof($statement) == 1) {
-        return new Variety($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Variety with id '.$id.' not found.', 404);
-      } else {
-           throw new Exception('Multiple varities with id '.$id.' found.', 400);
+      if($statement->rowCount()<=0){
+          return null;
       }
+      return new Variety($statement->fetch());
     }
 
     static function varietyWithNameExists($name) {

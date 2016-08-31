@@ -9,6 +9,7 @@ use PDO;
 class Plants implements \JsonSerializable
 {
     public $id;
+    public $name;
     public $accession_number;
     public $variety_id;
     public $authority;
@@ -39,6 +40,7 @@ class Plants implements \JsonSerializable
     {
         if (is_array($data)) {
             $this->id = intval($data['id']);
+            $this->name = $data['name'];
             $this->accession_number = intval($data['accession_number']);
             $this->variety_id = intval($data['variety_id']);
             $this->authority = $data['authority'];
@@ -70,8 +72,9 @@ class Plants implements \JsonSerializable
     {
         return [
             'id'               => $this->id,
+            'name'             => $this->name,
             'accession_number' => $this->accession_number,
-            'variety_id'      => 1,
+            'variety_id'       => Variety::getById($this->variety_id),
             'authority'        => $this->authority,
             'distribution'     => $this->distribution,
             'habitat'          => $this->habitat,
@@ -139,7 +142,7 @@ class Plants implements \JsonSerializable
       $plants = [];
       while($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $plants[] = new Plants($row);
-        }
+      }
       return $plants;
     }
 
@@ -149,11 +152,27 @@ class Plants implements \JsonSerializable
       global $database;
       $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
       $statement->execute(array($id));
-      $test = $statement->rowCount();
       if($statement->rowCount()<=0){
           return null;
       }
       return new Plants($statement->fetch());
+    }
+
+    static function getPaginatedPlants($alpha, $index){
+      global $database;
+      $limitIndex = ($index - 1) * 20;
+      $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE '$alpha%' LIMIT $limitIndex, 20");
+      $statement->execute();
+      $allPlants = array();
+      if($statement->rowCount()<=0){
+          return null;
+      }
+      $plants = [];
+      while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $plants[] = new Plants($row);
+      }
+
+      return $plants;
     }
 
     // GET BY ACCESSION_NUMBER
