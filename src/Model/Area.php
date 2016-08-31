@@ -62,5 +62,18 @@ class Area implements \JsonSerializable
         return new Area($statement->fetch());
     }
 
+    static function getByContinent($continent)
+    {
+        global $database;
+        $sql = ("SELECT * FROM area WHERE continent = '$continent'");
+        $statement = $database->prepare("SELECT * FROM area WHERE continent = '$continent'");
+        $statement->execute(array($continent));
+        $areas = [];
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $areas[] = new Area($row);
+        }
+        return $areas;
+    }
+
 }
 ?>

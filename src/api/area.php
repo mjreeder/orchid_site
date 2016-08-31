@@ -22,6 +22,12 @@ $app->group('/api', function () use ($app) {
             $response->getBody()->write(json_encode($output));
         });
 
+        $app->get('/continent/{continent}', function ($request, $response, $args) use ($app){
+           $area = Area::getByContinent($args["continent"]);
+            $output = new Response($area);
+            $response->getBody()->write(json_encode($output));
+        });
+
 
     });
 
