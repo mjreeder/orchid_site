@@ -30,7 +30,8 @@ $app->group('/api', function () use ($app) {
 
     // CREATE PLANT
     $app->post('', function ($request, $response, $args) use ($app) {
-      $plant = Plants::createPlant($args);
+      $body = $request->getParsedBody();
+      $plant = Plants::createPlant($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
