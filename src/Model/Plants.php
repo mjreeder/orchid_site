@@ -6,6 +6,7 @@ error_reporting( E_ALL);
 ini_set("display_errors", true);
 require_once "../utilities/database.php";
 use PDO;
+use Exception;
 class Plants implements \JsonSerializable
 {
     public $id;
@@ -102,6 +103,13 @@ class Plants implements \JsonSerializable
 
     static function createPlant($body){
     global $database;
+    if (!$body['accession_number'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||
+      !$body['habitat'] || !$body['culture'] || !$body['donation'] || !$body['date_received'] ||  !$body['received_from'] || !$body['description']
+      || !$body['username'] || !$body['new'] || !$body['inactive_code'] || !$body['inactive_date'] || !$body['inactive_comment'] || !$body['size'] || !$body['value']
+      || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_status'] || !$body["area_id"] || !$body["table_id"] || !$body['name']){
+     throw new Exception('Missing required information', 400);
+   }
+
     $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation, date_received, received_from, description, username, new, inactive_code, inactive_date, inactive_comment, size, value, parent_one, parent_two, grex_status, table_id, area_id, dead) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     $statement->execute(array($body["accession_number"], $body["variety_id"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["new"], $body["inactive_code"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["table_id"], $body["area_id"], $body["dead"]));
     $id = $database->lastInsertId();
