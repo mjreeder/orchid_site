@@ -184,15 +184,18 @@ class Plants implements \JsonSerializable
     // GET BY VARIETY_ID
     static function getByVarietyId($variety_id)
     {
+      global $database;
       $statement = $database->prepare("SELECT * FROM plants WHERE variety_id = $variety_id");
-      $statement->execute(array($variety_id));
-      if (size($statement) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with variety_id '. $variety_id .' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with variety_id '. $variety_id .' found.', 400);
+      $statement->execute();
+      if($statement->rowCount()<=0){
+          return null;
       }
+      $plants = [];
+      while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $plants[] = new Plants($row);
+      }
+
+      return $plants;
     }
 
     //UPDATE
