@@ -165,18 +165,20 @@ class Plants implements \JsonSerializable
       return $plants;
     }
 
-    // GET BY ACCESSION_NUMBER TODO likely doesn't work
     static function getByAccessionNumber($accession_number)
     {
+      global $database;
       $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
-      $statement->execute(array($accession_number));
-      if (sizeof($statement) == 1) {
-        return new Plants($statement[0]);
-      } else if (!$statement) {
-           throw new Exception('Plant with accession_number '. $accession_number .' not found.', 404);
-      } else {
-           throw new Exception('Multiple plants with accession_number '. $accession_number .' found.', 400);
+      $statement->execute();
+      if($statement->rowCount()<=0){
+          return null;
       }
+      $plants = [];
+      while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $plants[] = new Plants($row);
+      }
+
+      return $plants;
     }
 
     // GET BY VARIETY_ID
