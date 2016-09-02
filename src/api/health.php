@@ -24,7 +24,6 @@ $app->group('/api', function () use ($app) {
 
         //GET BY PLANT ID
         $app->get('/plant_id/{plant_id}', function ($request, $response, $args) use ($app){
-         var_dump("HELLLOOO");
            $health = Health::getByPlantID($args['plant_id']);
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));

@@ -50,7 +50,6 @@ require __DIR__ . '/../src/Model/Phylum.php';
 require __DIR__ . '/../src/Model/Plants.php';
 require __DIR__ . '/../src/Model/PlantClass.php';
 require __DIR__ . '/../src/Model/Genus.php';
-require __DIR__ . '/../src/Model/PestControl.php';
 require __DIR__ . '/../src/Model/PlantStatus.php';
 require __DIR__ . '/../src/Model/Potting.php';
 require __DIR__ . '/../src/Model/Species.php';

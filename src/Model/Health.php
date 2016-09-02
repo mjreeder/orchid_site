@@ -13,7 +13,8 @@ class Health implements \JsonSerializable
     public $tmestamp;
     public $score;
 
-    public function __construct($data){
+    public function __construct($data)
+    {
         if (is_array($data)){
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
