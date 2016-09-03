@@ -33,7 +33,12 @@ class Health implements \JsonSerializable
         ];
     }
 
-    static function getAll(){
+    /* ========================================================== *
+     * GET
+     * ========================================================== */
+
+    static function getAll()
+    {
         global $database;
         $statement = $database->prepare("SELECT * FROM health");
         $statement->execute();
@@ -61,6 +66,25 @@ class Health implements \JsonSerializable
         return $health;
     }
 
+    /* ========================================================== *
+     * POST
+     * ========================================================== */
 
+    static function createHealth($body){
+        global $database;
+        $statement = $database->prepare("INSERT INTO health (plant_id, score) VALUES (?,?)");
+        $statement->execute(array($body['plant_id'], $body['score']));
+        $id= $database->lastInsertId();
+        $statement->closeCursor();
+        return $id;
+    }
+
+    /* ========================================================== *
+     * PUT
+     * ========================================================== */
+
+    /* ========================================================== *
+     * DELETE
+     * ========================================================== */
 }
 ?>

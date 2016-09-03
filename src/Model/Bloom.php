@@ -32,6 +32,10 @@ class Bloom implements \JsonSerializable
         ];
     }
 
+    /* ========================================================== *
+     * GET
+     * ========================================================== */
+
     static function getAll(){
         global $database;
         $statement = $database->prepare("SELECT * FROM bloom");
@@ -65,5 +69,27 @@ class Bloom implements \JsonSerializable
         }
         return $areas;
     }
+
+    /* ========================================================== *
+     * POST
+     * ========================================================== */
+
+    static function createBloom($body){
+        global $database;
+        $statement = $database->prepare("INSERT INTO bloom (plant_id, comment) VALUES(?,?)");
+        $statement->execute(array($body['plant_id'], $body['comment']));
+        $id = $database->lastInsertId();
+        $statement->closeCursor();
+
+        return $id;
+    }
+
+    /* ========================================================== *
+     * PUT
+     * ========================================================== */
+    /* ========================================================== *
+     * DELETE
+     * ========================================================== */
+
 
 }

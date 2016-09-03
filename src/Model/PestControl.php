@@ -33,6 +33,10 @@ class PestControl implements \JsonSerializable
         ];
     }
 
+    /* ========================================================== *
+     * GET
+     * ========================================================== */
+
     static function getAll()
     {
         global $database;
@@ -58,6 +62,28 @@ class PestControl implements \JsonSerializable
         }
         return $pestControl;
     }
+
+    /* ========================================================== *
+     * POST
+     * ========================================================== */
+
+    static function createPestControl($body){
+        global $database;
+        $statement = $database->prepare("INSERT INTO pest_control (plant_id, comment) VALUES (?,?)");
+        $statement->execute(array($body['plant_id'], $body['comment']));
+        $id = $database->lastInsertId();
+        $statement->closeCursor();
+
+        return $id;
+    }
+
+    /* ========================================================== *
+     * PUT
+     * ========================================================== */
+
+    /* ========================================================== *
+     * DELETE
+     * ========================================================== */
 }
 
 ?>

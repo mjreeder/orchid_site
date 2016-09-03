@@ -8,6 +8,10 @@ require_once "../utilities/response.php";
 $app->group('/api', function () use ($app) {
     $app->group('/health', function () use ($app) {
 
+        /* ========================================================== *
+         * GET
+        * ========================================================== */
+
         //GET ALL
         $app->get('', function ($requst, $response, $args) use ($app){
            $health = Health::getAll();
@@ -28,5 +32,29 @@ $app->group('/api', function () use ($app) {
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));
         });
+
+        /* ========================================================== *
+         * POST
+         * ========================================================== */
+
+        $app->post('', function ($request, $response, $args) use ($app){
+           $body = [
+             'plant_id' => 3,
+               'score' => 3
+
+           ];
+
+            $health = Health::createHealth($body);
+            $output = new Response($health);
+            $response->getBody()->write(json_encode($output));
+        });
+
+        /* ========================================================== *
+         * PUT
+        * ========================================================== */
+
+        /* ========================================================== *
+        * DELETE
+         * ========================================================== */
     });
 });
