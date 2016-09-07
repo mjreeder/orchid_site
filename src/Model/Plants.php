@@ -115,6 +115,9 @@ class Plants implements \JsonSerializable
       throw new Exception('Missing required information', 400);
     }
 
+    if(!in_array("special_collections_id", $body)){
+      $body['special_collections_id'] = null;
+    }
     $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size, scientific_name, hybrid_status, hybrid_notes, value, parent_one, parent_two, grex_status, origin_id, location_id, dead, special_collections_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     $statement->execute(array($body["accession_number"], $body["variety_id"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation_comment"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["scientific_name"], $body["hybrid_status"], $body["hybrid_notes"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["origin_id"], $body["location_id"], $body["dead"], $body["special_collections_id"]));
     $id = $database->lastInsertId();
