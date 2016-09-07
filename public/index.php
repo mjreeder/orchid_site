@@ -1,4 +1,19 @@
 <?php
+/**
+ * @SWG\Swagger(
+ *   schemes={"http"},
+ *   host="localhost:8888",
+ *   basePath="/orchid_site",
+ *   produces={"application/json"},
+ *   @SWG\Info(
+ *     title="Equipment Checkout Backend",
+ *     description="RESTful service for Equipment Checkout system",
+ *     version="1.0.0",
+ *     @SWG\Contact(name="The Digital Corps"),
+ * 	   @SWG\License(name="proprietary")
+ *   )
+ * )
+ */
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file

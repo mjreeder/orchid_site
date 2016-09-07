@@ -7,21 +7,55 @@ require_once "../utilities/response.php";
 $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
     $resource = '/plants';
-
+    /**
+     * @SWG\Get(
+     *     path="/plants",
+     *     summary="get all plants",
+     *     tags={"get plants"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
     $app->get('', function($request, $response, $args) use ($app) {
       $plants = Plants::getAll();
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    //Get page of plants alphbetically
+
     $app->get('/alpha/{alpha}/{index}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getPaginatedPlants($args["alpha"], $args["index"]);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    // GET PLANT BY ID
+    /**
+     * @SWG\Get(
+     *     path="/plants/{id}",
+     *     summary="get plants by id",
+     *     tags={"get plants"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
     $app->get('/{id}', function ($request, $response, $args) use ($app) {
       $plant = Plants::getById($args["id"]);
       $output = new Response($plant);
