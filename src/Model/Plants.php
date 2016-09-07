@@ -17,24 +17,25 @@ class Plants implements \JsonSerializable
     public $distribution;
     public $habitat;
     public $culture;
-    public $donation;
+    public $donation_comment;
     public $date_received;
     public $received_from;
     public $description;
     public $username;
-    public $new;
-    public $inactive_code;
     public $inactive_date;
     public $inactive_comment;
     public $size;
+    public $scientific_name;
     public $value;
     public $parent_one;
     public $parent_two;
     public $grex_status;
     public $hybrid_status;
-    public $table_id;
-    public $area_id;
+    public $hybrid_notes;
+    public $origin_id;
+    public $location_id;
     public $dead;
+    public $special_collections_id;
 
 
     public function __construct($data)
@@ -48,70 +49,74 @@ class Plants implements \JsonSerializable
             $this->distribution = $data['distribution'];
             $this->habitat = $data['habitat'];
             $this->culture = $data['culture'];
-            $this->donation = $data['donation'];
+            $this->donation_comment = $data['donation_comment'];
             $this->date_received = $data['date_received'];
             $this->received_from = $data['variety_id'];
             $this->description = $data['description'];
             $this->username = $data['username'];
-            $this->new = $data['new'];
-            $this->inactive_code = intval($data['inactive_code']);
             $this->inactive_date = $data['inactive_date'];
             $this->inactive_comment = $data['inactive_comment'];
             $this->size = $data['size'];
+            $this->scientific_name = $data['scientific_name'];
             $this->value = $data['value'];
             $this->parent_one = $data['parent_one'];
             $this->parent_two = $data['parent_two'];
             $this->grex_status = $data['grex_status'];
+            $this->hybrid_notes = $data['hybrid_notes'];
             $this->hybrid_status = $data['hybrid_status'];
-            $this->table_id = intval($data['table_id']);
-            $this->area_id = intval($data['area_id']);
+            $this->origin_id = intval($data['origin_id']);
+            $this->location_id = intval($data['location_id']);
             $this->dead = $data['dead'];
+            $this->special_collecions_id =$data["special_collections_id"];
         }
+
     }
 
     function jsonSerialize()
     {
         return [
-            'id'               => $this->id,
-            'name'             => $this->name,
-            'accession_number' => $this->accession_number,
-            'variety_id'       => Variety::getById($this->variety_id),
-            'authority'        => $this->authority,
-            'distribution'     => $this->distribution,
-            'habitat'          => $this->habitat,
-            'culture'          => $this->culture,
-            'donation'         => $this->donation,
-            'date_received'    => $this->date_received,
-            'received_from'    => $this->received_from,
-            'description'      => $this->description,
-            'username'         => $this->username,
-            'new'              => $this->new,
-            'inactive_code'    => $this->inactive_code,
-            'inactive_date'    => $this->inactive_date,
-            'inactive_comment' => $this->inactive_comment,
-            'size'             => $this->size,
-            'value'            => $this->value,
-            'parent_one'       => $this->parent_one,
-            'parent_two'       => $this->parent_two,
-            'grex_status'      => $this->grex_status,
-            'hybrid_status'    => $this->hybrid_status,
-            'table_id'         => $this->table_id,
-            'area_id'          => $this->area_id,
-            'dead'             => $this->dead
+            'id'                     => $this->id,
+            'name'                   => $this->name,
+            'accession_number'       => $this->accession_number,
+            'variety_id'             => Variety::getById($this->variety_id),
+            'authority'              => $this->authority,
+            'distribution'           => $this->distribution,
+            'habitat'                => $this->habitat,
+            'scientific_name'        => $this->scientific_name,
+            'culture'                => $this->culture,
+            'donation_comment'       => $this->donation_comment,
+            'date_received'          => $this->date_received,
+            'received_from'          => $this->received_from,
+            'description'            => $this->description,
+            'username'               => $this->username,
+            'inactive_date'          => $this->inactive_date,
+            'inactive_comment'       => $this->inactive_comment,
+            'size'                   => $this->size,
+            'value'                  => $this->value,
+            'parent_one'             => $this->parent_one,
+            'parent_two'             => $this->parent_two,
+            'grex_status'            => $this->grex_status,
+            'hybrid_notes'           => $this->hybrid_notes,
+            'hybrid_status'          => $this->hybrid_status,
+            'origin_id'               => $this->origin_id,
+            'location_id'                => $this->location_id,
+            'dead'                   => $this->dead,
+            'special_collections_id' => $this->special_collections_id
         ];
     }
 
     static function createPlant($body){
     global $database;
-    if (!$body['accession_number'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||
-      !$body['habitat'] || !$body['culture'] || !$body['donation'] || !$body['date_received'] ||  !$body['received_from'] || !$body['description']
-      || !$body['username'] || !$body['new'] || !$body['inactive_code'] || !$body['inactive_date'] || !$body['inactive_comment'] || !$body['size'] || !$body['value']
-      || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_status'] || !$body["area_id"] || !$body["table_id"] || !$body['name']){
-     throw new Exception('Missing required information', 400);
-   }
+    var_dump(count(["accession_number", "variety_id", "name", "authority", "distribution","habitat", "culture", "donation_comment", "date_received", "received_from", "description", "username" , "new", "inactive_date", "inactive_comment", "size", "scientific_name", "hybrid_status", "hybrid_notes", "value", "parent_one", "parent_two", "grex_status" ,"origin_id", "location_id", "dead", "special_collections_id"]));
+     if (!$body['accession_number'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||
+       !$body['habitat'] || !$body['culture'] || !$body['donation_comment'] || !$body['date_received'] ||  !$body['received_from'] || !$body['description']
+       || !$body['username'] || !$body['inactive_date'] || !$body['inactive_comment'] || !$body['size'] || !$body['value']
+       || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_notes'] || !$body['hybrid_status'] || !$body["scientific_name"] || !$body["location_id"] || !$body["origin_id"] || !$body['name']){
+      throw new Exception('Missing required information', 400);
+    }
 
-    $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation, date_received, received_from, description, username, new, inactive_code, inactive_date, inactive_comment, size, value, parent_one, parent_two, grex_status, table_id, area_id, dead) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-    $statement->execute(array($body["accession_number"], $body["variety_id"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["new"], $body["inactive_code"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["table_id"], $body["area_id"], $body["dead"]));
+    $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size, scientific_name, hybrid_status, hybrid_notes, value, parent_one, parent_two, grex_status, origin_id, location_id, dead, special_collections_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    $statement->execute(array($body["accession_number"], $body["variety_id"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation_comment"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["scientific_name"], $body["hybrid_status"], $body["hybrid_notes"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["origin_id"], $body["location_id"], $body["dead"], $body["special_collections_id"]));
     $id = $database->lastInsertId();
     $statement->closeCursor();
 
@@ -211,7 +216,7 @@ class Plants implements \JsonSerializable
                                     'new'=>$body['new'], 'inactive_code'=>$body['inactive_code'],'inactive_date'=>$body['inactive_date'],
                                     'inactive_comment'=>$body['inactive_comment'], 'size'=>$body['size'],'value'=>$body['value'],
                                     'parent_one'=>$body['parent_one'], 'parent_two'=>$body['parent_two'],'grex_status'=>$body['grex_status'],
-                                    'hybrid_status'=>$body['hybrid_status']], ['id' => $body['id']]);
+                                    'hybrid_notes'=>$body['hybrid_notes']], ['id' => $body['id']]);
       } else if (!$plants) {
            throw new Exception('Plant with id '.$id.' not found.', 404);
       } else {
