@@ -16,3 +16,14 @@ Replace `[my-app-name]` with the desired directory name for your new application
 * Ensure `logs/` is web writeable.
 
 That's it! Now go build something cool.
+
+### Notes ###
+
+The 'docs' folder is the 'dist' folder from [https://github.com/jensoleg/swagger-ui](https://github.com/jensoleg/swagger-ui), a cleaner and more mobile friendly fork of the original Swagger-UI.
+
+
+Within the 'docs/index.html' is a line that says:
+```javascript
+var url = window.location.toString().replace(/\/*#?.*/, '/orchid_site/swagger.php');
+```
+It's purpose is to tell the frontend where the Swagger JSON is at. Upon web host changes, this may need modified.

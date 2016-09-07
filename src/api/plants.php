@@ -10,8 +10,9 @@ $app->group('/api', function () use ($app) {
     /**
      * @SWG\Get(
      *     path="/plants",
-     *     summary="get all plants",
-     *     tags={"get plants"},
+     *     summary="Get All",
+     *     description="This is a descirption",
+     *     tags={"Plants"},
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
@@ -41,11 +42,23 @@ $app->group('/api', function () use ($app) {
     /**
      * @SWG\Get(
      *     path="/plants/{id}",
-     *     summary="get plants by id",
-     *     tags={"get plants"},
+     *     summary="Get by Id",
+     *     description="This is a descirption",
+     *     tags={"Plants"},
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The Plant's ID",
+     *         required=true,
+     *         type="integer",
+     *         format="int64"
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
+     *         @SWG\Schema(
+     *              ref="#/definitions/Plants"
+     *          )
      *     ),
      *     @SWG\Response(
      *         response="default",

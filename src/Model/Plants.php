@@ -7,34 +7,149 @@ ini_set("display_errors", true);
 require_once "../utilities/database.php";
 use PDO;
 use Exception;
+/**
+ * @SWG\Definition(
+ *  required={
+ *      "id",
+ *      "name"
+ *   }
+ *  )
+ */
 class Plants implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $name;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $accession_number;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $variety_id;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $authority;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $distribution;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $habitat;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $culture;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $donation_comment;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $date_received;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $received_from;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $description;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $username;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $inactive_date;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $inactive_comment;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $size;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $scientific_name;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $value;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $parent_one;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $parent_two;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $grex_status;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $hybrid_status;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $hybrid_notes;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $origin_id;
+    /**
+     * @SWG\Property()
+     * @var string
+     */
     public $location_id;
+    /**
+     * @SWG\Property()
+     * @var boolean
+     */
     public $dead;
+    /**
+     * @SWG\Property()
+     * @var integer
+     */
     public $special_collections_id;
 
 

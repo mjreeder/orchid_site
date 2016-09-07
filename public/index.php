@@ -3,16 +3,24 @@
  * @SWG\Swagger(
  *   schemes={"http"},
  *   host="localhost:8888",
- *   basePath="/orchid_site",
+ *   basePath="/orchid_site/public/api",
  *   produces={"application/json"},
  *   @SWG\Info(
- *     title="Equipment Checkout Backend",
- *     description="RESTful service for Equipment Checkout system",
+ *     title="Orchid Site Backend",
+ *     description="RESTful service for Orchid Site",
  *     version="1.0.0",
- *     @SWG\Contact(name="The Digital Corps"),
+ *     @SWG\Contact(name="The Digital Corps", email="bsu.digital.corps@gmail.com"),
  * 	   @SWG\License(name="proprietary")
  *   )
  * )
+ *
+ * @SWG\Definition(
+ * 	    definition="Error",
+ * 		required={"status", "error", "msg"},
+ *		@SWG\Property(property="status", type="integer"),
+ *		@SWG\Property(property="error", type="boolean"),
+ *		@SWG\Property(property="msg", type="string"),
+ * 	 )
  */
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
