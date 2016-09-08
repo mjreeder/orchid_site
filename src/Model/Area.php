@@ -33,6 +33,10 @@ class Area implements \JsonSerializable
         ];
     }
 
+    /* ========================================================== *
+     * GET
+     * ========================================================== */
+
     static function getAll()
     {
 
@@ -74,6 +78,31 @@ class Area implements \JsonSerializable
         }
         return $areas;
     }
+
+    /* ========================================================== *
+     * POST
+     * ========================================================== */
+
+    static function createArea($body){
+        global $database;
+        $statement = $database->prepare("INSERT INTO area (plant_id, continent, area) VALUES (?,?,?)");
+        $statement->execute(array($body['plant_id'], $body['continent'], $body['area']));
+        $id = $database->lastInsertId();
+        $statement->closeCursor();
+
+        return $id;
+
+    }
+
+
+    /* ========================================================== *
+     * PUT
+     * ========================================================== */
+
+    /* ========================================================== *
+     * DELETE
+     * ========================================================== */
+
 
 }
 ?>

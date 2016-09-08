@@ -8,6 +8,10 @@ require_once "../utilities/response.php";
 $app->group('/api', function () use ($app){
    $app->group('/bloom', function() use ($app) {
 
+       /* ========================================================== *
+        * GET
+        * ========================================================== */
+
        $app->get('', function($request, $response, $args) use ($app){
            $bloom = Bloom::getAll();
            $output = new Response($bloom);
@@ -19,6 +23,26 @@ $app->group('/api', function () use ($app){
            $output = new Response($bloom);
            $response->getBody()->write(json_encode($output));
        });
+
+       /* ========================================================== *
+        * POST
+        * ========================================================== */
+
+       $app->post('', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+
+           $bloom = Bloom::createBloom($body);
+           $output = new Response($bloom);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       /* ========================================================== *
+        * PUT
+        * ========================================================== */
+
+       /* ========================================================== *
+        * DELETE
+        * ========================================================== */
    });
 });
 

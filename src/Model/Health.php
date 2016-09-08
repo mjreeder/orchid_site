@@ -13,7 +13,8 @@ class Health implements \JsonSerializable
     public $tmestamp;
     public $score;
 
-    public function __construct($data){
+    public function __construct($data)
+    {
         if (is_array($data)){
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
@@ -32,7 +33,12 @@ class Health implements \JsonSerializable
         ];
     }
 
-    static function getAll(){
+    /* ========================================================== *
+     * GET
+     * ========================================================== */
+
+    static function getAll()
+    {
         global $database;
         $statement = $database->prepare("SELECT * FROM health");
         $statement->execute();
@@ -60,6 +66,36 @@ class Health implements \JsonSerializable
         return $health;
     }
 
+    /* ========================================================== *
+     * POST
+     * ========================================================== */
 
+    static function createHealth($body){
+        global $database;
+        $statement = $database->prepare("INSERT INTO health (plant_id, score) VALUES (?,?)");
+        $statement->execute(array($body['plant_id'], $body['score']));
+        $id= $database->lastInsertId();
+        $statement->closeCursor();
+        return $id;
+    }
+
+    /* ========================================================== *
+     * PUT
+     * ========================================================== */
+
+    static function fixHealth($body, $id){
+        global $database;
+        $statement = $database->prepare("UPDATE health SET id = ?, plant_id = ?, score = ? WHERE id = ?");
+        $statement->execute(array($id, $body['plant_id'], $body['score'], $id));
+        $id = Health::getByPlantID(2);
+        return $id;
+
+
+    }
+
+
+    /* ========================================================== *
+     * DELETE
+     * ========================================================== */
 }
 ?>
