@@ -80,7 +80,6 @@ class Bloom implements \JsonSerializable
         $statement->execute(array($body['plant_id'], $body['comment']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
-
         return $id;
     }
 

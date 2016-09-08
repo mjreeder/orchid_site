@@ -53,6 +53,17 @@ $app->group('/api', function () use ($app) {
          * PUT
         * ========================================================== */
 
+        $app->put('/{id}', function ($request, $response, $args) use ($app){
+            $body = [
+              'plant_id' => 4,
+                'score' => 3
+            ];
+
+            $health  = Health::fixHealth($body, $args['id']);
+            $output = new Response($health);
+            $response->getBody()->write(json_encode($output));
+        });
+
         /* ========================================================== *
         * DELETE
          * ========================================================== */

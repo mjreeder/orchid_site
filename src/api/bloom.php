@@ -29,10 +29,8 @@ $app->group('/api', function () use ($app){
         * ========================================================== */
 
        $app->post('', function ($request, $response, $args) use ($app){
-          $body = [
-              'plant_id' => 2,
-              'comment' => "Hello, this is the second comment"
-          ];
+           $body = $request->getParsedBody();
+
            $bloom = Bloom::createBloom($body);
            $output = new Response($bloom);
            $response->getBody()->write(json_encode($output));
