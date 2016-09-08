@@ -32,7 +32,36 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
-
+    /**
+     * @SWG\Get(
+     *     path="/plants/{alpha}/{index}",
+     *     summary="Get plant by first letter and by index",
+     *     description="This is a descirption",
+     *     tags={"Plants"},
+     *     @SWG\Parameter(
+     *         name="alpha",
+     *         in="path",
+     *         description="The Plant's first letter",
+     *         required=true,
+     *         type="char",
+     *         format=""
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *         @SWG\Schema(
+     *              ref="#/definitions/Plants"
+     *          )
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
     $app->get('/alpha/{alpha}/{index}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getPaginatedPlants($args["alpha"], $args["index"]);
       $output = new Response($plants);
@@ -75,19 +104,100 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    /**
+     * @SWG\Get(
+     *     path="/plants/{accession_number}",
+     *     summary="Get by accession number",
+     *     description="Get plant by its accession number",
+     *     tags={"Plants"},
+     *     @SWG\Parameter(
+     *         name="accession number",
+     *         in="path",
+     *         description="The Plant's accession number",
+     *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *         @SWG\Schema(
+     *              ref="#/definitions/Plants"
+     *          )
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
     $app->get('/accession/{accession_number}' , function($request, $response, $args) use($app){
       $plant = Plants::getByAccessionNumber($args["accession_number"]);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
 
+    /**
+     * @SWG\Get(
+     *     path="/plants/{variety_id}",
+     *     summary="Get plant by its variety id",
+     *     description="Get plant by its variety id",
+     *     tags={"Plants"},
+     *     @SWG\Parameter(
+     *         name="variety id",
+     *         in="path",
+     *         description="The Plant's variety id",
+     *         required=true,
+     *         type="integer",
+     *         format="int64"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *         @SWG\Schema(
+     *              ref="#/definitions/Plants"
+     *          )
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
     $app->get('/variety/{variety_id}' , function($request, $response, $args) use($app){
       $plant = Plants::getByVarietyId($args["variety_id"]);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
 
-    // CREATE PLANT
+    /**
+     * @SWG\POST(
+     *     path="/plants",
+     *     summary="create new plant",
+     *     description="create new plant",
+     *     tags={"Plants"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *         @SWG\Schema(
+     *              ref="#/definitions/Plants"
+     *          )
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
     $app->post('', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::createPlant($body);
