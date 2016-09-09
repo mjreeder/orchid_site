@@ -35,11 +35,6 @@ class Plants implements \JsonSerializable
      * @SWG\Property()
      * @var integer
      */
-    public $variety_id;
-    /**
-     * @SWG\Property()
-     * @var integer
-     */
     public $authority;
     /**
      * @SWG\Property()
@@ -159,14 +154,13 @@ class Plants implements \JsonSerializable
             $this->id = intval($data['id']);
             $this->name = $data['name'];
             $this->accession_number = intval($data['accession_number']);
-            $this->variety_id = intval($data['variety_id']);
             $this->authority = $data['authority'];
             $this->distribution = $data['distribution'];
             $this->habitat = $data['habitat'];
             $this->culture = $data['culture'];
             $this->donation_comment = $data['donation_comment'];
             $this->date_received = $data['date_received'];
-            $this->received_from = $data['variety_id'];
+            $this->received_from = $data['received_from'];
             $this->description = $data['description'];
             $this->username = $data['username'];
             $this->inactive_date = $data['inactive_date'];
@@ -193,7 +187,6 @@ class Plants implements \JsonSerializable
             'id'                     => $this->id,
             'name'                   => $this->name,
             'accession_number'       => $this->accession_number,
-            'variety_id'             => Variety::getById($this->variety_id),
             'authority'              => $this->authority,
             'distribution'           => $this->distribution,
             'habitat'                => $this->habitat,
@@ -214,7 +207,7 @@ class Plants implements \JsonSerializable
             'hybrid_comment'           => $this->hybrid_comment,
             'hybrid_status'          => $this->hybrid_status,
             'origin_id'               => $this->origin_id,
-            'location_id'                => $this->location_id,
+            'location_id'             => $this->location_id,
             'dead'                   => $this->dead,
             'special_collections_id' => $this->special_collections_id
         ];
@@ -222,8 +215,7 @@ class Plants implements \JsonSerializable
 
     static function createPlant($body){
     global $database;
-    var_dump(count(["accession_number", "variety_id", "name", "authority", "distribution","habitat", "culture", "donation_comment", "date_received", "received_from", "description", "username" , "new", "inactive_date", "inactive_comment", "size", "scientific_name", "hybrid_status", "hybrid_comment", "value", "parent_one", "parent_two", "grex_status" ,"origin_id", "location_id", "dead", "special_collections_id"]));
-     if (!$body['accession_number'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||
+     if (!$body['accession_number'] || !$body['authority'] || !$body['distribution'] ||
        !$body['habitat'] || !$body['culture'] || !$body['donation_comment'] || !$body['date_received'] ||  !$body['received_from'] || !$body['description']
        || !$body['username'] || !$body['inactive_date'] || !$body['inactive_comment'] || !$body['size'] || !$body['value']
        || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_comment'] || !$body['hybrid_status'] || !$body["scientific_name"] || !$body["location_id"] || !$body["origin_id"] || !$body['name']){
@@ -233,8 +225,8 @@ class Plants implements \JsonSerializable
     if(!in_array("special_collections_id", $body)){
       $body['special_collections_id'] = null;
     }
-    $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size, scientific_name, hybrid_status, hybrid_comment, value, parent_one, parent_two, grex_status, origin_id, location_id, dead, special_collections_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-    $statement->execute(array($body["accession_number"], $body["variety_id"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation_comment"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["scientific_name"], $body["hybrid_status"], $body["hybrid_comment"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["origin_id"], $body["location_id"], $body["dead"], $body["special_collections_id"]));
+    $statement = $database->prepare("INSERT INTO plants (accession_number, name, authority, distribution, habitat, culture, donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size, scientific_name, hybrid_status, hybrid_comment, value, parent_one, parent_two, grex_status, origin_id, location_id, dead, special_collections_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    $statement->execute(array($body["accession_number"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation_comment"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["scientific_name"], $body["hybrid_status"], $body["hybrid_comment"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["origin_id"], $body["location_id"], $body["dead"], $body["special_collections_id"]));
     $id = $database->lastInsertId();
     $statement->closeCursor();
 
@@ -292,23 +284,6 @@ class Plants implements \JsonSerializable
     {
       global $database;
       $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
-      $statement->execute();
-      if($statement->rowCount()<=0){
-          return null;
-      }
-      $plants = [];
-      while($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $plants[] = new Plants($row);
-      }
-
-      return $plants;
-    }
-
-    // GET BY VARIETY_ID
-    static function getByVarietyId($variety_id)
-    {
-      global $database;
-      $statement = $database->prepare("SELECT * FROM plants WHERE variety_id = $variety_id");
       $statement->execute();
       if($statement->rowCount()<=0){
           return null;
