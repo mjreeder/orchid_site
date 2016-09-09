@@ -2,8 +2,8 @@
 namespace orchid_site\src\Model;
 error_reporting(E_ALL);
 ini_set("display_errors", true);
-require_once "../utlities/response.php";
-require_once "../utlities/database.php";
+require_once "../utilities/response.php";
+require_once "../utilities/database.php";
 use PDO;
 
 class Location implements \JsonSerializable
