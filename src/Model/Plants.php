@@ -130,7 +130,7 @@ class Plants implements \JsonSerializable
      * @SWG\Property()
      * @var string
      */
-    public $hybrid_notes;
+    public $hybrid_comment;
     /**
      * @SWG\Property()
      * @var integer
@@ -177,7 +177,7 @@ class Plants implements \JsonSerializable
             $this->parent_one = $data['parent_one'];
             $this->parent_two = $data['parent_two'];
             $this->grex_status = $data['grex_status'];
-            $this->hybrid_notes = $data['hybrid_notes'];
+            $this->hybrid_comment = $data['hybrid_comment'];
             $this->hybrid_status = $data['hybrid_status'];
             $this->origin_id = intval($data['origin_id']);
             $this->location_id = intval($data['location_id']);
@@ -211,7 +211,7 @@ class Plants implements \JsonSerializable
             'parent_one'             => $this->parent_one,
             'parent_two'             => $this->parent_two,
             'grex_status'            => $this->grex_status,
-            'hybrid_notes'           => $this->hybrid_notes,
+            'hybrid_comment'           => $this->hybrid_comment,
             'hybrid_status'          => $this->hybrid_status,
             'origin_id'               => $this->origin_id,
             'location_id'                => $this->location_id,
@@ -222,19 +222,19 @@ class Plants implements \JsonSerializable
 
     static function createPlant($body){
     global $database;
-    var_dump(count(["accession_number", "variety_id", "name", "authority", "distribution","habitat", "culture", "donation_comment", "date_received", "received_from", "description", "username" , "new", "inactive_date", "inactive_comment", "size", "scientific_name", "hybrid_status", "hybrid_notes", "value", "parent_one", "parent_two", "grex_status" ,"origin_id", "location_id", "dead", "special_collections_id"]));
+    var_dump(count(["accession_number", "variety_id", "name", "authority", "distribution","habitat", "culture", "donation_comment", "date_received", "received_from", "description", "username" , "new", "inactive_date", "inactive_comment", "size", "scientific_name", "hybrid_status", "hybrid_comment", "value", "parent_one", "parent_two", "grex_status" ,"origin_id", "location_id", "dead", "special_collections_id"]));
      if (!$body['accession_number'] || !$body['variety_id'] || !$body['authority'] || !$body['distribution'] ||
        !$body['habitat'] || !$body['culture'] || !$body['donation_comment'] || !$body['date_received'] ||  !$body['received_from'] || !$body['description']
        || !$body['username'] || !$body['inactive_date'] || !$body['inactive_comment'] || !$body['size'] || !$body['value']
-       || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_notes'] || !$body['hybrid_status'] || !$body["scientific_name"] || !$body["location_id"] || !$body["origin_id"] || !$body['name']){
+       || !$body['parent_one'] || !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_comment'] || !$body['hybrid_status'] || !$body["scientific_name"] || !$body["location_id"] || !$body["origin_id"] || !$body['name']){
       throw new Exception('Missing required information', 400);
     }
 
     if(!in_array("special_collections_id", $body)){
       $body['special_collections_id'] = null;
     }
-    $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size, scientific_name, hybrid_status, hybrid_notes, value, parent_one, parent_two, grex_status, origin_id, location_id, dead, special_collections_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-    $statement->execute(array($body["accession_number"], $body["variety_id"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation_comment"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["scientific_name"], $body["hybrid_status"], $body["hybrid_notes"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["origin_id"], $body["location_id"], $body["dead"], $body["special_collections_id"]));
+    $statement = $database->prepare("INSERT INTO plants (accession_number, variety_id, name, authority, distribution, habitat, culture, donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size, scientific_name, hybrid_status, hybrid_comment, value, parent_one, parent_two, grex_status, origin_id, location_id, dead, special_collections_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    $statement->execute(array($body["accession_number"], $body["variety_id"], $body["name"], $body["authority"], $body["distribution"], $body["habitat"], $body["culture"], $body["donation_comment"], $body["date_received"], $body["received_from"], $body["description"], $body["username"], $body["inactive_date"], $body["inactive_comment"], $body["size"], $body["scientific_name"], $body["hybrid_status"], $body["hybrid_comment"], $body["value"], $body["parent_one"], $body["parent_two"], $body["grex_status"], $body["origin_id"], $body["location_id"], $body["dead"], $body["special_collections_id"]));
     $id = $database->lastInsertId();
     $statement->closeCursor();
 
@@ -334,7 +334,7 @@ class Plants implements \JsonSerializable
                                     'new'=>$body['new'], 'inactive_code'=>$body['inactive_code'],'inactive_date'=>$body['inactive_date'],
                                     'inactive_comment'=>$body['inactive_comment'], 'size'=>$body['size'],'value'=>$body['value'],
                                     'parent_one'=>$body['parent_one'], 'parent_two'=>$body['parent_two'],'grex_status'=>$body['grex_status'],
-                                    'hybrid_notes'=>$body['hybrid_notes']], ['id' => $body['id']]);
+                                    'hybrid_comment'=>$body['hybrid_comment']], ['id' => $body['id']]);
       } else if (!$plants) {
            throw new Exception('Plant with id '.$id.' not found.', 404);
       } else {
