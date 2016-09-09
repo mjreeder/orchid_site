@@ -140,42 +140,6 @@ $app->group('/api', function () use ($app) {
     });
 
     /**
-     * @SWG\Get(
-     *     path="/plants/{variety_id}",
-     *     summary="Get plant by its variety id",
-     *     description="Get plant by its variety id",
-     *     tags={"Plants"},
-     *     @SWG\Parameter(
-     *         name="variety id",
-     *         in="path",
-     *         description="The Plant's variety id",
-     *         required=true,
-     *         type="integer",
-     *         format="int64"
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="plant response",
-     *         @SWG\Schema(
-     *              ref="#/definitions/Plants"
-     *          )
-     *     ),
-     *     @SWG\Response(
-     *         response="default",
-     *         description="unexpected error",
-     *         @SWG\Schema(
-     *             ref="#/definitions/Error"
-     *         )
-     *     )
-     * )
-     */
-    $app->get('/variety/{variety_id}' , function($request, $response, $args) use($app){
-      $plant = Plants::getByVarietyId($args["variety_id"]);
-      $output = new Response($plant);
-      $response->getBody()->write(json_encode($output));
-    });
-
-    /**
      * @SWG\POST(
      *     path="/plants",
      *     summary="create new plant",
