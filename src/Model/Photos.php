@@ -8,25 +8,31 @@ use PDO;
 
 class Photos implements \JsonSerializable
 {
+    public $id;
     public $plant_id;
     public $url;
     public $type;
+    public $active;
 
     public function __construct($data)
     {
         if (is_array($data)){
+            $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->url = $data['url'];
             $this->type = intval($data['type']);
+//            $this->active =
         }
     }
 
     function jsonSerialize()
     {
         return [
+            'id' =>$this->id,
             'plant_id'=>$this->plant_id,
             'url' =>$this->url,
-            'type'  =>$this->type
+            'type'  =>$this->type,
+            'active' =>$this->active
         ];
     }
 

@@ -6,7 +6,7 @@ use orchid_site\src\Model\PestControl;
 require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app) {
-   $app->group('/pest_control', function () use ($app) {
+   $app->group('/pest', function () use ($app) {
 
        /* ========================================================== *
         * GET

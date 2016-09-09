@@ -15,7 +15,7 @@ class PlantStatus implements \JsonSerializable{
       $this->plant_id    = intval($data['plant_id']);
       $this->name        = $data['name'];
       $this->bloom       = (bool) $data['bloom'];
-      $this->pests       = $data('pests');
+      $this->pests       = $data['pests'];
       $this->timestamp   = intval($data['timestamp']);
     }
   }
@@ -30,6 +30,7 @@ class PlantStatus implements \JsonSerializable{
     }
 
     static function getById($id){
+      global $database;
       $statement = $database->prepare("SELECT * FROM plant status WHERE id = $id");
       $statement->execute(array($id));
       if (size($statement) == 1) {
@@ -42,6 +43,7 @@ class PlantStatus implements \JsonSerializable{
     }
 
     static function getAll($id){
+      global $database;
       $statement = $database->prepare("SELECT * FROM plant status");
       $statement->execute(array($id));
   		if (!$statement){
@@ -50,6 +52,7 @@ class PlantStatus implements \JsonSerializable{
   }
 
     static function delete($id){
+      global $database;
       $statement = $database->prepare("DELETE * FROM plant status");
       if(!$id){
         throw new Exception('Missing required information', 400);
@@ -61,6 +64,7 @@ class PlantStatus implements \JsonSerializable{
     }
 
     static function plantStatusExistsForId($id){
+      global $database;
       $statement = $database->prepare("SELECT * FROM plant status WHERE id = $id");
       $statement->execute(array($id));
         if (sizeof($statement) > 0) {
@@ -72,7 +76,8 @@ class PlantStatus implements \JsonSerializable{
 
 
   static function plantStatusWithNameExists($name) {
-      $statement = $database->prepare("SELECT * FROM plant status WHERE name = $name");
+    global $database;
+    $statement = $database->prepare("SELECT * FROM plant status WHERE name = $name");
       if (sizeof($statement) > 0) {
         return true;
       }

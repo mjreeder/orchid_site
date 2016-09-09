@@ -6,7 +6,7 @@ require_once "../utilities/response.php";
 require_once "../utilities/database.php";
 use PDO;
 
-class PestControl implements \JsonSerializable
+class Pests implements \JsonSerializable
 {
     public $id;
     public $plant_id;

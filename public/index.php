@@ -46,12 +46,12 @@ require __DIR__ . '/../src/dependencies.php';
 require __DIR__ . '/../src/middleware.php';
 
 // Register routes
-require __DIR__ . '/../src/api/area.php';
+require __DIR__ . '/../src/api/origin.php';
 require __DIR__ . '/../src/api/bloom.php';
 require __DIR__ . '/../src/api/family.php';
 require __DIR__ . '/../src/api/genus.php';
 require __DIR__ . '/../src/api/health.php';
-require __DIR__ . '/../src/api/pest_control.php';
+require __DIR__ . '/../src/api/pests.php';
 require __DIR__ . '/../src/api/photos.php';
 require __DIR__ . '/../src/api/phylum.php';
 require __DIR__ . '/../src/api/plant_status.php';
@@ -63,11 +63,11 @@ require __DIR__ . '/../src/api/users.php';
 require __DIR__ . '/../src/api/variety.php';
 
 //Register Models
-require __DIR__ . '/../src/Model/Area.php';
+require __DIR__ . '/../src/Model/Origin.php';
 require __DIR__ . '/../src/Model/Bloom.php';
 require __DIR__ . '/../src/Model/Family.php';
 require __DIR__ . '/../src/Model/Health.php';
-require __DIR__ . '/../src/Model/PestControl.php';
+require __DIR__ . '/../src/Model/Pests.php';
 require __DIR__ . '/../src/Model/Photos.php';
 require __DIR__ . '/../src/Model/Phylum.php';
 require __DIR__ . '/../src/Model/Plants.php';

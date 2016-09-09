@@ -6,20 +6,20 @@ require_once "../utilities/response.php";
 require_once "../utilities/database.php";
 use PDO;
 
-class Area implements \JsonSerializable
+class Origin implements \JsonSerializable
 {
     public $id;
     public $plant_id;
-    public $continent;
-    public $area;
+    public $country;
+    public $comment;
 
     public function __construct($data)
     {
         if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
-            $this->continent = $data['continent'];
-            $this->area = $data['area'];
+            $this->country = $data['country'];
+            $this->comment = $data['comment'];
         }
     }
 
@@ -28,8 +28,8 @@ class Area implements \JsonSerializable
         return [
             'id' => $this->id,
             'plant_id' => $this->plant_id,
-            'continent' => $this->continent,
-            'area' => $this->area
+            'country' => $this->country,
+            'commment' => $this->comment
         ];
     }
 
@@ -63,18 +63,17 @@ class Area implements \JsonSerializable
         if ($statement->rowCount() <= 0) {
             return null;
         }
-        return new Area($statement->fetch());
+        return new Origin($statement->fetch());
     }
 
-    static function getByContinent($continent)
+    static function getByCountry($country)
     {
         global $database;
-        $sql = ("SELECT * FROM area WHERE continent = '$continent'");
-        $statement = $database->prepare("SELECT * FROM area WHERE continent = '$continent'");
-        $statement->execute(array($continent));
+        $statement = $database->prepare("SELECT * FROM area WHERE country = '$country'");
+        $statement->execute(array($country));
         $areas = [];
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $areas[] = new Area($row);
+            $areas[] = new Origin($row);
         }
         return $areas;
     }
@@ -85,8 +84,8 @@ class Area implements \JsonSerializable
 
     static function createArea($body){
         global $database;
-        $statement = $database->prepare("INSERT INTO area (plant_id, continent, area) VALUES (?,?,?)");
-        $statement->execute(array($body['plant_id'], $body['continent'], $body['area']));
+        $statement = $database->prepare("INSERT INTO area (plant_id, country) VALUES (?,?)");
+        $statement->execute(array($body['plant_id'], $body['country']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
