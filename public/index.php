@@ -48,37 +48,41 @@ require __DIR__ . '/../src/middleware.php';
 // Register routes
 require __DIR__ . '/../src/api/origin.php';
 require __DIR__ . '/../src/api/bloom.php';
-require __DIR__ . '/../src/api/family.php';
-require __DIR__ . '/../src/api/genus.php';
+require __DIR__ . '/../src/api/classification.php';
+require __DIR__ . '/../src/api/classification_link.php';
 require __DIR__ . '/../src/api/health.php';
 require __DIR__ . '/../src/api/pests.php';
 require __DIR__ . '/../src/api/photos.php';
-require __DIR__ . '/../src/api/phylum.php';
-require __DIR__ . '/../src/api/plant_status.php';
+require __DIR__ . '/../src/api/notes.php';
+require __DIR__ . '/../src/api/scientific_class.php';
 require __DIR__ . '/../src/api/plants.php';
 require __DIR__ . '/../src/api/potting.php';
-require __DIR__ . '/../src/api/species.php';
-require __DIR__ . '/../src/api/subtribe.php';
+require __DIR__ . '/../src/api/special_collections.php';
+require __DIR__ . '/../src/api/split.php';
+require __DIR__ . '/../src/api/tag.php';
+require __DIR__ . '/../src/api/sprayed.php';
 require __DIR__ . '/../src/api/users.php';
-require __DIR__ . '/../src/api/variety.php';
+require __DIR__ . '/../src/api/location.php';
 
 //Register Models
 require __DIR__ . '/../src/Model/Origin.php';
 require __DIR__ . '/../src/Model/Bloom.php';
-require __DIR__ . '/../src/Model/Family.php';
+require __DIR__ . '/../src/Model/Classification_Link.php';
 require __DIR__ . '/../src/Model/Health.php';
 require __DIR__ . '/../src/Model/Pests.php';
 require __DIR__ . '/../src/Model/Photos.php';
-require __DIR__ . '/../src/Model/Phylum.php';
+require __DIR__ . '/../src/Model/Classificiation.php';
 require __DIR__ . '/../src/Model/Plants.php';
-require __DIR__ . '/../src/Model/PlantClass.php';
-require __DIR__ . '/../src/Model/Genus.php';
-require __DIR__ . '/../src/Model/PlantStatus.php';
+require __DIR__ . '/../src/Model/Location.php';
+require __DIR__ . '/../src/Model/Notes.php';
+require __DIR__ . '/../src/Model/Scientific_Class.php';
 require __DIR__ . '/../src/Model/Potting.php';
-require __DIR__ . '/../src/Model/Species.php';
-require __DIR__ . '/../src/Model/Subtribe.php';
-require __DIR__ . '/../src/Model/Tribe.php';
-require __DIR__ . '/../src/Model/Variety.php';
+require __DIR__ . '/../src/Model/Special_Collection.php';
+require __DIR__ . '/../src/Model/Split.php';
+require __DIR__ . '/../src/Model/Sprayed.php';
+require __DIR__ . '/../src/Model/Tag.php';
+require __DIR__ . '/../src/Model/Users.php';
+
 
 
 // Run app
