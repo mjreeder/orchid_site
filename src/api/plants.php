@@ -6,7 +6,6 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
-    $resource = '/plants';
     /**
      * @SWG\Get(
      *     path="/plants",
