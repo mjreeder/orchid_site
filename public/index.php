@@ -71,7 +71,6 @@ require __DIR__ . '/../src/Model/Pests.php';
 require __DIR__ . '/../src/Model/Photos.php';
 require __DIR__ . '/../src/Model/Phylum.php';
 require __DIR__ . '/../src/Model/Plants.php';
-require __DIR__ . '/../src/Model/PlantClass.php';
 require __DIR__ . '/../src/Model/Genus.php';
 require __DIR__ . '/../src/Model/PlantStatus.php';
 require __DIR__ . '/../src/Model/Potting.php';
