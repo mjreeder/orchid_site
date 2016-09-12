@@ -6,29 +6,45 @@ class User implements \JsonSerializable{
   public $lastName;
   public $email;
   public $passwordHash;
+  public $authLevel;
+
 
   public function __construct($user)
   {
     $this->id = $user['id'];
-    $this->firstName = $user['firstName'];
-    $this->lastName = $user['lastName'];
+    $this->firstName = $user['first_name'];
+    $this->lastName = $user['last_name'];
     $this->email = $user['email'];
-    $this->passwordHash = $user['passwordHash'];
+    $this->passwordHash = $user['password_hash'];
+    $this->authLevel = $user['auth_level'];
+  }
+
+  function jsonSerialize()
+  {
+      return [
+          'id'            => $this->id,
+          'firstName'     => $this->firstName,
+          'lastName'      => $this->lastName,
+          'email'         => $this->email,
+          'passwordHash'  => $this->passwordHash,
+          'authLevel'     => $this->authLevel
+      ];
   }
 
   static function createUser($body){
     global $database;
-    if(!$body['firstName'] || $body['lastName'] || $body['email'] ||
-    $body['password']){
+
+    if(!$body['firstName'] || !$body['lastName'] || !$body['email'] ||
+    !$body['password'] || !$body['authLevel']){
         throw new Exception('Missing required user information', 400);
     }
     $hashedPassword = password_hash($body['password'], PASSWORD_BCRYPT);
     $statement = $database->prepare("INSERT INTO users (first_name, last_name, email, password_hash, auth_level) VALUES (?,?,?,?,?)");
-    $statement->execute(array($body['firstName'], $body['lastName'], $body['email'], $hashedPassword, $body['auth_level']));
+    $statement->execute(array($body['firstName'], $body['lastName'], $body['email'], $hashedPassword, $body['authLevel']));
     $id = $database->lastInsertId();
     $statement->closeCursor();
 
-    return $id;
+    return User::getById($id);
   }
 
   static function getById($id){

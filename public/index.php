@@ -61,7 +61,7 @@ require __DIR__ . '/../src/api/special_collections.php';
 require __DIR__ . '/../src/api/split.php';
 require __DIR__ . '/../src/api/tag.php';
 require __DIR__ . '/../src/api/sprayed.php';
-require __DIR__ . '/../src/api/users.php';
+require __DIR__ . '/../src/api/user.php';
 require __DIR__ . '/../src/api/location.php';
 
 //Register Models
@@ -81,7 +81,8 @@ require __DIR__ . '/../src/Model/Special_Collection.php';
 require __DIR__ . '/../src/Model/Split.php';
 require __DIR__ . '/../src/Model/Sprayed.php';
 require __DIR__ . '/../src/Model/Tag.php';
-require __DIR__ . '/../src/Model/Users.php';
+require __DIR__ . '/../src/Model/User.php';
+require __DIR__ . '/../src/Model/Session.php';
 
 
 
