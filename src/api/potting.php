@@ -20,7 +20,7 @@ $app->group('/api', function () use ($app){
 
        $app->get('/plant_id/{plant_id}', function($request, $response, $args) use ($app){
           $potting = Potting::getByPlantID($args['plant_id']);
-           $output = new Response($bloom);
+           $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
        });
 
@@ -29,9 +29,7 @@ $app->group('/api', function () use ($app){
         * ========================================================== */
 
        $app->post('', function($request, $response, $args) use ($app){
-          $body = [
-            'plant_id' => 2
-          ];
+          $body = $request->getParsedBody();
            $potting = Potting::createPotting($body);
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));

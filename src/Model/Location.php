@@ -32,18 +32,32 @@ class Location implements \JsonSerializable
      * GET
      * ========================================================== */
 
-    static function getAll()
-    {
+    static function getAll(){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM location");
+        $statement->execute();
 
+        if($statement->rowCount() <= 0){
+            return null;
+        }
+
+        $locations = [];
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $locations[] = new Location($row);
+        }
     }
 
     /* ========================================================== *
      * POST
      * ========================================================== */
 
+    //SINCE THE ROOMS ARE ALL SET THERE IS NO NEED TO CREATE A NEW LOCATION
+
     /* ========================================================== *
      * PUT
      * ========================================================== */
+
 
     /* ========================================================== *
      * DELETE
