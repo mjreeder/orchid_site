@@ -15,6 +15,13 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->post('/logout', function($request, $response, $args) use ($app) {
+      $body = $request->getParsedBody();
+      $session = Session::deleteSession($body);
+      $output = new Response($session);
+      $response->getBody()->write(json_encode($output));
+    });
+
     $app->post('', function($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
       $user = User::createUser($body);

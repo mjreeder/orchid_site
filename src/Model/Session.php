@@ -28,7 +28,7 @@ class Session
     Session::check_timestamp($user->id);
     $id = $user->id;
     $key = Session::generate_key();
-    
+
     try {
       $statement = $database->prepare("INSERT INTO session (user_id, session_key) VALUES (?, ?)");
       $statement->execute(array($id, $key));
@@ -55,11 +55,32 @@ class Session
       $statement->closeCursor();
     }
 
-    private static function delete_session_by_id($session_id){
+    private static function deleteSessionById($session_id){
       global $database;
-      $statement = $database->prepare("DELETE FROM session WHERE id = ?");
+      $statement = $database->prepare("DELETE FROM session WHERE session_id = ?");
       $statement->execute(array($session_id));
       $statement->closeCursor();
+    }
+
+    public static function deleteSession($data){
+      if (isset($data['session_id'])){
+        Session::deleteSessionById($data['session_id']);
+        return array(
+        "success"=>true
+        );
+      }
+      //if data only contains session_key and teacher_id
+      global $database;
+      $statement = $database->prepare("SELECT id FROM session WHERE session_key = ? AND user_id = ?");
+      $statement->execute(array($data["session_key"], $data["user_id"]));
+      $row = $statement->fetch(PDO::FETCH_ASSOC);
+      if (!$row){
+        throw new Exception("Session already removed.", 500);
+      }
+      Session::delete_session_by_id($row['id']);
+      return array(
+        "success"=>true
+      );
     }
 }
 ?>
