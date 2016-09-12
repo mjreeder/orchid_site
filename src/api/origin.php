@@ -26,8 +26,8 @@ $app->group('/api', function () use ($app) {
             $response->getBody()->write(json_encode($output));
         });
 
-        $app->get('/continent/{continent}', function ($request, $response, $args) use ($app){
-           $area = Area::getByContinent($args["continent"]);
+        $app->get('/country/{country}', function ($request, $response, $args) use ($app){
+           $area = Area::getByContinent($args["country"]);
             $output = new Response($area);
             $response->getBody()->write(json_encode($output));
         });
@@ -37,12 +37,7 @@ $app->group('/api', function () use ($app) {
          * ========================================================== */
 
         $app->post('', function ($request, $response, $args) use ($app) {
-            $body = [
-                'plant_id' => 3,
-                'continent' => "",
-                'area' => "yes"
-            ];
-
+            $body = $request->getParsedBody();
             $area = Area::createArea($body);
             $output = new Response($area);
             $response->getBody()->write(json_encode($output));

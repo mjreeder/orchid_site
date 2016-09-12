@@ -28,7 +28,7 @@ $app->group('/api', function () use ($app){
         * POST
         * ========================================================== */
 
-       $app->post('', function ($request, $response, $args) use ($app){
+       $app->post('/create', function ($request, $response, $args) use ($app){
            $body = $request->getParsedBody();
 
            $bloom = Bloom::createBloom($body);
@@ -39,6 +39,13 @@ $app->group('/api', function () use ($app){
        /* ========================================================== *
         * PUT
         * ========================================================== */
+
+       $app->put('', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+           $updateBloom = Bloom::updateBloom($body);
+           $output = new Response($updateBloom);
+           $response->getBody()->write(json_encode($output));
+       });
 
        /* ========================================================== *
         * DELETE

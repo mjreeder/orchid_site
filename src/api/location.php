@@ -12,7 +12,9 @@ $app->group('/api', function () use ($app) {
 
        //GET ALL THE LOCATIONS
        $app->get('', function ($request, $response, $args) use ($app){
-
+           $locations = Location::getAll();
+           $output = new Response($locations);
+           $response->getBody()->write(json_encode($output));
        });
 
        /* ========================================================== *

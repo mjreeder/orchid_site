@@ -55,8 +55,8 @@ class Bloom implements \JsonSerializable
 
     static function getByPlantID($plant_id){
         global $database;
-        $statement = $database->prepare("SELECT * FROM bloom WHERE plant_id = $plant_id");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM bloom WHERE plant_id = (?)");
+        $statement->execute(array($plant_id));
 
         if ($statement->rowCount() <= 0){
             return null;
@@ -70,6 +70,24 @@ class Bloom implements \JsonSerializable
         return $areas;
     }
 
+    static function getByID($id){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM bloom WHERE id = (?)");
+        $statement->execute(array($id));
+
+        if ($statement->rowCount() <= 0){
+            return null;
+        }
+
+        $blooms = new Bloom($statement->fetch(PDO::FETCH_ASSOC));
+
+        return $blooms;
+    }
+
+    static function getMostRecentPlantId(){
+
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
@@ -80,15 +98,28 @@ class Bloom implements \JsonSerializable
         $statement->execute(array($body['plant_id'], $body['comment']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
-        return $id;
+        return$id;
+//
+//        var_dump($id);
+//        die();
     }
 
     /* ========================================================== *
      * PUT
      * ========================================================== */
+
+    static function updateBloom($body){
+        global $database;
+        $statement = $database->prepare("UPDATE bloom SET comment = (?) WHERE id = (?)");
+        $statement->execute(array($body['comment'],$body['id']));
+        $id = Bloom::getByID($body['id']);
+        return $id;
+    }
     /* ========================================================== *
      * DELETE
      * ========================================================== */
+
+    //THERE IS NOT A DELETE. SINCE THE PLANT WILL BE STORED THE DATA ABOUT IT SELF WILL NOT BE DELETED.
 
 
 }
