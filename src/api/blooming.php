@@ -2,7 +2,7 @@
 
 
 error_reporting(E_ALL);
-ini-set("displays_errors", true);
+ini_set("displays_errors", true);
 use orchid_site\src\Model\Blooming;
 require_once "../utilities/response.php";
 
