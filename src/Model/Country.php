@@ -46,15 +46,19 @@ class Country implements \JsonSerializable
         $statement = $database->prepare("SELECT * FROM country");
         $statement->execute();
 
+
+
         if ($statement->rowCount() <= 0){
             return null;
         }
 
         $country = [];
 
-        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $country[] = new Country($row);
         }
+        var_dump($country);
+        die();
         return $country;
     }
 
@@ -62,25 +66,16 @@ class Country implements \JsonSerializable
      * POST
      * ========================================================== */
 
-    static function createCountry($data){
-        global $database;
-        $statement = $database->prepare("INSERT INTO country (name) VALUES ?");
-        $statement->execute(array($data['name']));
-        $id = $database->lastInsertId();
-        $statement->closeCursor();
-        return $id;
-    }
+    //WE ARE NOT ADDING ANY NEW COUNTRY
 
     /* ========================================================== *
      * PUT
      * ========================================================== */
 
+    //WE ARE NOT CHANGING THE COUNTRIES NAME
+
     /* ========================================================== *
      * DELETE
      * ========================================================== */
-
-
-
-
-
+    
 }

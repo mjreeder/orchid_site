@@ -48,6 +48,7 @@ require __DIR__ . '/../src/middleware.php';
 // Register routes
 require __DIR__ . '/../src/api/origin.php';
 require __DIR__ . '/../src/api/bloom.php';
+require __DIR__ . '/../src/api/country.php';
 require __DIR__ . '/../src/api/classification.php';
 require __DIR__ . '/../src/api/classification_link.php';
 require __DIR__ . '/../src/api/health.php';
@@ -66,6 +67,7 @@ require __DIR__ . '/../src/api/location.php';
 
 //Register Models
 require __DIR__ . '/../src/Model/Origin.php';
+require __DIR__ . '/../src/Model/Country.php';
 require __DIR__ . '/../src/Model/Bloom.php';
 require __DIR__ . '/../src/Model/Classification_Link.php';
 require __DIR__ . '/../src/Model/Health.php';
