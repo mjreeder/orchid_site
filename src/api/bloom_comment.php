@@ -2,11 +2,11 @@
 
 error_reporting(E_ALL);
 ini_set("display_errors", true);
-use orchid_site\src\Model\Bloom;
+use orchid_site\src\Model\Bloom_Comment;
 require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
-   $app->group('/bloom', function() use ($app) {
+   $app->group('/bloom_comment', function() use ($app) {
 
        /* ========================================================== *
         * GET
@@ -14,7 +14,7 @@ $app->group('/api', function () use ($app){
 
        /**
         * @SWG\Get(
-        *     path="/bloom",
+        *     path="/bloom_comment",
         *     summary="Get all the blooms for every plant",
         *     description="Simple Get All method",
         *     tags={"Bloom"},
@@ -35,7 +35,7 @@ $app->group('/api', function () use ($app){
 
        /**
         * @SWG\Get(
-        *     path="/bloom/plant_id/{plant_id}",
+        *     path="/bloom_comment/plant_id/{plant_id}",
         *     summary="Get all the blooms for a specfic plant_id ",
         *     description="Need the plant_id to get everything",
         *     tags={"Bloom"},
@@ -65,7 +65,7 @@ $app->group('/api', function () use ($app){
 
        /**
         * @SWG\POST(
-        *     path="/blooms/create",
+        *     path="/bloom_comment/create",
         *     summary="create new bloom",
         *     description="create new bloom",
         *     tags={"Bloom"},
@@ -98,7 +98,7 @@ $app->group('/api', function () use ($app){
 
        /**
         * @SWG\PUT(
-        *     path="/blooms/update",
+        *     path="/bloom_comment/update",
         *     summary="update new bloom",
         *     description="need the id to update the informaiton",
         *     tags={"Bloom"},

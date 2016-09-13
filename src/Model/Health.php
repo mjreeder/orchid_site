@@ -85,6 +85,7 @@ class Health implements \JsonSerializable
 
     static function fixHealth($body, $id){
         global $database;
+        //look at the health stuff.. should not have the id as a set value
         $statement = $database->prepare("UPDATE health SET id = ?, plant_id = ?, score = ? WHERE id = ?");
         $statement->execute(array($id, $body['plant_id'], $body['score'], $id));
         $id = Health::getByPlantID(2);

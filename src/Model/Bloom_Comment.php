@@ -16,7 +16,7 @@ use PDO;
  *  )
  */
 
-class Bloom implements \JsonSerializable
+class Bloom_Comment implements \JsonSerializable
 {
     /**
      * @SWG\Property(type="integer", format="int64")

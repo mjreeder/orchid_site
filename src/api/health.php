@@ -12,7 +12,27 @@ $app->group('/api', function () use ($app) {
          * GET
         * ========================================================== */
 
-        //GET ALL
+        /**
+         * @SWG\Get(
+         *     path="/health",
+         *     summary="Get all the health information for the plants",
+         *     description="Brings back all the health information",
+         *     tags={"Health"},
+         *     @SWG\Response(
+         *         response=200,
+         *         id="2",
+         *          "plant_id"="2",
+         *          "note
+         *     ),
+         *     @SWG\Response(
+         *         response="default",
+         *         description="unexpected error",
+         *         @SWG\Schema(
+         *             ref="#/definitions/Error"
+         *         )
+         *     )
+         * )
+         */
         $app->get('', function ($requst, $response, $args) use ($app){
            $health = Health::getAll();
             $output = new Response($health);

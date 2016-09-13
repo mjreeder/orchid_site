@@ -23,7 +23,7 @@ class Country implements \JsonSerializable
      * CONSTRUCTORS
      * ========================================================== */
 
-    public function __constuct($data){
+    public function __construct($data){
         if(is_array($data)){
             $this->id = intval($data['id']);
             $this->name = $data['name'];
@@ -77,5 +77,5 @@ class Country implements \JsonSerializable
     /* ========================================================== *
      * DELETE
      * ========================================================== */
-    
+
 }
