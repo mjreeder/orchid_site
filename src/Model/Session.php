@@ -63,6 +63,7 @@ class Session
     }
 
     public static function deleteSession($data){
+      global $database;
       if (isset($data['session_id'])){
         Session::deleteSessionById($data['session_id']);
         return array(
@@ -70,13 +71,14 @@ class Session
         );
       }
       //if data only contains session_key and teacher_id
-      global $database;
+
       $statement = $database->prepare("SELECT id FROM session WHERE session_key = ? AND user_id = ?");
       $statement->execute(array($data["session_key"], $data["user_id"]));
       $row = $statement->fetch(PDO::FETCH_ASSOC);
       if (!$row){
         throw new Exception("Session already removed.", 500);
       }
+      $statement->closeCursor();
       Session::delete_session_by_id($row['id']);
       return array(
         "success"=>true
