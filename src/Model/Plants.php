@@ -214,8 +214,8 @@ class Plants implements \JsonSerializable
     }
 
     static function createPlant($body){
-    global $database;
-     if (!$body['accession_number'] || !$body['authority'] || !$body['distribution'] ||
+      global $database;
+      if (!$body['accession_number'] || !$body['authority'] || !$body['distribution'] ||
        !$body['habitat'] || !$body['culture'] || !$body['donation_comment'] || !$body['date_received'] ||
        !$body['received_from'] || !$body['description'] || !$body['username'] || !$body['inactive_date'] ||
        !$body['inactive_comment'] || !$body['size'] || !$body['value']|| !$body['parent_one'] ||
