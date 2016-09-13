@@ -1,9 +1,11 @@
 <?php
+
 namespace orchid_site\src\Model;
+
 error_reporting(E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
-require_once "../utilities/database.php";
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+require_once '../utilities/database.php';
 use PDO;
 
 class Classification implements \JsonSerializable
@@ -14,66 +16,71 @@ class Classification implements \JsonSerializable
 
     public function __construct($data)
     {
-        if (is_array($data)){
+        if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->name = $data['name'];
             $this->rank = $data['rank'];
         }
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
-            'id'    => $this->id,
-            'name'  => $this->name,
-            'rank'  => $this->rank
+            'id' => $this->id,
+            'name' => $this->name,
+            'rank' => $this->rank,
         ];
     }
 
-    static function getAll()
+    public static function getAll()
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM classification");
+        $statement = $database->prepare('SELECT * FROM classification');
         $statement->execute();
-        if ($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
         $classifications = [];
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $classifications[] = new Classification($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $classifications[] = new self($row);
         }
+
         return $classifications;
     }
 
-    static function getByID($classification_id){
+    public static function getByID($classification_id)
+    {
         global $database;
         $statement = $database->prepare("SELECT * FROM classification WHERE classification_id = $classification_id");
         $statement->execute(array($classification_id));
         $classifications = [];
 
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $classifications[] = new Bloom($row);
         }
 
         return $classifications;
     }
 
-    static function createClassification($body){
+    public static function createClassification($body)
+    {
         global $database;
-        $statement = $database->prepare("INSERT INTO classification (name, rank) VALUES (?,?)");
+        $statement = $database->prepare('INSERT INTO classification (name, rank) VALUES (?,?)');
         $statement->execute(array($body['name'], $body['rank']));
-        $id= $database->lastInsertId();
+        $id = $database->lastInsertId();
         $statement->closeCursor();
+
         return $id;
     }
 
-    static function editClassification($body, $id){
+    public static function editClassification($body, $id)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE classification SET name = ?, rank = ? WHERE id = ?");
+        $statement = $database->prepare('UPDATE classification SET name = ?, rank = ? WHERE id = ?');
         $statement->execute(array($id, $body['name'], $body['rank'], $id));
         $statement->closeCursor();
+
         return self::getById($id);
     }
 }
-?>

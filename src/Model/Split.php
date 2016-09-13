@@ -1,12 +1,12 @@
 <?php
 
 namespace orchid_site\src\Model;
-error_reporting(E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
-require_once "../utilities/database.php";
-use PDO;
 
+error_reporting(E_ALL);
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+require_once '../utilities/database.php';
+use PDO;
 
 class Split implements \JsonSerializable
 {
@@ -20,8 +20,9 @@ class Split implements \JsonSerializable
      * CONSTRUCTORS
      * ========================================================== */
 
-    public function __construct($data){
-        if (is_array($data)){
+    public function __construct($data)
+    {
+        if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->timestamp = $data['timestamp'];
@@ -30,13 +31,14 @@ class Split implements \JsonSerializable
         }
     }
 
-    function jsonSerialize(){
+    public function jsonSerialize()
+    {
         return [
           'id' => $this->id,
             'plant_id' => $this->plant_id,
             'timestamp' => $this->timestamp,
             'recipient' => $this->recipient,
-            'note' => $this->note
+            'note' => $this->note,
         ];
     }
 
@@ -44,34 +46,36 @@ class Split implements \JsonSerializable
      * GET
      * ========================================================== */
 
-    static function getAll(){
+    public static function getAll()
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM split");
+        $statement = $database->prepare('SELECT * FROM split');
         $statement->execute();
 
-        if($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
         $splits = [];
 
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $splits[] = new Split($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $splits[] = new self($row);
         }
 
         return $splits;
     }
 
-    static function getByPlantID($plant_id){
+    public static function getByPlantID($plant_id)
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM split WHERE plant_id = (?)");
+        $statement = $database->prepare('SELECT * FROM split WHERE plant_id = (?)');
         $statement->execute(array($plant_id));
 
-        if($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
-        $splits = new Split($statement->fetch(PDO::FETCH_ASSOC));
+        $splits = new self($statement->fetch(PDO::FETCH_ASSOC));
 
         return $splits;
     }
@@ -80,12 +84,14 @@ class Split implements \JsonSerializable
      * POST
      * ========================================================== */
 
-    static function createSplit($body){
+    public static function createSplit($body)
+    {
         global $database;
-        $statement = $database->prepare("INSERT INTO split (plant_id, timestamp, recipient, note) VALUES (?,?,?,?)");
+        $statement = $database->prepare('INSERT INTO split (plant_id, timestamp, recipient, note) VALUES (?,?,?,?)');
         $statement->execute(array($body['plant_id'], $body['timestamp'], $body['recipient'], $body['note']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
+
         return $id;
     }
 
@@ -93,16 +99,16 @@ class Split implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    static function updateSplit($body){
+    public static function updateSplit($body)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE split SET plant_id = ?, timestamp = ?, recipient = ?, note = ? WHERE id = ? ");
+        $statement = $database->prepare('UPDATE split SET plant_id = ?, timestamp = ?, recipient = ?, note = ? WHERE id = ? ');
         $statement->execute(array($body['plant_id'], $body['timestamp'], $body['recipient'], $body['note'], $body['id']));
-        $id = Split::getByPlantID($body['plant_id']);
+        $id = self::getByPlantID($body['plant_id']);
+
         return $id;
     }
     /* ========================================================== *
      * DELETE
      * ========================================================== */
-
-
 }

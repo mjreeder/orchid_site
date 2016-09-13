@@ -1,10 +1,11 @@
 <?php
 
 namespace orchid_site\src\Model;
+
 error_reporting(E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
-require_once "../utilities/database.php";
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+require_once '../utilities/database.php';
 
 use PDO;
 
@@ -17,50 +18,49 @@ class Potting implements \JsonSerializable
     {
         if (is_array($data)) {
             $this->id = intval($data['plant_id']);
-            $this->timestamp  = $data['timestamp'];
+            $this->timestamp = $data['timestamp'];
         }
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
             'plant_id' => $this->plant_id,
-            'timestamp' => $this->timestamp
+            'timestamp' => $this->timestamp,
         ];
     }
-
 
     /* ========================================================== *
      * GET
      * ========================================================== */
 
-    static function getAll()
+    public static function getAll()
     {
-      global $database;
-        $statement = $database->prepare("SELECT * FROM potting");
+        global $database;
+        $statement = $database->prepare('SELECT * FROM potting');
         $statement->execute();
 
-        if ($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
         $potting = [];
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $potting[] = new Potting($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $potting[] = new self($row);
         }
 
         return $potting;
     }
 
-    static function getByPlantID($plant_id)
+    public static function getByPlantID($plant_id)
     {
         global $database;
         $statement = $database->prepare("SELECT * FROM potting WHERE plant_id = $plant_id");
         $statement->execute(array($plant_id));
         $potting = [];
 
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $potting[] = new Potting($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $potting[] = new self($row);
         }
 
         return $potting;
@@ -70,24 +70,22 @@ class Potting implements \JsonSerializable
      * POST
      * ========================================================== */
 
-     static function createPotting($body)
+     public static function createPotting($body)
      {
          global $database;
-         $statement = $database->prepare("INSERT INTO potting (plant_id) VALUE (?)");
+         $statement = $database->prepare('INSERT INTO potting (plant_id) VALUE (?)');
          $statement->execute(array($body['plant_id']));
          $id = $database->lastInsertId();
          $statement->closeCursor();
+
          return $id;
      }
-
 
     /* ========================================================== *
      * PUT
      * ========================================================== */
 
-
     /* ========================================================== *
      * DELETEs
      * ========================================================== */
-
 }

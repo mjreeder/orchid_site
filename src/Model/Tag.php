@@ -1,15 +1,15 @@
 <?php
 
 namespace orchid_site\src\Model;
+
 error_reporting(E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
-require_once "../utilities/database.php";
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+require_once '../utilities/database.php';
 use PDO;
 
 class Tag implements \JsonSerializable
 {
-
     public $id;
     public $plant_id;
     public $note;
@@ -19,8 +19,9 @@ class Tag implements \JsonSerializable
      * CONSTRUCTORS
      * ========================================================== */
 
-    public function __construct($data){
-        if(is_array($data)){
+    public function __construct($data)
+    {
+        if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->note = $data['note'];
@@ -28,12 +29,13 @@ class Tag implements \JsonSerializable
         }
     }
 
-    function jsonSerialize(){
+    public function jsonSerialize()
+    {
         return [
           'id' => $this->id,
             'plant_id' => $this->plant_id,
-            'note' =>$this->note,
-            'active' => $this->active
+            'note' => $this->note,
+            'active' => $this->active,
         ];
     }
 
@@ -41,32 +43,35 @@ class Tag implements \JsonSerializable
      * GET
      * ========================================================== */
 
-    static function getAll(){
+    public static function getAll()
+    {
         global $database;
-        $statment = $database->prepare("SELECT * FROM tag");
+        $statment = $database->prepare('SELECT * FROM tag');
         $statment->execute();
 
-        if ($statment->rowCount() <= 0){
-            return null;
+        if ($statment->rowCount() <= 0) {
+            return;
         }
 
         $tags = [];
-        while($row = $statment->fetch(PDO::FETCH_ASSOC)){
-            $tags[] = new Tag($row);
+        while ($row = $statment->fetch(PDO::FETCH_ASSOC)) {
+            $tags[] = new self($row);
         }
+
         return $tags;
     }
 
-    static function getByPlantID($plant_id){
+    public static function getByPlantID($plant_id)
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM tag WHERE plant_id = (?)");
+        $statement = $database->prepare('SELECT * FROM tag WHERE plant_id = (?)');
         $statement->execute(array($plant_id));
 
-        if ($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
-        $tags = new Tag($statement->fetch(PDO::FETCH_ASSOC));
+        $tags = new self($statement->fetch(PDO::FETCH_ASSOC));
 
         return $tags;
     }
@@ -75,12 +80,14 @@ class Tag implements \JsonSerializable
      * POST
      * ========================================================== */
 
-    static function createTag($body){
+    public static function createTag($body)
+    {
         global $database;
-        $statement = $database->prepare("INSERT INTO tag (plant_id, note, active) VALUES (?,?,1)");
+        $statement = $database->prepare('INSERT INTO tag (plant_id, note, active) VALUES (?,?,1)');
         $statement->execute(array($body['plant_id'], $body['note']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
+
         return $id;
     }
 
@@ -88,35 +95,37 @@ class Tag implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    static function updateTag($body){
+    public static function updateTag($body)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE tag SET note = (?), active = (?) WHERE plant_id = (?)");
+        $statement = $database->prepare('UPDATE tag SET note = (?), active = (?) WHERE plant_id = (?)');
         $statement->execute(array($body['note']));
-        $id = Tag::getByPlantID($body['plant_id']);
+        $id = self::getByPlantID($body['plant_id']);
+
         return $id;
     }
 
-    static function deactiveTag($body){
+    public static function deactiveTag($body)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE tag SET active = 0 WHERE plant_id = (?)");
+        $statement = $database->prepare('UPDATE tag SET active = 0 WHERE plant_id = (?)');
         $statement->execute(array($body['plant_id']));
-        $id = Tag::getByPlantID($body['plant_id']);
+        $id = self::getByPlantID($body['plant_id']);
+
         return $id;
     }
 
-    static function activeTag($body){
+    public static function activeTag($body)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE tag SET active = 1 WHERE plant_id = (?)");
+        $statement = $database->prepare('UPDATE tag SET active = 1 WHERE plant_id = (?)');
         $statement->execute(array($body['plant_id']));
-        $id = Tag::getByPlantID($body['plant_id']);
+        $id = self::getByPlantID($body['plant_id']);
+
         return $id;
     }
 
     /* ========================================================== *
      * DELETE
      * ========================================================== */
-
-
-
-
 }
