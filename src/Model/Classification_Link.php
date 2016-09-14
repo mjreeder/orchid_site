@@ -7,6 +7,7 @@ ini_set('display_errors', true);
 require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
+use Exception;
 
 class Classification_Link implements \JsonSerializable
 {
@@ -46,40 +47,46 @@ class Classification_Link implements \JsonSerializable
         return $classificationLinks;
     }
 
-    public static function getPlantByClassificationId($id)
+    public static function getPlantsByClassificationId($id)
     {
         global $database;
         $statement = $database->prepare('SELECT * FROM classification_link
         RIGHT JOIN PLANTS ON classification_link.plant_id=plants.id
-        WHERE plant_id = $id');
+        WHERE class_id = ?');
         $statement->execute(array($id));
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
-        $statement->closeCursor();
-        if ($row) {
-            return new Plant($row);
-        } else {
-            throw new Exception("No plant classification found", 404);
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new Plants($row);
         }
+        $statement->closeCursor();
+
+        return $plants;
+
     }
 
-    public static function getPlantHierarchy($id){
-      global $database;
-      $statement = $database->prepare('SELECT * FROM classification_link
-      RIGHT JOIN scientific_class ON classification_link.class_id=scientific_class.id
-      INNER JOIN classification ON classification.id=scientific_class.classification_id
-      WHERE plant_id = $id ORDER BY rank');
-      $statement->execute(array($id));
-      $row = $statement->fetch(PDO::FETCH_ASSOC);
-      if ($row) {
-          return json_encode($row);
-      } else {
-          throw new Exception("No plant classification hierarchy found", 404);
-      }
+    public static function getPlantHierarchy($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM classification_link
+        RIGHT JOIN scientific_class ON classification_link.class_id=scientific_class.id
+        INNER JOIN classification ON classification.id=scientific_class.classification_id
+        WHERE plant_id = $id ORDER BY rank');
+        $statement->execute(array($id));
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return json_encode($row);
+        } else {
+            throw new Exception('No plant classification hierarchy found', 404);
+        }
     }
 
     public static function createClassificationLink($body)
     {
         global $database;
+        if (!$body['class_id']) {
+            throw new Exception('Missing required information', 404);
+        }
+
         $statement = $database->prepare('INSERT INTO classification_link (plant_id, class_id) VALUES (?,?)');
         $statement->execute(array($body['plant_id'], $body['class_id']));
         $statement->closeCursor();
