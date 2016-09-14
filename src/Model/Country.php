@@ -58,9 +58,7 @@ class Country implements \JsonSerializable
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $country[] = new self($row);
         }
-        var_dump($country);
-        die();
-
+        
         return $country;
     }
 
