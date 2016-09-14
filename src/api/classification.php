@@ -58,7 +58,7 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\Post(
      *     path="/classification",
      *     summary="create new classification",
@@ -96,14 +96,14 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->post('', function($request, $response, $args) use ($app) {
+    $app->post('', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
       $classification = Classification::createClassification($body);
       $output = new Response($classification);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\Put(
      *     path="/classification/update/id",
      *     summary="edit a classification",
@@ -151,8 +151,8 @@ $app->group('/api', function () use ($app) {
      */
     $app->put('/update/{id}', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Classification::editClassification($body, $args["id"]);
-      $output = new Response($plant);
+      $classification = Classification::editClassification($body, $args['id']);
+      $output = new Response($classification);
       $response->getBody()->write(json_encode($output));
     });
 

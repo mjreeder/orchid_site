@@ -25,7 +25,7 @@ class Classification_Link implements \JsonSerializable
     {
         return [
             'plant_id' => $this->plant_id,
-            'class_id' => $this->class_id
+            'class_id' => $this->class_id,
         ];
     }
 
@@ -37,7 +37,7 @@ class Classification_Link implements \JsonSerializable
         if ($statement->rowCount() <= 0) {
             return;
         }
-        
+
         $classificationLinks = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $classificationLinks[] = new self($row);
@@ -46,6 +46,21 @@ class Classification_Link implements \JsonSerializable
         return $classificationLinks;
     }
 
+    public static function getPlantByClassificationId($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM classification_link
+        RIGHT JOIN PLANTS ON classification_link.plant_id=plants.id
+        WHERE plant_id = $id');
+        $statement->execute(array($id));
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+        if ($row) {
+            return new Plant($row);
+        } else {
+            return;
+        }
+    }
 
     public static function createClassificationLink($body)
     {
