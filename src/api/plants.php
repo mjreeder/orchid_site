@@ -1,12 +1,14 @@
 <?php
-error_reporting( E_ALL);
-ini_set("display_errors", true);
+
+error_reporting(E_ALL);
+ini_set('display_errors', true);
 use orchid_site\src\Model\Plants;
-require_once "../utilities/response.php";
+
+require_once '../utilities/response.php';
 
 $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
-    /**
+    /*
      * @SWG\Get(
      *     path="/plants",
      *     summary="Get All",
@@ -25,13 +27,13 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->get('', function($request, $response, $args) use ($app) {
+    $app->get('', function ($request, $response, $args) use ($app) {
       $plants = Plants::getAll();
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\Get(
      *     path="/plants/{alpha}/{index}",
      *     summary="Get plant by first letter and by index",
@@ -62,12 +64,12 @@ $app->group('/api', function () use ($app) {
      * )
      */
     $app->get('/alpha/{alpha}/{index}', function ($request, $response, $args) use ($app) {
-      $plants = Plants::getPaginatedPlants($args["alpha"], $args["index"]);
+      $plants = Plants::getPaginatedPlants($args['alpha'], $args['index']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\Get(
      *     path="/plants/{id}",
      *     summary="Get by Id",
@@ -98,12 +100,12 @@ $app->group('/api', function () use ($app) {
      * )
      */
     $app->get('/{id}', function ($request, $response, $args) use ($app) {
-      $plant = Plants::getById($args["id"]);
+      $plant = Plants::getById($args['id']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\Get(
      *     path="/plants/{accession_number}",
      *     summary="Get by accession number",
@@ -133,13 +135,13 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->get('/accession/{accession_number}' , function($request, $response, $args) use($app){
-      $plant = Plants::getByAccessionNumber($args["accession_number"]);
+    $app->get('/accession/{accession_number}', function ($request, $response, $args) use ($app) {
+      $plant = Plants::getByAccessionNumber($args['accession_number']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\POST(
      *     path="/plants",
      *     summary="create new plant",
@@ -168,7 +170,7 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\DELETE(
      *     path="/plants/{id}",
      *     summary="delete plants by Id",
@@ -204,7 +206,7 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\Put(
      *     path="/plants",
      *     summary="Edit plant",

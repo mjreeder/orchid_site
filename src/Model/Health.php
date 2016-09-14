@@ -1,9 +1,11 @@
 <?php
+
 namespace orchid_site\src\Model;
+
 error_reporting(E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
-require_once "../utilities/database.php";
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+require_once '../utilities/database.php';
 use PDO;
 
 class Health implements \JsonSerializable
@@ -15,7 +17,7 @@ class Health implements \JsonSerializable
 
     public function __construct($data)
     {
-        if (is_array($data)){
+        if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->timestamp = $data['timestamp'];
@@ -23,13 +25,13 @@ class Health implements \JsonSerializable
         }
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
-          'id'         =>$this->id,
-            'plant_id' =>$this->plant_id,
+          'id' => $this->id,
+            'plant_id' => $this->plant_id,
             'timestamp' => $this->timestamp,
-            'score'     => $this->score
+            'score' => $this->score,
         ];
     }
 
@@ -37,29 +39,31 @@ class Health implements \JsonSerializable
      * GET
      * ========================================================== */
 
-    static function getAll()
+    public static function getAll()
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM health");
+        $statement = $database->prepare('SELECT * FROM health');
         $statement->execute();
-        if ($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
         $health = [];
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $health[] = new Health($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $health[] = new self($row);
         }
+
         return $health;
     }
 
-    static function getByPlantID($plant_id){
+    public static function getByPlantID($plant_id)
+    {
         global $database;
         $statement = $database->prepare("SELECT * FROM health WHERE plant_id = $plant_id");
         $statement->execute(array($plant_id));
         $health = [];
 
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $health[] = new Bloom($row);
         }
 
@@ -70,12 +74,14 @@ class Health implements \JsonSerializable
      * POST
      * ========================================================== */
 
-    static function createHealth($body){
+    public static function createHealth($body)
+    {
         global $database;
-        $statement = $database->prepare("INSERT INTO health (plant_id, score) VALUES (?,?)");
+        $statement = $database->prepare('INSERT INTO health (plant_id, score) VALUES (?,?)');
         $statement->execute(array($body['plant_id'], $body['score']));
-        $id= $database->lastInsertId();
+        $id = $database->lastInsertId();
         $statement->closeCursor();
+
         return $id;
     }
 
@@ -83,20 +89,17 @@ class Health implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    static function fixHealth($body, $id){
+    public static function fixHealth($body, $id)
+    {
         global $database;
-        //look at the health stuff.. should not have the id as a set value
-        $statement = $database->prepare("UPDATE health SET id = ?, plant_id = ?, score = ? WHERE id = ?");
+        $statement = $database->prepare('UPDATE health SET id = ?, plant_id = ?, score = ? WHERE id = ?');
         $statement->execute(array($id, $body['plant_id'], $body['score'], $id));
-        $id = Health::getByPlantID(2);
+        $id = self::getByPlantID(2);
+
         return $id;
-
-
     }
-
 
     /* ========================================================== *
      * DELETE
      * ========================================================== */
 }
-?>
