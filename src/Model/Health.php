@@ -21,7 +21,7 @@ class Health implements \JsonSerializable
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->timestamp = $data['timestamp'];
-            $this->score = intval($data['score']);
+            $this->score = $data['score'];
         }
     }
 
@@ -45,7 +45,7 @@ class Health implements \JsonSerializable
         $statement = $database->prepare('SELECT * FROM health');
         $statement->execute();
         if ($statement->rowCount() <= 0) {
-            return;
+            return false;
         }
 
         $health = [];
@@ -56,15 +56,27 @@ class Health implements \JsonSerializable
         return $health;
     }
 
+    public static function getByID($id){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM health WHERE id = ?");
+        $statement->execute(array($id));
+        if ($statement->rowCount()<= 0){
+            return false;
+        }
+
+        $health = $statement->fetch(PDO::FETCH_ASSOC);
+        return $health;
+    }
+
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM health WHERE plant_id = $plant_id");
+        $statement = $database->prepare("SELECT * FROM health WHERE plant_id = ?");
         $statement->execute(array($plant_id));
         $health = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $health[] = new Bloom($row);
+            $health[] = new Health($row);
         }
 
         return $health;
@@ -77,23 +89,24 @@ class Health implements \JsonSerializable
     public static function createHealth($body)
     {
         global $database;
-        $statement = $database->prepare('INSERT INTO health (plant_id, score) VALUES (?,?)');
-        $statement->execute(array($body['plant_id'], $body['score']));
+        $statement = $database->prepare('INSERT INTO health (plant_id, score, timestamp) VALUES (?,?,?)');
+        $statement->execute(array($body['plant_id'], $body['score'], $body['timestamp']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
+        $updateID = Health::getByID($id);
 
-        return $id;
+        return $updateID;
     }
 
     /* ========================================================== *
      * PUT
      * ========================================================== */
 
-    public static function fixHealth($body, $id)
+    public static function updateHealth($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE health SET id = ?, plant_id = ?, score = ? WHERE id = ?');
-        $statement->execute(array($id, $body['plant_id'], $body['score'], $id));
+        $statement = $database->prepare('UPDATE health SET timestamp = ?, plant_id = ?, score = ? WHERE id = ?');
+        $statement->execute(array($body['timestamp'], $body['plant_id'], $body['score'], $body['id']));
         $id = self::getByPlantID(2);
 
         return $id;
