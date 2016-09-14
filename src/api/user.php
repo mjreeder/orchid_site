@@ -141,6 +141,52 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    /**
+     * @SWG\Post(
+     *     path="/users",
+     *     summary="create a user",
+     *     description="function to create a user",
+     *     tags={"Users"},
+     *     @SWG\Parameter(
+     *         name="email",
+     *         in="args",
+     *         description="The users email",
+     *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="password",
+     *         in="args",
+     *         description="The users password",
+     *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *         @SWG\Schema(
+     *              ref="#/definitions/Plants"
+     *          )
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
+    $app->put('/update_user_password/{id}', function($request, $response, $args) use ($app) {
+      $body = $request->getParsedBody();
+      $user = User::createUser($body);
+      $output = new Response($user);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
 
   });
 });

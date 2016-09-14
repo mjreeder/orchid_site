@@ -1,9 +1,11 @@
 <?php
+
 namespace orchid_site\src\Model;
+
 error_reporting(E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
-require_once "../utilities/database.php";
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+require_once '../utilities/database.php';
 use PDO;
 
 class Photos implements \JsonSerializable
@@ -16,7 +18,7 @@ class Photos implements \JsonSerializable
 
     public function __construct($data)
     {
-        if (is_array($data)){
+        if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->url = $data['url'];
@@ -25,14 +27,14 @@ class Photos implements \JsonSerializable
         }
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
-            'id' =>$this->id,
-            'plant_id'=>$this->plant_id,
-            'url' =>$this->url,
-            'type'  =>$this->type,
-            'active' =>$this->active
+            'id' => $this->id,
+            'plant_id' => $this->plant_id,
+            'url' => $this->url,
+            'type' => $this->type,
+            'active' => $this->active,
         ];
     }
 
@@ -40,28 +42,29 @@ class Photos implements \JsonSerializable
      * GET
      * ========================================================== */
 
-    static function getAll(){
+    public static function getAll()
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM photos");
+        $statement = $database->prepare('SELECT * FROM photos');
         $statement->execute();
         $photos = [];
 
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $photos[] = new Photos($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $photos[] = new self($row);
         }
 
         return $photos;
     }
 
-    static function getByPlantID($plant_id)
+    public static function getByPlantID($plant_id)
     {
         global $database;
         $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = $plant_id");
         $statement->execute();
         $photos = [];
 
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $photos[] = new Photos($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $photos[] = new self($row);
         }
 
         return $photos;
@@ -79,4 +82,3 @@ class Photos implements \JsonSerializable
      * DELETE
      * ========================================================== */
 }
-?>

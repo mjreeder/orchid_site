@@ -1,13 +1,12 @@
 <?php
 
 namespace orchid_site\src\Model;
+
 error_reporting(E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
-require_once "../utilities/database.php";
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+require_once '../utilities/database.php';
 use PDO;
-
-
 
 class Special_Collection implements \JsonSerializable
 {
@@ -18,17 +17,19 @@ class Special_Collection implements \JsonSerializable
      * CONSTRUCTORS
      * ========================================================== */
 
-    public function __construct($data){
-        if(is_array($data)){
+    public function __construct($data)
+    {
+        if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->name = intval($data['name']);
         }
     }
 
-    function jsonSerialize(){
+    public function jsonSerialize()
+    {
         return [
-          'id'  => $this->id,
-            'name' => $this->name
+          'id' => $this->id,
+            'name' => $this->name,
         ];
     }
 
@@ -36,34 +37,36 @@ class Special_Collection implements \JsonSerializable
      * GET
      * ========================================================== */
 
-    static function getAll(){
+    public static function getAll()
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM special_collections");
+        $statement = $database->prepare('SELECT * FROM special_collections');
         $statement->execute();
 
-        if($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
         $special_collections = [];
 
-        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $special_collections[] = new Special_Collection($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $special_collections[] = new self($row);
         }
 
         return $special_collections;
     }
 
-    static function getByID($id){
+    public static function getByID($id)
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM special_collections WHERE id = ?");
+        $statement = $database->prepare('SELECT * FROM special_collections WHERE id = ?');
         $statement->execute(array($id));
 
-        if($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
-        $special_collection = new Special_Collection($statement->fetch(PDO::FETCH_ASSOC));
+        $special_collection = new self($statement->fetch(PDO::FETCH_ASSOC));
 
         return $special_collection;
     }
@@ -72,12 +75,14 @@ class Special_Collection implements \JsonSerializable
      * POST
      * ========================================================== */
 
-    static function createSpecialCollection($body){
+    public static function createSpecialCollection($body)
+    {
         global $database;
-        $statement = $database->prepare("INSERT INTO special_collections (name) VALUES (?)");
+        $statement = $database->prepare('INSERT INTO special_collections (name) VALUES (?)');
         $statement->execute(array($body['name']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
+
         return $id;
     }
 
@@ -85,16 +90,17 @@ class Special_Collection implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    static function updateSpecialCollection($body){
+    public static function updateSpecialCollection($body)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE special_collections SET name = ? WHERE id = ?");
+        $statement = $database->prepare('UPDATE special_collections SET name = ? WHERE id = ?');
         $statement->execute(array($body['name'], $body['id']));
-        $id = Special_Collection::getByID($body['id']);
+        $id = self::getByID($body['id']);
+
         return $id;
     }
 
     /* ========================================================== *
      * DELETE
      * ========================================================== */
-
 }
