@@ -99,7 +99,7 @@ class Blooming implements \JsonSerializable
         $statement->execute(array($body['plant_id'], $body['start_date']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
-        $updatID = Blooming::getByID($body['id']);
+        $updatID = Blooming::getByID($id);
         return $updatID;
     }
 
@@ -110,7 +110,7 @@ class Blooming implements \JsonSerializable
     static function updateBlooming($body){
         global $database;
         $statement = $database->prepare("UPDATE blooming SET start_date = ?, end_date = ? WHERE id = ?");
-        $statement->execute(array($body['start_date']. $body['end_date'], $body['id']));
+        $statement->execute(array($body['start_date'], $body['end_date'], $body['id']));
         $id = Blooming::getByID($body['id']);
         return $id;
     }
