@@ -26,10 +26,14 @@ class Session
         }
 
         $user = User::getByEmail($body['email']);
-    //clears timestamps older than 3 days
-    self::check_timestamp($user->id);
+        //clears timestamps older than 3 days
+        self::check_timestamp($user->id);
         $id = $user->id;
         $key = self::generate_key();
+
+        if(!password_verify($body['password'], User::getUserHashedPassword($user->id))){
+            throw new Exception("Invalid login credentials", 400);
+        }
 
         try {
             $statement = $database->prepare('INSERT INTO session (user_id, session_key) VALUES (?, ?)');
@@ -43,9 +47,9 @@ class Session
             $current_session = new self($session);
 
             return array(
-        'session_key' => $current_session->session_key,
-        'session_id' => $current_session->session_id, );
-        } catch (Exception $e) {
+              'session_key' => $current_session->session_key,
+              'session_id' => $current_session->session_id, );
+          } catch (Exception $e) {
             throw new Exception($e->getMessage(), 500);
         }
     }
