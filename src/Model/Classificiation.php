@@ -52,12 +52,12 @@ class Classification implements \JsonSerializable
     public static function getByID($classification_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM classification WHERE classification_id = $classification_id");
+        $statement = $database->prepare("SELECT * FROM classification WHERE id = $classification_id");
         $statement->execute(array($classification_id));
         $classifications = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $classifications[] = new Bloom($row);
+            $classifications[] = new Classification($row);
         }
 
         return $classifications;
