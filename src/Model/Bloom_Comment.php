@@ -18,7 +18,7 @@ use PDO;
  *   }
  *  )
  */
-class Bloom implements \JsonSerializable
+class Bloom_Comment implements \JsonSerializable
 {
     /**
      * @SWG\Property(type="integer", format="int64")
@@ -68,7 +68,7 @@ class Bloom implements \JsonSerializable
     public static function getAll()
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM bloom');
+        $statement = $database->prepare('SELECT * FROM bloom_comment');
         $statement->execute();
 
         if ($statement->rowCount() <= 0) {
@@ -87,7 +87,7 @@ class Bloom implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM bloom WHERE plant_id = (?)');
+        $statement = $database->prepare('SELECT * FROM bloom_comment WHERE plant_id = (?)');
         $statement->execute(array($plant_id));
 
         if ($statement->rowCount() <= 0) {
@@ -106,7 +106,7 @@ class Bloom implements \JsonSerializable
     public static function getByID($id)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM bloom WHERE id = (?)');
+        $statement = $database->prepare('SELECT * FROM bloom_comment WHERE id = (?)');
 
         $statement->execute(array($id));
 
@@ -130,7 +130,7 @@ class Bloom implements \JsonSerializable
     public static function createBloom($body)
     {
         global $database;
-        $statement = $database->prepare('INSERT INTO bloom (plant_id, note, timestamp) VALUES(?,?,?)');
+        $statement = $database->prepare('INSERT INTO bloom_comment (plant_id, note, timestamp) VALUES(?,?,?)');
         $statement->execute(array($body['plant_id'], $body['note'], $body['timestamp']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
@@ -149,7 +149,7 @@ class Bloom implements \JsonSerializable
     public static function updateBloom($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE bloom SET note = (?), timestamp = (?), plant_id = (?) WHERE id = (?)');
+        $statement = $database->prepare('UPDATE bloom_comment SET note = (?), timestamp = (?), plant_id = (?) WHERE id = (?)');
         $statement->execute(array($body['note'], $body['timestamp'], $body['plant_id'], $body['id']));
         $id = self::getByID($body['id']);
 

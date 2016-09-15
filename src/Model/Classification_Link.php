@@ -47,7 +47,7 @@ class Classification_Link implements \JsonSerializable
         return $classificationLinks;
     }
 
-    public static function getPlantsByClassificationId($id)
+    public static function getPlantsByScientificClassId($id)
     {
         global $database;
         $statement = $database->prepare('SELECT * FROM classification_link

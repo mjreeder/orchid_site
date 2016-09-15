@@ -28,7 +28,7 @@ $app->group('/api', function () use ($app){
         * )
         */
        $app->get('', function($request, $response, $args) use ($app){
-           $bloom = Bloom::getAll();
+           $bloom = Bloom_Comment::getAll();
            $output = new Response($bloom);
            $response->getBody()->write(json_encode($output));
        });
@@ -53,7 +53,7 @@ $app->group('/api', function () use ($app){
         * )
         */
        $app->get('/plant_id/{plant_id}', function($request, $response, $args) use ($app){
-           $bloom = Bloom::getByPlantID($args["plant_id"]);
+           $bloom = Bloom_Comment::getByPlantID($args["plant_id"]);
            $output = new Response($bloom);
            $response->getBody()->write(json_encode($output));
        });
@@ -87,7 +87,7 @@ $app->group('/api', function () use ($app){
        $app->post('/create', function ($request, $response, $args) use ($app){
            $body = $request->getParsedBody();
 
-           $bloom = Bloom::createBloom($body);
+           $bloom = Bloom_Comment::createBloom($body);
            $output = new Response($bloom);
            $response->getBody()->write(json_encode($output));
        });
@@ -120,7 +120,7 @@ $app->group('/api', function () use ($app){
         */
        $app->put('/update', function ($request, $response, $args) use ($app){
            $body = $request->getParsedBody();
-           $updateBloom = Bloom::updateBloom($body);
+           $updateBloom = Bloom_Comment::updateBloom($body);
            $output = new Response($updateBloom);
            $response->getBody()->write(json_encode($output));
        });
