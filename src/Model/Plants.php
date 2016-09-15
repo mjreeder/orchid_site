@@ -171,6 +171,8 @@ class Plants implements \JsonSerializable
      *
      * @var int
      */
+     public $is_donation;
+
     public $special_collections_id;
 
     public function __construct($data)
@@ -202,6 +204,7 @@ class Plants implements \JsonSerializable
             $this->location_id = intval($data['location_id']);
             $this->dead = $data['dead'];
             $this->special_collecions_id = $data['special_collections_id'];
+            $this->is_donation = $data['is_donation'];
         }
     }
 
@@ -234,6 +237,7 @@ class Plants implements \JsonSerializable
             'location_id' => $this->location_id,
             'dead' => $this->dead,
             'special_collections_id' => $this->special_collections_id,
+            'is_donation' => $this->is_donation
         ];
     }
 
@@ -245,7 +249,7 @@ class Plants implements \JsonSerializable
        !$body['received_from'] || !$body['description'] || !$body['username'] || !$body['inactive_date'] ||
        !$body['inactive_comment'] || !$body['size'] || !$body['value'] || !$body['parent_one'] ||
        !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_comment'] ||
-       !$body['hybrid_status'] || !$body['scientific_name'] || !$body['location_id'] || !$body['origin_comment'] || !$body['name']) {
+       !$body['hybrid_status'] || !$body['scientific_name'] || !$body['location_id'] || !$body['origin_comment'] || !$body['name'] || !$body['is_donation']) {
             throw new Exception('Missing required information', 400);
         }
 
@@ -256,12 +260,12 @@ class Plants implements \JsonSerializable
         $statement = $database->prepare('INSERT INTO plants (accession_number, name, authority, distribution, habitat, culture,
       donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size,
       scientific_name, hybrid_status, hybrid_comment, value, parent_one, parent_two, grex_status, origin_comment,
-      location_id, dead, special_collections_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+      location_id, dead, special_collections_id, is_donation) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
         $statement->execute(array($body['accession_number'], $body['name'], $body['authority'], $body['distribution'],
     $body['habitat'], $body['culture'], $body['donation_comment'], $body['date_received'], $body['received_from'],
     $body['description'], $body['username'], $body['inactive_date'], $body['inactive_comment'], $body['size'], $body['scientific_name'],
     $body['hybrid_status'], $body['hybrid_comment'], $body['value'], $body['parent_one'], $body['parent_two'], $body['grex_status'],
-    $body['origin_comment'], $body['location_id'], $body['dead'], $body['special_collections_id'], ));
+    $body['origin_comment'], $body['location_id'], $body['dead'], $body['special_collections_id'], $body['is_donation']));
 
         $id = $database->lastInsertId();
         $statement->closeCursor();
