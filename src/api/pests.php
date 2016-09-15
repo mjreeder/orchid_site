@@ -64,7 +64,7 @@ $app->group('/api', function () use ($app) {
         * @SWG\POST(
         *     path="/pest/create",
         *     summary="create new pest information for a specific plant_id",
-        *     description="need a plant_id; the note is not needed but optional",
+        *     description="need a plant_id and timestamp; the note is not needed but optional",
         *     tags={"Bloom"},
         *     @SWG\Parameter(
         *         plant_id="5",

@@ -12,12 +12,41 @@ $app->group('/api', function () use ($app){
         * GET
         * ========================================================== */
 
+       /**
+        * @SWG\Get(
+        *     path="/potting",
+        *     summary="Get all the potting dates for all plants",
+        *     description="All the potting information for all the plants",
+        *     tags={"Potting"},
+        *     @SWG\Response(
+        *         response=200,
+        *           id="2",
+        *           plant_id="3",
+        *           timestamp="2016-09-06",
+        *
+        *     ),
+        * )
+        */
        $app->get('', function($request, $response, $args) use ($app){
           $potting = Potting::getAll();
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
        });
 
+       /**
+        * @SWG\Get(
+        *     path="/potting/plant_id/{plant_id}",
+        *     summary="Get all the potting dates for one plant by plant_id",
+        *     description="All the potting information by a plant_id",
+        *     tags={"Potting"},
+        *     @SWG\Response(
+        *         response=200,
+        *           id="2",
+        *           plant_id="3",
+        *           timestamp="2016-09-06",
+        *     ),
+        * )
+        */
        $app->get('/plant_id/{plant_id}', function($request, $response, $args) use ($app){
           $potting = Potting::getByPlantID($args['plant_id']);
            $output = new Response($potting);
@@ -28,6 +57,24 @@ $app->group('/api', function () use ($app){
         * POST
         * ========================================================== */
 
+       /**
+        * @SWG\POST(
+        *     path="/potting/create",
+        *     summary="create new potting date for a specific plant_id",
+        *     description="need a plant_id & timestamp",
+        *     tags={"Potting"},
+        *     @SWG\Parameter(
+        *         plant_id="5",
+        *         timestamp="2016-09-02"
+        *     ),
+        *     @SWG\Response(
+        *         response=200,
+        *         id="4",
+        *         plant_id="5",
+        *         timestamp="2016-09-02"
+        *     ),
+        * )
+        */
        $app->post('/create', function($request, $response, $args) use ($app){
           $body = $request->getParsedBody();
            $potting = Potting::createPotting($body);
@@ -42,15 +89,14 @@ $app->group('/api', function () use ($app){
 
        /**
         * @SWG\PUT(
-        *     path="/pest/update",
-        *     summary="update the pest info of a plant_id",
-        *     description="needs a plant_id, note, timestamp, id to update",
-        *     tags={"Bloom"},
+        *     path="/potting/update",
+        *     summary="update the potting info of a plant_id",
+        *     description="needs a plant_id and new timestamp",
+        *     tags={"Potting"},
         *     @SWG\Parameter(
         *           id="3",
         *         plant_id="4",
         *         timestamp="2016-09-03",
-        *          note="Update comment to the pest",
         *
         *     ),
         *     @SWG\Response(
@@ -62,9 +108,11 @@ $app->group('/api', function () use ($app){
         *     ),
         * )
         */
-       $app->post('/update', function($request, $response, $args) use ($app){
+       $app->put('/update', function($request, $response, $args) use ($app){
           $body = $request->getParsedBody();
-           $potting = Potting::
+           $potting = Potting::updatePotting($body);
+           $output = new Response($potting);
+           $response->getBody()->write(json_encode($output));
        });
 
 
