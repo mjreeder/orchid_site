@@ -18,8 +18,8 @@ class Location implements \JsonSerializable
     {
         if (is_array($data)) {
             $this->id = intval($data['id']);
-            $this->name = intval($data['name']);
-            $this->room = intval($data['room']);
+            $this->name = $data['name'];
+            $this->room = $data['room'];
         }
     }
 
@@ -49,8 +49,10 @@ class Location implements \JsonSerializable
         $locations = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $locations[] = new self($row);
+            $locations[] = new Location($row);
         }
+
+        return $locations;
     }
 
     /* ========================================================== *
