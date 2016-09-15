@@ -59,7 +59,7 @@ class Split implements \JsonSerializable
         $splits = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $splits[] = new self($row);
+            $splits[] = new Split($row);
         }
 
         return $splits;
@@ -75,9 +75,26 @@ class Split implements \JsonSerializable
             return;
         }
 
-        $splits = new self($statement->fetch(PDO::FETCH_ASSOC));
+        $splits = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $splits[] = new Split($row);
+        }
 
         return $splits;
+    }
+
+    public static function getByID($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM split WHERE id = (?)');
+        $statement->execute(array($id));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        return new Split($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     /* ========================================================== *
@@ -92,7 +109,9 @@ class Split implements \JsonSerializable
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
-        return $id;
+        $updateID = Split::getByID($id);
+
+        return $updateID;
     }
 
     /* ========================================================== *
