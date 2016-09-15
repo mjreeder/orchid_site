@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', true);
 /**
  * @SWG\Swagger(
  *   schemes={"http"},
@@ -46,7 +48,7 @@ require __DIR__ . '/../src/dependencies.php';
 require __DIR__ . '/../src/middleware.php';
 
 // Register routes
-require __DIR__ . '/../src/api/origin.php';
+// require __DIR__ . '/../src/api/origin.php';
 require __DIR__ . '/../src/api/blooming.php';
 require __DIR__ . '/../src/api/bloom_comment.php';
 require __DIR__ . '/../src/api/country.php';
@@ -67,7 +69,7 @@ require __DIR__ . '/../src/api/user.php';
 require __DIR__ . '/../src/api/location.php';
 
 //Register Models
-require __DIR__ . '/../src/Model/Origin.php';
+// require __DIR__ . '/../src/Model/Origin.php';
 require __DIR__ . '/../src/Model/Blooming.php';
 require __DIR__ . '/../src/Model/Country.php';
 require __DIR__ . '/../src/Model/Bloom_Comment.php';
