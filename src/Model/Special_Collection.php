@@ -21,7 +21,7 @@ class Special_Collection implements \JsonSerializable
     {
         if (is_array($data)) {
             $this->id = intval($data['id']);
-            $this->name = intval($data['name']);
+            $this->name = $data['name'];
         }
     }
 
@@ -44,7 +44,7 @@ class Special_Collection implements \JsonSerializable
         $statement->execute();
 
         if ($statement->rowCount() <= 0) {
-            return;
+            return false;
         }
 
         $special_collections = [];
@@ -82,8 +82,9 @@ class Special_Collection implements \JsonSerializable
         $statement->execute(array($body['name']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
+        $updateID = Special_Collection::getByID($id);
 
-        return $id;
+        return $updateID;
     }
 
     /* ========================================================== *

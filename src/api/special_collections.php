@@ -1,7 +1,120 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sethwinslow
- * Date: 9/9/16
- * Time: 12:44 PM
- */
+
+error_reporting(E_ALL);
+ini_set("display_errors", true);
+use orchid_site\src\Model\Special_Collection;
+require_once "../utilities/response.php";
+
+$app->group('/api', function () use ($app){
+   $app->group('/special_collection', function () use ($app){
+
+       /* ========================================================== *
+        * GET
+        * ========================================================== */
+
+       /**
+        * @SWG\Get(
+        *     path="/special_collection",
+        *     summary="Get all the special collections",
+        *     description="Simple Get All method",
+        *     tags={"Special Collections"},
+        *     @SWG\Response(
+        *         response=200,
+        *         id="3",
+        *         name="Speical #1",
+        *
+        *      ),
+        * )
+        */
+       $app->get('', function($request, $response, $args) use ($app){
+           $special_collection = Special_Collection::getAll();
+           $output = new Response($special_collection);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       /**
+        * @SWG\Get(
+        *     path="/special_collection/id/{id}",
+        *     summary="Get all the blooms for a specfic id ",
+        *     description="Need the id to get the name",
+        *     tags={"Bloom"},
+        *     @SWG\Parameter(
+        *       id="2"
+        *     ),
+
+        *     @SWG\Response(
+        *         response=200,
+        *         id="3",
+        *         name="Speical Collection #3",
+        *      ),
+        * )
+        */
+       $app->get('/id/{id}', function($request, $response, $args) use ($app){
+           $special_collection = Special_Collection::getByID($args['id']);
+           $output = new Response($special_collection);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       /* ========================================================== *
+        * POST
+        * ========================================================== */
+
+       /**
+        * @SWG\POST(
+        *     path="/special_collection/create",
+        *     summary="create new speical collection",
+        *     description="create new speical collection",
+        *     tags={"Speical Collection"},
+        *     @SWG\Parameter(
+        *         name="special_collection_345"
+        *
+        *     ),
+        *     @SWG\Response(
+        *         response=200,
+        *         id="345",
+        *         name="special_collection_345"
+        *     ),
+        * )
+        */
+       $app->post('/create', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+           $bloom = Special_Collection::createSpecialCollection($body);
+           $output = new Response($bloom);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       /* ========================================================== *
+        * PUT
+        * ========================================================== */
+
+       /**
+        * @SWG\PUT(
+        *     path="/special_collection/update",
+        *     summary="update special collection",
+        *     description="need the id and name to update the informaiton",
+        *     tags={"Bloom"},
+        *     @SWG\Parameter(
+        *           id="3",
+        *         name="speical_collection_333"
+        *
+        *     ),
+        *     @SWG\Response(
+        *         response=200,
+        *         id="3",
+        *         name="name"
+        *     ),
+        * )
+        */
+       $app->put('/update', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+           $updateBloom = Special_Collection::updateSpecialCollection($body);
+           $output = new Response($updateBloom);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       /* ========================================================== *
+        * DELETE
+        * ========================================================== */
+
+   });
+});
