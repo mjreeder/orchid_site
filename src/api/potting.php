@@ -28,7 +28,7 @@ $app->group('/api', function () use ($app){
         * POST
         * ========================================================== */
 
-       $app->post('', function($request, $response, $args) use ($app){
+       $app->post('/create', function($request, $response, $args) use ($app){
           $body = $request->getParsedBody();
            $potting = Potting::createPotting($body);
            $output = new Response($potting);
@@ -40,6 +40,32 @@ $app->group('/api', function () use ($app){
         * PUT
         * ========================================================== */
 
+       /**
+        * @SWG\PUT(
+        *     path="/pest/update",
+        *     summary="update the pest info of a plant_id",
+        *     description="needs a plant_id, note, timestamp, id to update",
+        *     tags={"Bloom"},
+        *     @SWG\Parameter(
+        *           id="3",
+        *         plant_id="4",
+        *         timestamp="2016-09-03",
+        *          note="Update comment to the pest",
+        *
+        *     ),
+        *     @SWG\Response(
+        *         response=200,
+        *         id="3",
+        *         plant_id="4",
+        *         timestamp="2016-09-03",
+        *         note="Update comment to the pest"
+        *     ),
+        * )
+        */
+       $app->post('/update', function($request, $response, $args) use ($app){
+          $body = $request->getParsedBody();
+           $potting = Potting::
+       });
 
 
        /* ========================================================== *

@@ -11,13 +11,15 @@ use PDO;
 
 class Potting implements \JsonSerializable
 {
+    public $id;
     public $plant_id;
     public $timestamp;
 
     public function __construct($data)
     {
         if (is_array($data)) {
-            $this->id = intval($data['plant_id']);
+            $this->id = intval($data['id']);
+            $this->plant_id = intval($data['plant_id']);
             $this->timestamp = $data['timestamp'];
         }
     }
@@ -25,6 +27,7 @@ class Potting implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id' => $this->id,
             'plant_id' => $this->plant_id,
             'timestamp' => $this->timestamp,
         ];
@@ -73,8 +76,8 @@ class Potting implements \JsonSerializable
      public static function createPotting($body)
      {
          global $database;
-         $statement = $database->prepare('INSERT INTO potting (plant_id) VALUE (?)');
-         $statement->execute(array($body['plant_id']));
+         $statement = $database->prepare('INSERT INTO potting (plant_id, timestamp) VALUE (?,?)');
+         $statement->execute(array($body['plant_id'], $body['timestamp']));
          $id = $database->lastInsertId();
          $statement->closeCursor();
 
@@ -84,6 +87,12 @@ class Potting implements \JsonSerializable
     /* ========================================================== *
      * PUT
      * ========================================================== */
+
+    public static function updatePotting($body){
+        global $database;
+        $statement = $database->prepare("UPDATE potting SET plant_id = ?, timestamp = ? WHERE id = ?");
+        $statement->execute(array($body['plant_id'], $body[]))
+    }
 
     /* ========================================================== *
      * DELETEs
