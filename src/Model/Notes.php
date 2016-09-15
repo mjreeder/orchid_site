@@ -24,7 +24,7 @@ class Notes implements \JsonSerializable
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->note = $data['note'];
-            $this->timestamp = intval($data['active']);
+            $this->timestamp = $data['timestamp'];
         }
     }
 
@@ -49,7 +49,7 @@ class Notes implements \JsonSerializable
         $statement->execute();
 
         if ($statement->rowCount() <= 0) {
-            return;
+            return null;
         }
 
         $notes = [];
@@ -68,16 +68,30 @@ class Notes implements \JsonSerializable
         $statement->execute(array($plant_id));
 
         if ($statement->rowCount() <= 0) {
-            return;
+            return null;
         }
 
         $notes = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $notes[] = new self($row);
+            $notes[] = new Notes($row);
         }
 
         return $notes;
+    }
+
+    public static function getByID($id){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM notes WHERE id = ?");
+        $statement->execute(array($id));
+
+        if($statement->rowCount() <= 0){
+            return null;
+        }
+
+
+        return new Notes($statement->fetch(PDO::FETCH_ASSOC));
+
     }
 
     /* ========================================================== *
@@ -90,9 +104,10 @@ class Notes implements \JsonSerializable
         $statement = $database->prepare('INSERT INTO notes (plant_id, note, timestamp) VALUES (?,?,?)');
         $statement->execute(array($body['plant_id'], $body['note'], $body['timestamp']));
         $id = $database->lastInsertId();
+        $updateID = Notes::getByID($id);
         $statement->closeCursor();
 
-        return $id;
+        return $updateID;
     }
 
     /* ========================================================== *
