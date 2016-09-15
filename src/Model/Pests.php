@@ -1,5 +1,6 @@
 <?php
 
+
 namespace orchid_site\src\Model;
 
 error_reporting(E_ALL);
@@ -13,7 +14,7 @@ class Pests implements \JsonSerializable
     public $id;
     public $plant_id;
     public $timestamp;
-    public $comment;
+    public $note;
 
     public function __construct($data)
     {
@@ -21,7 +22,7 @@ class Pests implements \JsonSerializable
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->timestamp = $data['timestamp'];
-            $this->comment = $data['comment'];
+            $this->note = $data['note'];
         }
     }
 
@@ -31,7 +32,7 @@ class Pests implements \JsonSerializable
             'id' => $this->id,
             'plant_id' => $this->plant_id,
             'timestamp' => $this->timestamp,
-            'comment' => $this->comment,
+            'note' => $this->note,
         ];
     }
 
@@ -42,12 +43,12 @@ class Pests implements \JsonSerializable
     public static function getAll()
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM pest_control');
+        $statement = $database->prepare("SELECT * FROM pests");
         $statement->execute();
         $pestControl = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $pestControl[] = new PestControl($row);
+            $pestControl[] = new Pests($row);
         }
 
         return $pestControl;
@@ -56,15 +57,25 @@ class Pests implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM pest_control WHERE plant_id = $plant_id");
+        $statement = $database->prepare("SELECT * FROM pests WHERE plant_id = $plant_id");
         $statement->execute();
         $pestControl = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $pestControl[] = new PestControl($row);
+            $pestControl[] = new Pests($row);
         }
 
         return $pestControl;
+    }
+
+    public static function getByID($id)
+    {
+        global $database;
+        $statement = $database->prepare("SELECT * FROM pests WHERE id = $id");
+        $statement->execute();
+        $pestControl = [];
+
+        return new Pests($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     /* ========================================================== *
@@ -74,17 +85,27 @@ class Pests implements \JsonSerializable
     public static function createPestControl($body)
     {
         global $database;
-        $statement = $database->prepare('INSERT INTO pest_control (plant_id, comment) VALUES (?,?)');
-        $statement->execute(array($body['plant_id'], $body['comment']));
+        $statement = $database->prepare("INSERT INTO pests (plant_id, note, timestamp) VALUES (?,?,?)");
+        $statement->execute(array($body['plant_id'], $body['note'], $body['timestamp']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
-        return $id;
+        $updateID = Pests::getByID($id);
+
+        return $updateID;
     }
 
     /* ========================================================== *
      * PUT
      * ========================================================== */
+
+    public static function updatePest($body){
+        global $database;
+        $statement = $database->prepare("UPDATE pests SET plant_id = ?, timestamp = ?, note = ? WHERE id =?");
+        $statement->execute(array($body['plant_id'], $body['timestamp'], $body['note'], $body['id']));
+        $id = Pests::getByID($body['id']);
+        return $id;
+    }
 
     /* ========================================================== *
      * DELETE

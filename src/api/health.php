@@ -118,7 +118,7 @@ $app->group('/api', function () use ($app) {
          * @SWG\PUT(
          *     path="/health/update",
          *     summary="update the health score of a plant_id",
-         *     description="needs a plant_id, score, and timestamp to update",
+         *     description="needs a plant_id, score, timestamp, id to update",
          *     tags={"Bloom"},
          *     @SWG\Parameter(
          *           id="3",
