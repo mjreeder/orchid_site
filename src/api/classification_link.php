@@ -83,7 +83,7 @@ $app->group('/api', function () use ($app) {
      * )
      */
     $app->get('/plant/{id}', function($request, $response, $args) use ($app) {
-      $plant = Classification_link::getPlantsByClassificationId($args['id']);
+      $plant = Classification_link::getPlantsByScientificClassId($args['id']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
