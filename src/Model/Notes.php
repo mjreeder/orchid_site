@@ -10,9 +10,25 @@ use PDO;
 
 class Notes implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $plant_id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $note;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $timestamp;
 
     /* ========================================================== *
@@ -49,7 +65,7 @@ class Notes implements \JsonSerializable
         $statement->execute();
 
         if ($statement->rowCount() <= 0) {
-            return null;
+            return;
         }
 
         $notes = [];
@@ -68,30 +84,29 @@ class Notes implements \JsonSerializable
         $statement->execute(array($plant_id));
 
         if ($statement->rowCount() <= 0) {
-            return null;
+            return;
         }
 
         $notes = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $notes[] = new Notes($row);
+            $notes[] = new self($row);
         }
 
         return $notes;
     }
 
-    public static function getByID($id){
+    public static function getByID($id)
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM notes WHERE id = ?");
+        $statement = $database->prepare('SELECT * FROM notes WHERE id = ?');
         $statement->execute(array($id));
 
-        if($statement->rowCount() <= 0){
-            return null;
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
-
-        return new Notes($statement->fetch(PDO::FETCH_ASSOC));
-
+        return new self($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     /* ========================================================== *
@@ -104,7 +119,7 @@ class Notes implements \JsonSerializable
         $statement = $database->prepare('INSERT INTO notes (plant_id, note, timestamp) VALUES (?,?,?)');
         $statement->execute(array($body['plant_id'], $body['note'], $body['timestamp']));
         $id = $database->lastInsertId();
-        $updateID = Notes::getByID($id);
+        $updateID = self::getByID($id);
         $statement->closeCursor();
 
         return $updateID;

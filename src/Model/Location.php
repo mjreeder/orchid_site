@@ -10,8 +10,21 @@ use PDO;
 
 class Location implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $name;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $room;
 
     public function __construct($data)
@@ -49,7 +62,7 @@ class Location implements \JsonSerializable
         $locations = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $locations[] = new Location($row);
+            $locations[] = new self($row);
         }
 
         return $locations;

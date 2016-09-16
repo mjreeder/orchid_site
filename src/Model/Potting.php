@@ -11,8 +11,19 @@ use PDO;
 
 class Potting implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $plant_id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $timestamp;
 
     public function __construct($data)
@@ -49,7 +60,7 @@ class Potting implements \JsonSerializable
 
         $potting = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $potting[] = new Potting($row);
+            $potting[] = new self($row);
         }
 
         return $potting;
@@ -58,12 +69,12 @@ class Potting implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM potting WHERE plant_id = ?");
+        $statement = $database->prepare('SELECT * FROM potting WHERE plant_id = ?');
         $statement->execute(array($plant_id));
         $potting = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $potting[] = new Potting($row);
+            $potting[] = new self($row);
         }
 
         return $potting;
@@ -72,10 +83,10 @@ class Potting implements \JsonSerializable
     public static function getByID($id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM potting WHERE id = ?");
+        $statement = $database->prepare('SELECT * FROM potting WHERE id = ?');
         $statement->execute(array($id));
 
-        return new Potting($statement->fetch(PDO::FETCH_ASSOC));
+        return new self($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     /* ========================================================== *
@@ -89,7 +100,7 @@ class Potting implements \JsonSerializable
          $statement->execute(array($body['plant_id'], $body['timestamp']));
          $id = $database->lastInsertId();
          $statement->closeCursor();
-         $updateID = Potting::getByID($id);
+         $updateID = self::getByID($id);
 
          return $updateID;
      }
@@ -98,11 +109,13 @@ class Potting implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    public static function updatePotting($body){
+    public static function updatePotting($body)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE potting SET plant_id = ?, timestamp = ? WHERE id = ?");
+        $statement = $database->prepare('UPDATE potting SET plant_id = ?, timestamp = ? WHERE id = ?');
         $statement->execute(array($body['plant_id'], $body['timestamp'], $body['id']));
-        $id = Potting::getByID($body['id']);
+        $id = self::getByID($body['id']);
+
         return $id;
     }
 

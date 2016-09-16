@@ -4,7 +4,13 @@
  */
 class Session
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $session_id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $session_dev;
 
     public function __construct($session)
@@ -31,8 +37,8 @@ class Session
         $id = $user->id;
         $key = self::generate_key();
 
-        if(!password_verify($body['password'], User::getUserHashedPassword($user->id))){
-            throw new Exception("Invalid login credentials", 400);
+        if (!password_verify($body['password'], User::getUserHashedPassword($user->id))) {
+            throw new Exception('Invalid login credentials', 400);
         }
 
         try {
@@ -49,7 +55,7 @@ class Session
             return array(
               'session_key' => $current_session->session_key,
               'session_id' => $current_session->session_id, );
-          } catch (Exception $e) {
+        } catch (Exception $e) {
             throw new Exception($e->getMessage(), 500);
         }
     }
