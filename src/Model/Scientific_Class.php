@@ -10,8 +10,19 @@ use PDO;
 
 class ScientificClass implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $classification_id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $name;
 
     public function __construct($data)

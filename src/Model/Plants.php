@@ -171,7 +171,7 @@ class Plants implements \JsonSerializable
      *
      * @var int
      */
-     public $is_donation;
+    public $is_donation;
 
     public $special_collections_id;
 
@@ -237,7 +237,7 @@ class Plants implements \JsonSerializable
             'location_id' => $this->location_id,
             'dead' => $this->dead,
             'special_collections_id' => $this->special_collections_id,
-            'is_donation' => $this->is_donation
+            'is_donation' => $this->is_donation,
         ];
     }
 
@@ -265,7 +265,7 @@ class Plants implements \JsonSerializable
     $body['habitat'], $body['culture'], $body['donation_comment'], $body['date_received'], $body['received_from'],
     $body['description'], $body['username'], $body['inactive_date'], $body['inactive_comment'], $body['size'], $body['scientific_name'],
     $body['hybrid_status'], $body['hybrid_comment'], $body['value'], $body['parent_one'], $body['parent_two'], $body['grex_status'],
-    $body['origin_comment'], $body['location_id'], $body['dead'], $body['special_collections_id'], $body['is_donation']));
+    $body['origin_comment'], $body['location_id'], $body['dead'], $body['special_collections_id'], $body['is_donation'], ));
 
         $id = $database->lastInsertId();
         $statement->closeCursor();
