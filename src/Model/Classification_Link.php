@@ -11,7 +11,13 @@ use Exception;
 
 class Classification_Link implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $plant_id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $class_id;
 
     public function __construct($data)
@@ -61,7 +67,6 @@ class Classification_Link implements \JsonSerializable
         $statement->closeCursor();
 
         return $plants;
-
     }
 
     public static function getPlantHierarchy($id)

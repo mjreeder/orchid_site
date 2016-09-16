@@ -8,10 +8,32 @@ require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
 
+/**
+ * @SWG\Definition(
+ *  required={
+ *      "id",
+ *      "name",
+ *      "rank"
+ *   }
+ *  )
+ */
 class Classification implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $name;
+    /**
+     * @SWG\Property()
+     *
+     * @var int
+     */
     public $rank;
 
     public function __construct($data)
@@ -26,7 +48,7 @@ class Classification implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id' => $this->id,
+            'id'   => $this->id,
             'name' => $this->name,
             'rank' => $this->rank,
         ];
@@ -57,7 +79,7 @@ class Classification implements \JsonSerializable
         $classifications = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $classifications[] = new Classification($row);
+            $classifications[] = new self($row);
         }
 
         return $classifications;
