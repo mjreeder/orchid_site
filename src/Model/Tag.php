@@ -10,9 +10,25 @@ use PDO;
 
 class Tag implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $plant_id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $note;
+    /**
+     * @SWG\Property()
+     *
+     * @var int
+     */
     public $active;
 
     /* ========================================================== *

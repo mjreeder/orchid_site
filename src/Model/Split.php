@@ -10,10 +10,31 @@ use PDO;
 
 class Split implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $plant_id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $timestamp;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $recipient;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $note;
 
     /* ========================================================== *
@@ -59,7 +80,7 @@ class Split implements \JsonSerializable
         $splits = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $splits[] = new Split($row);
+            $splits[] = new self($row);
         }
 
         return $splits;
@@ -78,7 +99,7 @@ class Split implements \JsonSerializable
         $splits = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $splits[] = new Split($row);
+            $splits[] = new self($row);
         }
 
         return $splits;
@@ -94,7 +115,7 @@ class Split implements \JsonSerializable
             return;
         }
 
-        return new Split($statement->fetch(PDO::FETCH_ASSOC));
+        return new self($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     /* ========================================================== *
@@ -109,7 +130,7 @@ class Split implements \JsonSerializable
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
-        $updateID = Split::getByID($id);
+        $updateID = self::getByID($id);
 
         return $updateID;
     }

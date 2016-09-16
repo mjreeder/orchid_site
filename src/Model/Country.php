@@ -16,7 +16,15 @@ use PDO;
 
 class Country implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $name;
 
     /* ========================================================== *
@@ -58,7 +66,7 @@ class Country implements \JsonSerializable
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $country[] = new self($row);
         }
-        
+
         return $country;
     }
 

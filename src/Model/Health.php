@@ -10,9 +10,25 @@ use PDO;
 
 class Health implements \JsonSerializable
 {
+  /**
+   * @SWG\Property(type="integer", format="int64")
+   */
     public $id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $plant_id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $tmestamp;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $score;
 
     public function __construct($data)

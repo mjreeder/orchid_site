@@ -1,6 +1,5 @@
 <?php
 
-
 namespace orchid_site\src\Model;
 
 error_reporting(E_ALL);
@@ -11,9 +10,25 @@ use PDO;
 
 class Pests implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $plant_id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $timestamp;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $note;
 
     public function __construct($data)
@@ -43,12 +58,12 @@ class Pests implements \JsonSerializable
     public static function getAll()
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM pests");
+        $statement = $database->prepare('SELECT * FROM pests');
         $statement->execute();
         $pestControl = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $pestControl[] = new Pests($row);
+            $pestControl[] = new self($row);
         }
 
         return $pestControl;
@@ -62,7 +77,7 @@ class Pests implements \JsonSerializable
         $pestControl = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $pestControl[] = new Pests($row);
+            $pestControl[] = new self($row);
         }
 
         return $pestControl;
@@ -75,7 +90,7 @@ class Pests implements \JsonSerializable
         $statement->execute();
         $pestControl = [];
 
-        return new Pests($statement->fetch(PDO::FETCH_ASSOC));
+        return new self($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     /* ========================================================== *
@@ -85,12 +100,12 @@ class Pests implements \JsonSerializable
     public static function createPestControl($body)
     {
         global $database;
-        $statement = $database->prepare("INSERT INTO pests (plant_id, note, timestamp) VALUES (?,?,?)");
+        $statement = $database->prepare('INSERT INTO pests (plant_id, note, timestamp) VALUES (?,?,?)');
         $statement->execute(array($body['plant_id'], $body['note'], $body['timestamp']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
-        $updateID = Pests::getByID($id);
+        $updateID = self::getByID($id);
 
         return $updateID;
     }
@@ -99,11 +114,13 @@ class Pests implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    public static function updatePest($body){
+    public static function updatePest($body)
+    {
         global $database;
-        $statement = $database->prepare("UPDATE pests SET plant_id = ?, timestamp = ?, note = ? WHERE id =?");
+        $statement = $database->prepare('UPDATE pests SET plant_id = ?, timestamp = ?, note = ? WHERE id =?');
         $statement->execute(array($body['plant_id'], $body['timestamp'], $body['note'], $body['id']));
-        $id = Pests::getByID($body['id']);
+        $id = self::getByID($body['id']);
+
         return $id;
     }
 

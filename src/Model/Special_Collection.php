@@ -10,7 +10,15 @@ use PDO;
 
 class Special_Collection implements \JsonSerializable
 {
+    /**
+     * @SWG\Property(type="integer", format="int64")
+     */
     public $id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $name;
 
     /* ========================================================== *
@@ -82,7 +90,7 @@ class Special_Collection implements \JsonSerializable
         $statement->execute(array($body['name']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
-        $updateID = Special_Collection::getByID($id);
+        $updateID = self::getByID($id);
 
         return $updateID;
     }

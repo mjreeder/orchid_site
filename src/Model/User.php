@@ -2,10 +2,33 @@
 
 class User implements \JsonSerializable
 {
+  /**
+   * @SWG\Property(type="integer", format="int64")
+   */
     public $id;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $firstName;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $lastName;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $email;
+    /**
+     * @SWG\Property()
+     *
+     * @var int
+     */
     public $authLevel;
 
     public function __construct($user)
