@@ -50,7 +50,25 @@ class Tag implements \JsonSerializable
         $statment->execute();
 
         if ($statment->rowCount() <= 0) {
-            return;
+            return false;
+        }
+
+        $tags = [];
+        while ($row = $statment->fetch(PDO::FETCH_ASSOC)) {
+            $tags[] = new self($row);
+        }
+
+        return $tags;
+    }
+
+    public static function getAllActive()
+    {
+        global $database;
+        $statment = $database->prepare('SELECT * FROM tag where active = 1');
+        $statment->execute();
+
+        if ($statment->rowCount() <= 0) {
+            return false;
         }
 
         $tags = [];
@@ -76,6 +94,21 @@ class Tag implements \JsonSerializable
         return $tags;
     }
 
+    public static function getByID($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM tag WHERE id = (?)');
+        $statement->execute(array($id));
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+
+        $tags = new self($statement->fetch(PDO::FETCH_ASSOC));
+
+        return $tags;
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
@@ -88,7 +121,9 @@ class Tag implements \JsonSerializable
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
-        return $id;
+        $updateID = Tag::getByID($id);
+
+        return $updateID;
     }
 
     /* ========================================================== *
@@ -98,8 +133,8 @@ class Tag implements \JsonSerializable
     public static function updateTag($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE tag SET note = (?), active = (?) WHERE plant_id = (?)');
-        $statement->execute(array($body['note']));
+        $statement = $database->prepare('UPDATE tag SET note = (?), active = 1 WHERE plant_id = (?)');
+        $statement->execute(array($body['note'], $body['plant_id']));
         $id = self::getByPlantID($body['plant_id']);
 
         return $id;

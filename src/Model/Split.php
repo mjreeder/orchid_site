@@ -123,7 +123,7 @@ class Split implements \JsonSerializable
         global $database;
         $statement = $database->prepare('UPDATE split SET plant_id = ?, timestamp = ?, recipient = ?, note = ? WHERE id = ? ');
         $statement->execute(array($body['plant_id'], $body['timestamp'], $body['recipient'], $body['note'], $body['id']));
-        $id = self::getByPlantID($body['plant_id']);
+        $id = self::getByID($body['id']);
 
         return $id;
     }

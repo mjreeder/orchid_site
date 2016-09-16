@@ -78,11 +78,30 @@ class Sprayed implements \JsonSerializable
         return $sprayed;
     }
 
+    public static function getByID($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM sprayed WHERE id = ?');
+        $statement->execute(array($id));
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+
+        $sprayed = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $sprayed[] = new self($row);
+        }
+
+        return $sprayed;
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
 
-    public static function createSprayed($body)
+    public static function createSpray($body)
     {
         global $database;
         $statement = $database->prepare('INSERT INTO sprayed (plant_id, timestamp) VALUES (?,?)');
@@ -90,7 +109,9 @@ class Sprayed implements \JsonSerializable
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
-        return $id;
+        $updateID = Sprayed::getByID($id);
+
+        return $updateID;
     }
 
     /* ========================================================== *
@@ -102,7 +123,7 @@ class Sprayed implements \JsonSerializable
         global $database;
         $statement = $database->prepare('UPDATE sprayed SET plant_id = (?), timestamp = (?) WHERE id = (?)');
         $statement->execute(array($body['plant_id'], $body['timestamp'], $body['id']));
-        $id = self::getByPlantID($body['plant_id']);
+        $id = self::getByID($body['id']);
 
         return $id;
     }
