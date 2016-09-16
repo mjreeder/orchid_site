@@ -8,7 +8,14 @@ require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
 use Exception;
-
+/**
+ * @SWG\Definition(
+ *  required={
+ *      "plant_id",
+ *      "class_id"
+ *   }
+ *  )
+ */
 class Classification_Link implements \JsonSerializable
 {
     /**

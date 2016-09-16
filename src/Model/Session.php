@@ -9,9 +9,11 @@ class Session
      */
     public $session_id;
     /**
-     * @SWG\Property(type="integer", format="int64")
+     * @SWG\Property()
+     *
+     * @var string
      */
-    public $session_dev;
+    public $session_key;
 
     public function __construct($session)
     {

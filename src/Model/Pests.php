@@ -8,6 +8,15 @@ require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
 
+/**
+ * @SWG\Definition(
+ *  required={
+ *      "plant_id",
+ *      "timestamp",
+ *      "note"
+ *   }
+ *  )
+ */
 class Pests implements \JsonSerializable
 {
     /**

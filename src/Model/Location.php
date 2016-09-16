@@ -7,7 +7,14 @@ ini_set('display_errors', true);
 require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
-
+/**
+ * @SWG\Definition(
+ *  required={
+ *      "name",
+ *      "room"
+ *   }
+ *  )
+ */
 class Location implements \JsonSerializable
 {
     /**
