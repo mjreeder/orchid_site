@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @SWG\Definition(
+ *  required={
+ *      "firstName",
+ *      "lastN",
+ *      "email",
+ *      "authLevel"
+ *   }
+ *  )
+ */
 class User implements \JsonSerializable
 {
   /**

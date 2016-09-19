@@ -10,12 +10,12 @@
 }
 
 .swagger-section .operations form.sandbox h4::before {
-    content: "▲";
+    content: "\25b2";
     animation: ease-in;
 }
 
 .swagger-section .operations form.sandbox h4.collapsed::before {
-    content: "▼";
+    content: "\25bc";
 }
 
 .swagger-section .operations h4.sample-title:hover,

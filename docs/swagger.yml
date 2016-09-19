@@ -13,7 +13,7 @@ produces:
   - application/json
 
 paths:
-  /login:
+  /users/login:
     post:
       description: |
         This endpoint allows the user to authenticate and obtain an api key.
@@ -37,7 +37,7 @@ paths:
         200:
           description: Api Token
           schema:
-            $ref: '#/definitions/Token'
+            $ref: '#/definitions/Users'
         400:
           description: Bad request
           schema:
@@ -46,7 +46,6 @@ paths:
           description: Invalid or missing api token
           schema:
             $ref: '#/definitions/Error'
-
   /users:
     get:
       description: |
@@ -70,7 +69,6 @@ paths:
           description: Invalid or missing api token.
           schema:
             $ref: '#/definitions/Error'
-
   /users/{id}:
     get:
       description: Used to get a user that you have access to.
@@ -89,90 +87,24 @@ paths:
           description: Invalid or missing api token.
           schema:
             $ref: '#/definitions/Error'
-
-  /users/me:
-    get:
-      description: |
-        Alias of `/users/{id}`. (All subroutes are compatible. e.g. `/users/me/svgs`)
-
-        Get the current users's object
-      tags:
-        - User
-      security:
-        - api_key: []
-      responses:
-        200:
-          description: Array of svg objects.
-          schema:
-            $ref: '#/definitions/User'
-        401:
-          description: Invalid or missing api token.
-          schema:
-            $ref: '#/definitions/Error'
-
-  /users/{id}/dimensions:
-    get:
-      description: Get all the dimensions the user has access to.
-      tags:
-        - User
-        - Dimension
-      security:
-        - api_key: []
-      parameters:
-        - $ref: '#/parameters/id'
-        - $ref: '#/parameters/page'
-        - $ref: '#/parameters/per_page'
-        - $ref: '#/parameters/X-Page'
-        - $ref: '#/parameters/X-Per-Page'
-      responses:
-        200:
-          description: Array of dimension objects.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Dimension'
-        401:
-          description: Invalid or missing api token.
-          schema:
-            $ref: '#/definitions/Error'
-
-
-  # /users/{id}/features:
-
-  # /users/{id}/fonts:
-
-  # /users/{id}/jobs:
-
-  # For=visibility
-  # /users/{id}/shares:
-
-  /users/{id}/svgs:
-    get:
-      description: Get all the svgs the user has access to.
-      tags:
-        - User
-        - Svg
-      security:
-        - api_key: []
-      parameters:
-        - $ref: '#/parameters/id'
-        - $ref: '#/parameters/page'
-        - $ref: '#/parameters/per_page'
-        - $ref: '#/parameters/X-Page'
-        - $ref: '#/parameters/X-Per-Page'
-      responses:
-        200:
-          description: Array of svg objects.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Svg'
-        401:
-          description: Invalid or missing api token.
-          schema:
-            $ref: '#/definitions/Error'
-
-  # /users/{id}/vector_layers:
+    /plants:
+      get:
+        description: get plants.
+        tags:
+          - Plants
+        security:
+          - api_key: []
+        parameters:
+          - $ref: '#/parameters'
+        responses:
+          200:
+            description: Plants object.
+            schema:
+              $ref: '#/definitions/Plants'
+          401:
+            description: Invalid or missing api token.
+            schema:
+              $ref: '#/definitions/Error'
 
 parameters:
   id:

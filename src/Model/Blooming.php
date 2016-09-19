@@ -7,7 +7,15 @@ ini_set('display_errors', true);
 require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
-
+/**
+ * @SWG\Definition(
+ *  required={
+ *      "plant_id",
+ *      "start_date",
+ *      "end_date"
+ *   }
+ *  )
+ */
 class Blooming implements \JsonSerializable
 {
     /**

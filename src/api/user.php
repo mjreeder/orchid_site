@@ -32,7 +32,7 @@ $app->group('/api', function () use ($app) {
      *         response=200,
      *         description="plant response",
      *         @SWG\Schema(
-     *              ref="#/definitions/Plants"
+     *              ref="#/definitions/User"
      *          )
      *     ),
      *     @SWG\Response(
