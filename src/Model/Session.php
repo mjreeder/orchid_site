@@ -2,6 +2,14 @@
 /**
  *
  */
+ /**
+  * @SWG\Definition(
+  *  required={
+  *      "session_id",
+  *      "session_key"
+  *   }
+  *  )
+  */
 class Session
 {
     /**
