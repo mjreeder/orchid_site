@@ -55,6 +55,12 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        });
 
+       $app->get('/status/{plant_id}', function ($request, $response, $args) use ($app){
+           $blooming = Blooming::getLastestBloom($args['plant_id']);
+           $output = new Response($blooming);
+           $response->getBody()->write(json_encode($output));
+       });
+
        /* ========================================================== *
          * POST
         * ========================================================== */

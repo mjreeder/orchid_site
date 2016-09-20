@@ -117,6 +117,36 @@ class Blooming implements \JsonSerializable
         return $blooming;
     }
 
+    public static function getLastestBloom($plant_id){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM blooming WHERE plant_id = ? AND end_date = 000-00-00");
+        $statement->execute(array($plant_id));
+        if ($statement->rowCount() <= 0){
+            $statement = $database->prepare("SELECT * FROM blooming WHERE plant_id = ? ORDER BY end_date DESC");
+            $statement->execute(array($plant_id));
+            if ($statement->rowCount() <= 0){
+                return false;
+            }
+
+            $blooming = [];
+            while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+                $blooming[] = new Blooming($row);
+            }
+
+            return $blooming;
+        }
+
+
+        $blooming = [];
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $blooming[] = new Blooming($row);
+        }
+
+        return $blooming;
+
+
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
