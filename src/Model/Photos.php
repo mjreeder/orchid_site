@@ -134,6 +134,15 @@ class Photos implements \JsonSerializable
      * PUT
      * ========================================================== */
 
+    public static function updatePhoto($id){
+        global $database;
+        $statement = $database->prepare("UPDATE photos SET active = 0 WHERE id = ?");
+        $statement->execute(array($id));
+        $updateID = Photos::getByID($id);
+
+        return $updateID;
+    }
+
     /* ========================================================== *
      * DELETE
      * ========================================================== */
