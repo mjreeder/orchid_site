@@ -28,6 +28,13 @@ $app->group('/api', function () use ($app){
         * POST
         * ========================================================== */
 
+       $app->post('/create', function($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+           $createPhoto = Photos::createPhoto($body);
+           $output = new Response($createPhoto);
+           $response->getBody()->write(json_encode($output));
+       });
+
        /* ========================================================== *
         * PUT
         * ========================================================== */

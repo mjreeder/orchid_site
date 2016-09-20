@@ -38,7 +38,7 @@ class Photos implements \JsonSerializable
      *
      * @var [*]
      */
-    public $type;
+    public $kind;
     /**
      * @SWG\Property()
      *
@@ -52,8 +52,8 @@ class Photos implements \JsonSerializable
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->url = $data['url'];
-            $this->type = intval($data['type']);
-//            $this->active =
+            $this->kind = intval($data['kind']);
+            $this->active = intval($data['active']);
         }
     }
 
@@ -63,7 +63,7 @@ class Photos implements \JsonSerializable
             'id' => $this->id,
             'plant_id' => $this->plant_id,
             'url' => $this->url,
-            'type' => $this->type,
+            'kind' => $this->kind,
             'active' => $this->active,
         ];
     }
@@ -100,9 +100,35 @@ class Photos implements \JsonSerializable
         return $photos;
     }
 
+    public static function getByID($id)
+    {
+        global $database;
+        $statement = $database->prepare("SELECT * FROM photos WHERE id = $id");
+        $statement->execute();
+        $photos = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $photos[] = new self($row);
+        }
+
+        return $photos;
+    }
+
+
+
     /* ========================================================== *
      * POST
      * ========================================================== */
+
+    public static function createPhoto($body){
+        global $database;
+        $statement = $database->prepare("INSERT INTO photos (plant_id, url, kind, active) VALUES (?,?,?,1)");
+        $statement->execute(array($body['plant_id'], $body['url'], $body['kind']));
+        $id = $database->lastInsertId();
+        $updateID = Photos::getByID($id);
+
+        return $updateID;
+    }
 
     /* ========================================================== *
      * PUT

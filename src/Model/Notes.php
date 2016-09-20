@@ -88,7 +88,7 @@ class Notes implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM notes WHERE plant_id = ?');
+        $statement = $database->prepare('SELECT * FROM notes WHERE plant_id = ? ORDER BY TIMESTAMP DESC');
         $statement->execute(array($plant_id));
 
         if ($statement->rowCount() <= 0) {
