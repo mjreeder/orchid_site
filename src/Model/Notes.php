@@ -3,7 +3,7 @@
 namespace orchid_site\src\Model;
 
 error_reporting(E_ALL);
-ini_set('display_erros', true);
+ini_set('display_errors', true);
 require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
