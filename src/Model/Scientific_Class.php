@@ -67,10 +67,10 @@ class ScientificClass implements \JsonSerializable
         return $scientificClasses;
     }
 
-    public static function getByID($scientificClass)
+    public static function getByID($id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM scientific_class WHERE scientific_class = $scientificClass");
+        $statement = $database->prepare("SELECT * FROM scientific_class WHERE id = $id");
         $statement->execute(array($scientificClass));
         $scientificClasses = [];
 
@@ -96,7 +96,7 @@ class ScientificClass implements \JsonSerializable
     {
         global $database;
         $statement = $database->prepare('UPDATE scientific_class SET classification_id = ?, name = ? WHERE id = ?');
-        $statement->execute(array($id, $body['classification_id'], $body['name'], $id));
+        $statement->execute(array($body['classification_id'], $body['name'], $id));
         $statement->closeCursor();
 
         return self::getById($id);
