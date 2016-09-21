@@ -118,6 +118,30 @@ $app->group('/api', function () use ($app) {
      *         type="string",
      *         format=""
      *     ),
+     *     @SWG\Parameter(
+     *         name="firstName",
+     *         in="args",
+     *         description="The users first name",
+     *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="lastName",
+     *         in="args",
+     *         description="The users lastName",
+     *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="authLevel",
+     *         in="args",
+     *         description="The users authorization level",
+     *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
@@ -142,23 +166,31 @@ $app->group('/api', function () use ($app) {
     });
 
     /**
-     * @SWG\Post(
+     * @SWG\Put(
      *     path="/users",
-     *     summary="create a user",
-     *     description="function to create a user",
+     *     summary="change user password",
+     *     description="function to change a user password",
      *     tags={"Users"},
      *     @SWG\Parameter(
-     *         name="email",
+     *         name="id",
      *         in="args",
-     *         description="The users email",
+     *         description="The users id",
      *         required=true,
-     *         type="string",
-     *         format=""
+     *         type="int",
+     *         format="int64"
      *     ),
      *     @SWG\Parameter(
      *         name="password",
      *         in="args",
      *         description="The users password",
+     *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="newPassword",
+     *         in="args",
+     *         description="The users new password",
      *         required=true,
      *         type="string",
      *         format=""
