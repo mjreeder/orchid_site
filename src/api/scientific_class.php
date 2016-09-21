@@ -94,7 +94,7 @@ $app->group('/api', function () use ($app){
         *     ),
         * )
         */
-       $app->post('/', function($request, $response, $args) use ($app){
+       $app->post('', function($request, $response, $args) use ($app){
           $body = $request->getParsedBody();
            $notes = Notes::createNote($body);
            $output = new Response($notes);
@@ -144,7 +144,7 @@ $app->group('/api', function () use ($app){
         *     ),
         * )
         */
-       $app->put('/update', function ($request, $response, $args) use ($app){
+       $app->put('', function ($request, $response, $args) use ($app){
           $body = $request->getParsedBody();
            $output = Notes::updateNotes($body);
            $response->getBody()->write(json_encode($output));
