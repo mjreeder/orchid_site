@@ -218,7 +218,41 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
-
+    /**
+    * @SWG\Delete(
+    *     path="/users/{id}",
+    *     summary="delete user by Id",
+    *     description="delete user by Id",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="id",
+    *         in="path",
+    *         description="The user's id",
+    *         required=false,
+    *         type="int",
+    *         format="int64"
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="plant response",
+    *         @SWG\Schema(
+    *              ref="#/definitions/Plants"
+    *          )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->delete('/{id}', function ($request, $response, $args) use ($app) {
+      $plant = Users::delete($args['id']);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
 
   });
 });

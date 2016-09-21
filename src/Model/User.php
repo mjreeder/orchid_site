@@ -146,4 +146,17 @@ class User implements \JsonSerializable
 
         return true;
     }
+
+    public static function delete($id)
+    {
+        global $database;
+        $statement = $database->prepare("DELETE FROM users WHERE id = $id");
+        $statement->execute();
+        $statement->closeCursor();
+        if ($statement->rowCount() > 0) {
+            return array('success' => true);
+        } else {
+            return array('success' => false);
+        }
+    }
 }

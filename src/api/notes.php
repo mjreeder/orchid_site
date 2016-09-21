@@ -35,6 +35,7 @@ $app->group('/api', function () use ($app){
         *     summary="Get all the notes for a specific plant_id",
         *     description="All the general note information for that specific plant_id",
         *     tags={"Notes"},
+        *     @SWG\Parameter(ref="#/parameters/plant_id"),
         *     @SWG\Response(
         *         response=200,
         *           id="2",
@@ -60,10 +61,22 @@ $app->group('/api', function () use ($app){
         *     summary="create new general note for a specific plant_id",
         *     description="need a plant_id, messsage, timestamp",
         *     tags={"Notes"},
+        *     @SWG\Parameter(ref="#/parameters/plant_id"),
         *     @SWG\Parameter(
-        *         plant_id="5",
-        *         timestamp="2016-09-02",
-        *         note="I love this plants. Plants are AWESOME!!!!"
+        *         name="note",
+        *         in="args",
+        *         description="note text",
+        *         required=true,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="timestamp",
+        *         in="args",
+        *         description="Timestamp for note",
+        *         required=true,
+        *         type="string",
+        *         format=""
         *     ),
         *     @SWG\Response(
         *         response=200,
