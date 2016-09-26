@@ -39,6 +39,8 @@ class Health implements \JsonSerializable
      */
     public $score;
 
+    public $comment;
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -46,6 +48,7 @@ class Health implements \JsonSerializable
             $this->plant_id = intval($data['plant_id']);
             $this->timestamp = $data['timestamp'];
             $this->score = $data['score'];
+            $this->comment = $data['comment'];
         }
     }
 
@@ -56,6 +59,7 @@ class Health implements \JsonSerializable
             'plant_id' => $this->plant_id,
             'timestamp' => $this->timestamp,
             'score' => $this->score,
+            'comment' => $this->comment,
         ];
     }
 
@@ -113,8 +117,8 @@ class Health implements \JsonSerializable
     public static function createHealth($body)
     {
         global $database;
-        $statement = $database->prepare('INSERT INTO health (plant_id, score, timestamp) VALUES (?,?,?)');
-        $statement->execute(array($body['plant_id'], $body['score'], $body['timestamp']));
+        $statement = $database->prepare('INSERT INTO health (plant_id, score, timestamp, comment) VALUES (?,?,?, ?)');
+        $statement->execute(array($body['plant_id'], $body['score'], $body['timestamp'], $body['comment']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
         $updateID = Health::getByID($id);
@@ -129,9 +133,9 @@ class Health implements \JsonSerializable
     public static function updateHealth($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE health SET timestamp = ?, plant_id = ?, score = ? WHERE id = ?');
-        $statement->execute(array($body['timestamp'], $body['plant_id'], $body['score'], $body['id']));
-        $id = self::getByPlantID(2);
+        $statement = $database->prepare('UPDATE health SET timestamp = ?, plant_id = ?, score = ? comment = ? WHERE id = ?');
+        $statement->execute(array($body['timestamp'], $body['plant_id'], $body['score'], $body['comment'], $body['id']));
+        $id = self::getByID($body['id']);
 
         return $id;
     }
