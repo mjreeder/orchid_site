@@ -304,13 +304,40 @@ class Plants implements \JsonSerializable
         return new self($statement->fetch());
     }
 
+    public static function wildcardSearch($searchItem){
+      global $database;
+      $statement = $database->prepare("DESCRIBE plants");
+      $statement->execute();
+      if ($statement->rowCount() <= 0) {
+          return;
+      }
+      $plantAttributes = [];
+      while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+          $plantAttributes[] = $row;
+      }
+
+      $plants = [];
+      for ($i=0; $i < sizeof($plantAttributes) ; $i++) {
+        $attribute = $plantAttributes[$i]['Field'];
+        $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $attribute LIKE '%$searchItem%'");
+        $wildcardStatement->execute();
+        if (!$wildcardStatement->rowCount() <= 0) {
+          while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
+              $plants[] = new self($row);
+          }
+        }
+      }
+
+      return $plants;
+
+    }
+
     public static function getPaginatedPlants($alpha, $index)
     {
         global $database;
         $limitIndex = ($index - 1) * 20;
         $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE '$alpha%' LIMIT $limitIndex, 20");
         $statement->execute();
-        $allPlants = array();
         if ($statement->rowCount() <= 0) {
             return;
         }

@@ -139,6 +139,42 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    /**
+    * @SWG\Get(
+    *     path="/plants/search_all/{searchItem}",
+    *     summary="wildcard plant search",
+    *     description="Get plant by its accession number",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="searchItem",
+    *         in="args",
+    *         description="the attribute to be searched",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/search_all/{searchItem}', function ($request, $response, $args) use ($app) {
+      $plant = Plants::wildcardSearch($args['searchItem']);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
      /**
      * @SWG\Put(
      *     path="/plants",
@@ -348,6 +384,7 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
+
     $app->put('', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::update($body);
