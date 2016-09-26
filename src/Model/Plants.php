@@ -338,6 +338,25 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+    public static function getPlantsByTable($table_id){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE ? = location_id");
+        $statement->execute(array($table_id));
+
+        if($statement->rowCount() <= 0){
+            return false;
+        }
+
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+
+
+    }
+
     //UPDATE
     public static function update($body)
     {
