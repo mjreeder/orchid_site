@@ -82,14 +82,15 @@ class Classification_Link implements \JsonSerializable
         $statement = $database->prepare('SELECT * FROM classification_link
         RIGHT JOIN scientific_class ON classification_link.class_id=scientific_class.id
         INNER JOIN classification ON classification.id=scientific_class.classification_id
-        WHERE plant_id = $id ORDER BY rank');
+        WHERE plant_id = ? ORDER BY rank');
         $statement->execute(array($id));
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            return json_encode($row);
-        } else {
-            throw new Exception('No plant classification hierarchy found', 404);
+        $relations = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $relations[] = $row;
         }
+        $statement->closeCursor();
+
+        return $relations;
     }
 
     public static function createClassificationLink($body)

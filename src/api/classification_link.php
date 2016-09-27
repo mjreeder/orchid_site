@@ -88,6 +88,37 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    /**
+     * @SWG\Get(
+     *     path="/plant_hierarchy/{id}",
+     *     summary="get plant hierarchy",
+     *     description="get plant by classification id",
+     *     tags={"classification_link"},
+     *     @SWG\Parameter(ref="#/parameters/plant_id"),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="plant response",
+     *         @SWG\Schema(
+     *              ref="#/definitions/Plants"
+     *          )
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Error"
+     *         )
+     *     )
+     * )
+     */
+    $app->get('/plant_hierarchy/{id}', function($request, $response, $args) use ($app) {
+      $plantHierarchy = Classification_link::getPlantHierarchy($args['id']);
+      $output = new Response($plantHierarchy);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
+
 
 
 
