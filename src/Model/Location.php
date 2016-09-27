@@ -75,6 +75,34 @@ class Location implements \JsonSerializable
         return $locations;
     }
 
+    public static function getTableNameFromID($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT name FROM location where id = ?');
+        $statement->execute(array($id));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+
+    }
+
+    public static function checkTable($name)
+    {
+        global $database;
+        $statement = $database->prepare("SELECT * FROM location WHERE name = ?");
+        $statement->execute(array($name));
+
+        if($statement->rowCount() == 1){
+            return $statement->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
