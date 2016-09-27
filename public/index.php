@@ -65,6 +65,7 @@ require __DIR__ . '/../src/api/tag.php';
 require __DIR__ . '/../src/api/sprayed.php';
 require __DIR__ . '/../src/api/user.php';
 require __DIR__ . '/../src/api/location.php';
+require __DIR__ . '/../src/api/plant_country_link.php';
 
 //Register Models
 require __DIR__ . '/../src/Model/Blooming.php';
@@ -86,6 +87,8 @@ require __DIR__ . '/../src/Model/Sprayed.php';
 require __DIR__ . '/../src/Model/Tag.php';
 require __DIR__ . '/../src/Model/User.php';
 require __DIR__ . '/../src/Model/Session.php';
+require __DIR__ . '/../src/Model/Plant_Country_Link.php';
+
 
 
 
