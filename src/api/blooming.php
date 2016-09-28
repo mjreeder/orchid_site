@@ -32,6 +32,11 @@ $app->group('/api', function () use ($app){
            $blooming = Blooming::getAll();
             $output = new Response($blooming);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
        /**
@@ -53,12 +58,22 @@ $app->group('/api', function () use ($app){
            $blooming = Blooming::getByPlantID($args['plant_id']);
            $output = new Response($blooming);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
        $app->get('/status/{plant_id}', function ($request, $response, $args) use ($app){
            $blooming = Blooming::getLastestBloom($args['plant_id']);
            $output = new Response($blooming);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
        /* ========================================================== *
@@ -88,8 +103,13 @@ $app->group('/api', function () use ($app){
        $app->post('/create', function ($request, $response, $args) use ($app){
            $body = $request->getParsedBody();
            $blooming = Blooming::createBlooming($body);
-           $ouptut = new Response($blooming);
-           $response->getBody()->write(json_encode($ouptut));
+           $output = new Response($blooming);
+           $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
        /* ========================================================== *
@@ -123,6 +143,11 @@ $app->group('/api', function () use ($app){
            $blooming = Blooming::updateBlooming($body);
            $output = new Response($blooming);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
        /* ========================================================== *
