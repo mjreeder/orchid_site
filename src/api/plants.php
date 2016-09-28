@@ -89,6 +89,34 @@ $app->group('/api', function () use ($app) {
 
     /**
     * @SWG\Get(
+    *     path="/plants/plant_attributes",
+    *     summary="Get attributes",
+    *     description="Get plant attributes",
+    *     tags={"Plants"},
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="Error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/plant_attributes', function ($request, $response, $args) use ($app) {
+      $plantAttributes = Plants::getPlantAttributes();
+      $output = new Response($plantAttributes);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
     *     path="/plants/{plant_id}",
     *     summary="Get by id",
     *     description="get plant by id",

@@ -304,32 +304,59 @@ class Plants implements \JsonSerializable
         return new self($statement->fetch());
     }
 
-    public static function wildcardSearch($searchItem){
-      global $database;
-      $statement = $database->prepare("DESCRIBE plants");
-      $statement->execute();
-      if ($statement->rowCount() <= 0) {
-          return;
-      }
-      $plantAttributes = [];
-      while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-          $plantAttributes[] = $row;
-      }
-
-      $plants = [];
-      for ($i=0; $i < sizeof($plantAttributes) ; $i++) {
-        $attribute = $plantAttributes[$i]['Field'];
-        $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $attribute LIKE '%$searchItem%'");
-        $wildcardStatement->execute();
-        if (!$wildcardStatement->rowCount() <= 0) {
-          while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
-              $plants[] = new self($row);
-          }
+    public static function getPlantAttributes()
+    {
+        global $database;
+        $statement = $database->prepare('DESCRIBE plants');
+        $statement->execute();
+        if ($statement->rowCount() <= 0) {
+            return;
         }
-      }
+        $plantAttributes = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plantAttributes[] = $row;
+        }
 
-      return $plants;
+        $attributes = [];
+        for ($i = 0; $i < sizeof($plantAttributes); ++$i) {
+            $attribute = $plantAttributes[$i]['Field'];
+            // var_dump($attribute);
+            if (strpos($attribute, '_') == true) {
+                $attribute = str_replace('_', ' ', $attribute);
 
+            }
+            array_push($attributes, $attribute);
+        }
+
+        return $attributes;
+    }
+
+    public static function wildcardSearch($searchItem)
+    {
+        global $database;
+        $statement = $database->prepare('DESCRIBE plants');
+        $statement->execute();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plantAttributes = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plantAttributes[] = $row;
+        }
+
+        $plants = [];
+        for ($i = 0; $i < sizeof($plantAttributes); ++$i) {
+            $attribute = $plantAttributes[$i]['Field'];
+            $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $attribute LIKE '%$searchItem%'");
+            $wildcardStatement->execute();
+            if (!$wildcardStatement->rowCount() <= 0) {
+                while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
+                    $plants[] = new self($row);
+                }
+            }
+        }
+
+        return $plants;
     }
 
     public static function getPaginatedPlants($alpha, $index)
@@ -365,12 +392,13 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
-    public static function getPlantsByTable($table_id){
+    public static function getPlantsByTable($table_id)
+    {
         global $database;
-        $statement = $database->prepare("SELECT * FROM plants WHERE ? = location_id");
+        $statement = $database->prepare('SELECT * FROM plants WHERE ? = location_id');
         $statement->execute(array($table_id));
 
-        if($statement->rowCount() <= 0){
+        if ($statement->rowCount() <= 0) {
             return false;
         }
 
@@ -380,8 +408,6 @@ class Plants implements \JsonSerializable
         }
 
         return $plants;
-
-
     }
 
     //UPDATE
