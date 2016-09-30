@@ -419,9 +419,16 @@ $app->group('/api', function () use ($app) {
      * )
      */
 
-    $app->put('', function ($request, $response, $formData) use ($app) {
+    $app->put('/', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::update($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/updateCritical', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateCritical($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });

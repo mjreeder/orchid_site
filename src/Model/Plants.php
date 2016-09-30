@@ -431,6 +431,15 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
+    public static function updateCritical($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET accession_number = ?, name = ?, scientific_name = ?, location_id = ? WHERE id = ?');
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['location_id'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
     //DELETE
     public static function delete($id)
     {
