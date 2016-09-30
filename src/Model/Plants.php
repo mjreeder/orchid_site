@@ -304,33 +304,6 @@ class Plants implements \JsonSerializable
         return new self($statement->fetch());
     }
 
-    public static function getPlantAttributes()
-    {
-        global $database;
-        $statement = $database->prepare('DESCRIBE plants');
-        $statement->execute();
-        if ($statement->rowCount() <= 0) {
-            return;
-        }
-        $plantAttributes = [];
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $plantAttributes[] = $row;
-        }
-
-        $attributes = [];
-        for ($i = 0; $i < sizeof($plantAttributes); ++$i) {
-            $attribute = $plantAttributes[$i]['Field'];
-            // var_dump($attribute);
-            if (strpos($attribute, '_') == true) {
-                $attribute = str_replace('_', ' ', $attribute);
-
-            }
-            array_push($attributes, $attribute);
-        }
-
-        return $attributes;
-    }
-
     public static function wildcardSearch($searchItem)
     {
         global $database;
