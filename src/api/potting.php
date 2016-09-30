@@ -31,6 +31,11 @@ $app->group('/api', function () use ($app){
           $potting = Potting::getAll();
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
        /**
@@ -51,6 +56,11 @@ $app->group('/api', function () use ($app){
           $potting = Potting::getByPlantID($args['plant_id']);
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
        /* ========================================================== *
@@ -80,6 +90,11 @@ $app->group('/api', function () use ($app){
            $potting = Potting::createPotting($body);
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
 
@@ -113,6 +128,11 @@ $app->group('/api', function () use ($app){
            $potting = Potting::updatePotting($body);
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
        });
 
 

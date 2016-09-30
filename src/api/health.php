@@ -33,6 +33,11 @@ $app->group('/api', function () use ($app) {
            $health = Health::getAll();
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /**
@@ -55,6 +60,11 @@ $app->group('/api', function () use ($app) {
            $health = Health::getById($args['id']);
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /**
@@ -77,6 +87,11 @@ $app->group('/api', function () use ($app) {
            $health = Health::getByPlantID($args['plant_id']);
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /* ========================================================== *
@@ -108,6 +123,11 @@ $app->group('/api', function () use ($app) {
             $health = Health::createHealth($body);
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /* ========================================================== *
@@ -141,6 +161,11 @@ $app->group('/api', function () use ($app) {
             $health  = Health::updateHealth($body);
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /* ========================================================== *

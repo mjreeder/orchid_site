@@ -29,6 +29,11 @@ $app->group('/api', function () use ($app){
             $sprayed = Sprayed::getAll();
             $output = new Response($sprayed);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /**
@@ -49,6 +54,11 @@ $app->group('/api', function () use ($app){
            $sprayed = Sprayed::getByPlantID($args['plant_id']);
             $output = new Response($sprayed);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /* ========================================================== *
@@ -78,6 +88,11 @@ $app->group('/api', function () use ($app){
             $sprayed = Sprayed::createSpray($body);
             $output = new Response($sprayed);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /* ========================================================== *
@@ -109,6 +124,11 @@ $app->group('/api', function () use ($app){
             $updateSpray = Sprayed::updateSpray($body);
             $output = new Response($updateSpray);
             $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
         });
 
         /* ========================================================== *
