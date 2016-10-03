@@ -304,6 +304,31 @@ class Plants implements \JsonSerializable
         return new self($statement->fetch());
     }
 
+    public static function getById2($id)
+    {
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
+        $statement->execute(array($id));
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        $plant_array = array();
+        $plant_info = array();
+
+        $plant_array[] = new self($statement->fetch());
+
+
+        $plant_info[] = Health::getByID($id);
+
+
+
+        array_push($plant_array, $plant_info);
+        var_dump($plant_array);
+        die();
+        return $plant_array;
+    }
+
     public static function wildcardSearch($searchItem)
     {
         global $database;
@@ -355,7 +380,14 @@ class Plants implements \JsonSerializable
         $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
         $statement->execute();
         if ($statement->rowCount() <= 0) {
-            return;
+            header('Content-Type: application/javascript');
+            http_response_code(400);
+
+            $response = array(
+                "status" => "fail",
+                "message" => "There is no accession number for that."
+            );
+            die(json_encode( (object) $response ));
         }
         $plants = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -412,6 +444,65 @@ class Plants implements \JsonSerializable
 
         return self::getById($body['id']);
     }
+
+    public static function updateCulture($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ? WHERE id = ?');
+        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+    public static function updateAccession($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET received_from = ?, donation_comment = ? WHERE id = ?');
+        $statment->execute(array($body['recieved_from'], $body['donation_comment'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+    public static function updateDescription($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET description = ? WHERE id = ?');
+        $statment->execute(array($body['description'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+    public static function updateHybrid($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET parent_one = ?, parent_two = ?, grex_status = ?,  hybrid_comment = ? WHERE id = ?');
+        $statment->execute(array($body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+    public static function updateInactive($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET inactive = ?, dead = ?, inactive_comment = ? WHERE id = ?');
+        $statment->execute(array($body['inactive'], $body['dead'], $body['inactive_comment'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+
+//    public static function updateHyrbid($body){
+//        global $database;
+//        $statment = $database->prepare('UPDATE plants SET parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ? WHERE id = ?');
+//        $statment->execute(array($body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['id']));
+//        $statment->closeCursor();
+//
+//        return self::getById($body['id']);
+//    }
+
+
+
+
 
     //DELETE
     public static function delete($id)

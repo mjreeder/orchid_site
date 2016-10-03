@@ -89,13 +89,41 @@ class Plant_Country_Link implements \JsonSerializable
         global $database;
         $statement = $database->prepare("SELECT * FROM plant_country_link WHERE plant_id = ?");
         $statement->execute(array($plant_id));
-        $p_c_link = [];
+        $plant_country_link = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $p_c_link[] = new Plant_Country_Link($row);
+            $plant_country_link[] = new Plant_Country_Link($row);
         }
 
-        return $p_c_link;
+//        $aaa = $plant_ccountry_link.count();
+
+//        $country = array();
+
+        $countryNames =  array();
+
+        for ($i = 0; $i < count($plant_country_link); $i++){
+            $country = $plant_country_link[$i];
+
+            $id = $country->country_id;
+            $country = Country::getByCountryID($id);
+
+            array_push($countryNames, $country);
+        }
+
+        if (count($countryNames) <= 0){
+            header('Content-Type: application/javascript');
+            http_response_code(400);
+
+            $response = array(
+                "status" => "fail",
+                "message" => "There is countries for this plant_id"
+            );
+            die(json_encode( (object) $response ));
+
+        }
+
+
+        return $countryNames;
     }
 
     /* ========================================================== *

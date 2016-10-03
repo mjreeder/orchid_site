@@ -43,6 +43,12 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/aaa/{id}', function ($request, $response, $args) use ($app){
+      $plants = Plants::getById2($args['id']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     /**
     * @SWG\Get(
     *     path="/plants/alpha/{alpha}/{index}",
@@ -404,6 +410,52 @@ $app->group('/api', function () use ($app) {
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
+
+    $app->put('/updateCulture', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateCulture($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/updateAccession', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateAccession($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/updateDescription', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateDescription($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/updateInactive', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateInactive($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/updateSinglePhoto', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateSinglePhotos($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/upateHyrbird', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateHybrid($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
+
+
 
      /**
      * @SWG\Delete(
