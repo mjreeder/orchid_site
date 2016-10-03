@@ -71,7 +71,7 @@ class ScientificClass implements \JsonSerializable
     {
         global $database;
         $statement = $database->prepare("SELECT * FROM scientific_class WHERE id = $id");
-        $statement->execute(array($scientificClass));
+        $statement->execute(array($id));
         $scientificClasses = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
