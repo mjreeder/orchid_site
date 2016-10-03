@@ -78,9 +78,10 @@ class Classification_Link implements \JsonSerializable
 
     public static function getPlantHierarchy($id)
     {
+      //
         global $database;
         $statement = $database->prepare('SELECT * FROM classification_link
-        RIGHT JOIN scientific_class ON classification_link.class_id=scientific_class.id
+        INNER JOIN scientific_class ON classification_link.class_id=scientific_class.id
         INNER JOIN classification ON classification.id=scientific_class.classification_id
         WHERE plant_id = ? ORDER BY rank');
         $statement->execute(array($id));

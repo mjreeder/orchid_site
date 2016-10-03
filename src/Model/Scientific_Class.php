@@ -30,14 +30,14 @@ class ScientificClass implements \JsonSerializable
      *
      * @var string
      */
-    public $name;
+    public $scientifc_class_name;
 
     public function __construct($data)
     {
         if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->classification_id = intval($data['classification_id']);
-            $this->name = $data['name'];
+            $this->scientifc_class_name = $data['scientifc_class_name'];
         }
     }
 
@@ -46,7 +46,7 @@ class ScientificClass implements \JsonSerializable
         return [
             'id' => $this->id,
             'classification_id' => $this->classification_id,
-            'name' => $this->name,
+            'scientifc_class_name' => $this->scientifc_class_name,
         ];
     }
 
@@ -84,8 +84,8 @@ class ScientificClass implements \JsonSerializable
     public static function createScientificClass($body)
     {
         global $database;
-        $statement = $database->prepare('INSERT INTO scientific_class (classification_id, name) VALUES (?,?)');
-        $statement->execute(array($body['classification_id'], $body['name']));
+        $statement = $database->prepare('INSERT INTO scientific_class (classification_id, scientifc_class_name) VALUES (?,?)');
+        $statement->execute(array($body['classification_id'], $body['scientifc_class_name']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
@@ -95,8 +95,8 @@ class ScientificClass implements \JsonSerializable
     public static function editScientificClass($body, $id)
     {
         global $database;
-        $statement = $database->prepare('UPDATE scientific_class SET classification_id = ?, name = ? WHERE id = ?');
-        $statement->execute(array($body['classification_id'], $body['name'], $id));
+        $statement = $database->prepare('UPDATE scientific_class SET classification_id = ?, scientifc_class_name = ? WHERE id = ?');
+        $statement->execute(array($body['classification_id'], $body['scientifc_class_name'], $id));
         $statement->closeCursor();
 
         return self::getById($id);
