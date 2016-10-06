@@ -320,18 +320,16 @@ class Plants implements \JsonSerializable
 
 
         $plant_info[] = Health::getByID($id);
-
-
-
         array_push($plant_array, $plant_info);
         var_dump($plant_array);
         die();
         return $plant_array;
     }
 
-    public static function wildcardSearch($searchItem)
+    public static function wildcardSearch($searchItem, $index)
     {
         global $database;
+        $limitIndex = ($index - 1) * 20;
         $statement = $database->prepare('DESCRIBE plants');
         $statement->execute();
         if ($statement->rowCount() <= 0) {
@@ -343,14 +341,20 @@ class Plants implements \JsonSerializable
         }
 
         $plants = [];
+        $whereString = "";
         for ($i = 0; $i < sizeof($plantAttributes); ++$i) {
             $attribute = $plantAttributes[$i]['Field'];
-            $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $attribute LIKE '%$searchItem%'");
-            $wildcardStatement->execute();
-            if (!$wildcardStatement->rowCount() <= 0) {
-                while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
-                    $plants[] = new self($row);
-                }
+            if($i > 0){
+              $whereString .= " OR ";
+            }
+            $whereString .=" $attribute LIKE '%$searchItem%' ";
+        }
+
+        $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $whereString LIMIT $limitIndex, 20");
+        $wildcardStatement->execute(array($whereString, $limitIndex));
+        if (!$wildcardStatement->rowCount() <= 0) {
+            while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
+                $plants[] = new self($row);
             }
         }
 
@@ -360,9 +364,10 @@ class Plants implements \JsonSerializable
     public static function getPaginatedPlants($alpha, $index)
     {
         global $database;
+        $alpha = mysqli_real_escape_string($alpha);
         $limitIndex = ($index - 1) * 20;
-        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE '$alpha%' LIMIT $limitIndex, 20");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT ?, 20");
+        $statement->execute(array('$alpha%', $limitIndex));
         if ($statement->rowCount() <= 0) {
             return;
         }
@@ -377,8 +382,8 @@ class Plants implements \JsonSerializable
     public static function getByAccessionNumber($accession_number)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = $accession_number");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM plants WHERE accession_number = ?");
+        $statement->execute(array($accession_number));
         if ($statement->rowCount() <= 0) {
             header('Content-Type: application/javascript');
             http_response_code(400);
