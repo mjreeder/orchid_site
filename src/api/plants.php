@@ -165,6 +165,14 @@ $app->group('/api', function () use ($app) {
     *         type="string",
     *         format=""
     *     ),
+    *     @SWG\Parameter(
+    *         name="index",
+    *         in="args",
+    *         description="the page index",
+    *         required=true,
+    *         type="int",
+    *         format="int64"
+    *     ),
     *     @SWG\Response(
     *         response=200,
     *         description="Success",
@@ -181,8 +189,8 @@ $app->group('/api', function () use ($app) {
     *     )
     * )
     */
-    $app->get('/search_all/{searchItem}', function ($request, $response, $args) use ($app) {
-      $plant = Plants::wildcardSearch($args['searchItem']);
+    $app->get('/search_all/{searchItem}/{index}', function ($request, $response, $args) use ($app) {
+      $plant = Plants::wildcardSearch($args['searchItem'], $args['index']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
