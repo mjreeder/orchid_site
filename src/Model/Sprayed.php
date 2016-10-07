@@ -31,6 +31,12 @@ class Sprayed implements \JsonSerializable
      * @var string
      */
     public $timestamp;
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
+    public $note;
 
     /* ========================================================== *
      * CONSTRUCTORS
@@ -42,6 +48,7 @@ class Sprayed implements \JsonSerializable
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->timestamp = $data['timestamp'];
+            $this->note = $data['note'];
         }
     }
 
@@ -51,6 +58,7 @@ class Sprayed implements \JsonSerializable
           'id' => $this->id,
             'plant_id' => $this->plant_id,
             'timestamp' => $this->timestamp,
+            'note' => $this->note
         ];
     }
 
@@ -122,8 +130,8 @@ class Sprayed implements \JsonSerializable
     public static function createSpray($body)
     {
         global $database;
-        $statement = $database->prepare('INSERT INTO sprayed (plant_id, timestamp) VALUES (?,?)');
-        $statement->execute(array($body['plant_id'], $body['timestamp']));
+        $statement = $database->prepare('INSERT INTO sprayed (plant_id, timestamp, note) VALUES (?,?,?)');
+        $statement->execute(array($body['plant_id'], $body['timestamp'], $body['note']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
@@ -139,8 +147,8 @@ class Sprayed implements \JsonSerializable
     public static function updateSpray($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE sprayed SET plant_id = (?), timestamp = (?) WHERE id = (?)');
-        $statement->execute(array($body['plant_id'], $body['timestamp'], $body['id']));
+        $statement = $database->prepare('UPDATE sprayed SET plant_id = (?), timestamp = (?), note = ? WHERE id = (?)');
+        $statement->execute(array($body['plant_id'], $body['timestamp'], $body['note'], $body['id']));
         $id = self::getByID($body['id']);
 
         return $id;
