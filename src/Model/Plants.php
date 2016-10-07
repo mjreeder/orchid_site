@@ -364,10 +364,10 @@ class Plants implements \JsonSerializable
     public static function getPaginatedPlants($alpha, $index)
     {
         global $database;
-        $alpha = mysqli_real_escape_string($alpha);
         $limitIndex = ($index - 1) * 20;
-        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT ?, 20");
-        $statement->execute(array('$alpha%', $limitIndex));
+        $alpha = $alpha.'%';
+        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT $limitIndex, 20");
+        $statement->execute(array($alpha));
         if ($statement->rowCount() <= 0) {
             return;
         }
