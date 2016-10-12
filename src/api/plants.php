@@ -419,6 +419,21 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->put('/updateCriticalTable', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateCriticalTable($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/updateVarifiedDate', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateVarifiedDate($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
     $app->put('/updateCulture', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateCulture($body);

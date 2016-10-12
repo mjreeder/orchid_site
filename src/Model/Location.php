@@ -89,6 +89,20 @@ class Location implements \JsonSerializable
 
     }
 
+    public static function getIDFromTableName($tableName)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT id FROM location where name = ?');
+        $statement->execute(array($tableName));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+
+    }
+
     public static function checkTable($name)
     {
         global $database;
@@ -106,8 +120,6 @@ class Location implements \JsonSerializable
     /* ========================================================== *
      * POST
      * ========================================================== */
-
-    //SINCE THE ROOMS ARE ALL SET THERE IS NO NEED TO CREATE A NEW LOCATION
 
     /* ========================================================== *
      * PUT

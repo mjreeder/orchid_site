@@ -175,6 +175,8 @@ class Plants implements \JsonSerializable
 
     public $special_collections_id;
 
+    public $last_varified;
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -205,6 +207,7 @@ class Plants implements \JsonSerializable
             $this->dead = $data['dead'];
             $this->special_collecions_id = $data['special_collections_id'];
             $this->is_donation = $data['is_donation'];
+            $this->last_varified = $data['last_varified'];
         }
     }
 
@@ -238,6 +241,7 @@ class Plants implements \JsonSerializable
             'dead' => $this->dead,
             'special_collections_id' => $this->special_collections_id,
             'is_donation' => $this->is_donation,
+            'last_varified' => $this->last_varified,
         ];
     }
 
@@ -495,6 +499,22 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
+    public static function updateCriticalTable($body){
+
+        $location =  Location::getIDFromTableName($body['name']);
+        global $database;
+        $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
+
+
+        $statement->execute(array($location['id'], $body['id']));
+
+        $statement->closeCursor();
+
+        return self::getById($body['id']);
+
+
+    }
+
 
 //    public static function updateHyrbid($body){
 //        global $database;
@@ -504,6 +524,14 @@ class Plants implements \JsonSerializable
 //
 //        return self::getById($body['id']);
 //    }
+
+    public static function updateVarifiedDate($body){
+        global $database;
+        $statement  = $database->prepare('UPDATE plants SET last_varified = CURDATE() WHERE id = ?');
+        $statement->execute(array($body['id']));
+        $statement->closeCursor();
+        return self::getById($body['id']);
+    }
 
 
 
