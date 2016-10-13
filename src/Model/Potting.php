@@ -103,8 +103,8 @@ class Potting implements \JsonSerializable
      public static function createPotting($body)
      {
          global $database;
-         $statement = $database->prepare('INSERT INTO potting (plant_id, timestamp, comment) VALUE (?,?,?)');
-         $statement->execute(array($body['plant_id'], $body['timestamp'], $body['note']));
+         $statement = $database->prepare('INSERT INTO potting (plant_id, timestamp) VALUE (?,?)');
+         $statement->execute(array($body['plant_id'], $body['timestamp']));
          $id = $database->lastInsertId();
          $statement->closeCursor();
          $updateID = self::getByID($id);
