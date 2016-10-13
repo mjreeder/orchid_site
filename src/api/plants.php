@@ -455,6 +455,13 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->put('/updateTaxonmic', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateTaxonmic($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
     $app->put('/updateInactive', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateInactive($body);

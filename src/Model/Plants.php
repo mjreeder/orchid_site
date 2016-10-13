@@ -177,6 +177,19 @@ class Plants implements \JsonSerializable
 
     public $last_varified;
 
+    public $class_name;
+
+    public $tribe_name;
+
+    public $subtribe_name;
+
+    public $genus_name;
+
+    public $species_name;
+
+    public $variety_name;
+
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -208,6 +221,13 @@ class Plants implements \JsonSerializable
             $this->special_collecions_id = $data['special_collections_id'];
             $this->is_donation = $data['is_donation'];
             $this->last_varified = $data['last_varified'];
+            $this->class_name = $data['class_name'];
+            $this->tribe_name = $data['tribe_name'];
+            $this->subtribe_name = $data['subtribe_name'];
+            $this->genus_name = $data['genus_name'];
+            $this->species_name = $data['species_name'];
+            $this->variety_name = $data['variety_name'];
+
         }
     }
 
@@ -242,6 +262,13 @@ class Plants implements \JsonSerializable
             'special_collections_id' => $this->special_collections_id,
             'is_donation' => $this->is_donation,
             'last_varified' => $this->last_varified,
+            'class_name' => $this->class_name,
+            'tribe_name' => $this->tribe_name,
+            'subtribe_name' => $this->subtribe_name,
+            'genus_name' => $this->genus_name,
+            'species_name' => $this->species_name,
+            'variety_name' => $this->variety_name,
+
         ];
     }
 
@@ -481,6 +508,15 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
+    public static function updateTaxonmic($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ? WHERE id = ?');
+        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
     public static function updateHybrid($body){
         global $database;
         $statment = $database->prepare('UPDATE plants SET parent_one = ?, parent_two = ?, grex_status = ?,  hybrid_comment = ? WHERE id = ?');
@@ -511,9 +547,10 @@ class Plants implements \JsonSerializable
         $statement->closeCursor();
 
         return self::getById($body['id']);
-
-
     }
+
+
+
 
 
 //    public static function updateHyrbid($body){
