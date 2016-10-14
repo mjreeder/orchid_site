@@ -476,7 +476,7 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
-    $app->put('/upateHyrbird', function ($request, $response, $formData) use ($app) {
+    $app->put('/upateHyrbrid', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateHybrid($body);
       $output = new Response($plant);

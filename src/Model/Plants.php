@@ -189,6 +189,8 @@ class Plants implements \JsonSerializable
 
     public $variety_name;
 
+    public $dead_date;
+
 
     public function __construct($data)
     {
@@ -227,6 +229,7 @@ class Plants implements \JsonSerializable
             $this->genus_name = $data['genus_name'];
             $this->species_name = $data['species_name'];
             $this->variety_name = $data['variety_name'];
+            $this->dead_date = $data['dead_date'];
 
         }
     }
@@ -268,6 +271,7 @@ class Plants implements \JsonSerializable
             'genus_name' => $this->genus_name,
             'species_name' => $this->species_name,
             'variety_name' => $this->variety_name,
+            'dead_date' => $this->dead_date,
 
         ];
     }
@@ -492,8 +496,8 @@ class Plants implements \JsonSerializable
 
     public static function updateAccession($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET received_from = ?, donation_comment = ? WHERE id = ?');
-        $statment->execute(array($body['recieved_from'], $body['donation_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET received_from = ?, donation_comment = ?, date_received = ? WHERE id = ?');
+        $statment->execute(array($body['received_from'], $body['donation_comment'], $body['date_received'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
@@ -510,8 +514,8 @@ class Plants implements \JsonSerializable
 
     public static function updateTaxonmic($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ? WHERE id = ?');
-        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
