@@ -249,10 +249,47 @@ $app->group('/api', function () use ($app) {
     * )
     */
     $app->delete('/{id}', function ($request, $response, $args) use ($app) {
-      $plant = Users::delete($args['id']);
-      $output = new Response($plant);
+      $user = Users::delete($args['id']);
+      $output = new Response($user);
       $response->getBody()->write(json_encode($output));
     });
+
+    /**
+    * @SWG\Get(
+    *     path="/users/session_key/{session_key}",
+    *     summary="Get by session key",
+    *     description="get user by session key",
+    *     tags={"Session"},
+    *     @SWG\Parameter(
+    *         name="session_key",
+    *         in="path",
+    *         description="The session key",
+    *         required=false,
+    *         type="int",
+    *         format="int64"
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/SinglePlantSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/session_key/{session_key}', function ($request, $response, $args) use ($app) {
+      $user = Session::getUserFromSessionKey($args['session_key']);
+      $output = new Response($user);
+      $response->getBody()->write(json_encode($output));
+    });
+
 
   });
 });
