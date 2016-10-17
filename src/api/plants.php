@@ -407,9 +407,16 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::update($body);
-      $output = new Response($plant);
-      $response->getBody()->write(json_encode($output));
+      if(User::isUserAuthorized($body['session_key'])){
+        $plant = Plants::update($body);
+        $output = new Response($plant);
+        $response->getBody()->write(json_encode($output));
+      }
+      else{
+        $output = new Response("current user not authorized", 403);
+        $response->write(json_encode($output));
+      }
+
     });
 
     $app->put('/updateCritical', function ($request, $response, $formData) use ($app) {
