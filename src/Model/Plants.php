@@ -177,6 +177,20 @@ class Plants implements \JsonSerializable
 
     public $last_varified;
 
+    public $class_name;
+
+    public $tribe_name;
+
+    public $subtribe_name;
+
+    public $genus_name;
+
+    public $species_name;
+
+    public $variety_name;
+
+    public $dead_date;
+
 
     public function __construct($data)
     {
@@ -209,6 +223,14 @@ class Plants implements \JsonSerializable
             $this->special_collecions_id = $data['special_collections_id'];
             $this->is_donation = $data['is_donation'];
             $this->last_varified = $data['last_varified'];
+            $this->class_name = $data['class_name'];
+            $this->tribe_name = $data['tribe_name'];
+            $this->subtribe_name = $data['subtribe_name'];
+            $this->genus_name = $data['genus_name'];
+            $this->species_name = $data['species_name'];
+            $this->variety_name = $data['variety_name'];
+            $this->dead_date = $data['dead_date'];
+
         }
     }
 
@@ -242,7 +264,14 @@ class Plants implements \JsonSerializable
             'dead' => $this->dead,
             'special_collections_id' => $this->special_collections_id,
             'is_donation' => $this->is_donation,
-            'last_varified' => $this->last_varified
+            'last_varified' => $this->last_varified,
+            'class_name' => $this->class_name,
+            'tribe_name' => $this->tribe_name,
+            'subtribe_name' => $this->subtribe_name,
+            'genus_name' => $this->genus_name,
+            'species_name' => $this->species_name,
+            'variety_name' => $this->variety_name,
+            'dead_date' => $this->dead_date,
 
         ];
     }
@@ -467,8 +496,8 @@ class Plants implements \JsonSerializable
 
     public static function updateAccession($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET received_from = ?, donation_comment = ? WHERE id = ?');
-        $statment->execute(array($body['recieved_from'], $body['donation_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET received_from = ?, donation_comment = ?, date_received = ? WHERE id = ?');
+        $statment->execute(array($body['received_from'], $body['donation_comment'], $body['date_received'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
@@ -485,8 +514,8 @@ class Plants implements \JsonSerializable
 
     public static function updateTaxonmic($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ? WHERE id = ?');
-        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
