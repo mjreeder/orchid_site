@@ -159,4 +159,19 @@ class User implements \JsonSerializable
             return array('success' => false);
         }
     }
+
+    public static function isUserAuthorized($session_key){
+      global $database;
+      $statement = $database->prepare('SELECT auth_level FROM users LEFT JOIN session ON session.user_id=users.id WHERE session_key = ?');
+      $statement->execute(array($session_key));
+      $row = $statement->fetch(PDO::FETCH_ASSOC);
+      $authLevel = $row['auth_level'];
+      $statement->closeCursor();
+      if($authLevel == 1){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
 }

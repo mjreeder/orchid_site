@@ -112,16 +112,4 @@ class Session
         'success' => true,
       );
     }
-    
-    public static function getUserFromSessionKey($session_key){
-      global $database;
-      $statement = $database->prepare('SELECT id FROM users LEFT JOIN session ON session.user_id=users.id WHERE session_key = ?');
-      $statement->execute(array($session_key));
-      $row = $statement->fetch(PDO::FETCH_ASSOC);
-      $user = User::getById($row['id']);
-
-      $statement->closeCursor();
-
-      return $user;
-    }
 }

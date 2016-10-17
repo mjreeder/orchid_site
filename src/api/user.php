@@ -158,11 +158,27 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
+    // //  $body = $request->getParsedBody();
+    // if(User::isUserAuthorized($body['session_key'])){
+    //   $plant = Plants::update($body);
+    //   $output = new Response($plant);
+    //   $response->getBody()->write(json_encode($output));
+    // }
+    // else{
+    //
+    // }
     $app->post('', function($request, $response, $args) use ($app) {
-      $body = $request->getParsedBody();
-      $user = User::createUser($body);
-      $output = new Response($user);
-      $response->getBody()->write(json_encode($output));
+        $body = $request->getParsedBody();
+      if(User::isUserAuthorized($body['session_key'])){
+        $user = User::createUser($body);
+        $output = new Response($user);
+        $response->getBody()->write(json_encode($output));
+      }
+      else{
+        $output = new Response("current user not authorized", 403);
+        $response->write(json_encode($output));
+      }
+
     });
 
     /**
