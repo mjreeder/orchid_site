@@ -119,8 +119,8 @@ class Potting implements \JsonSerializable
     public static function updatePotting($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE potting SET plant_id = ?, timestamp = ?, comment=? WHERE id = ?');
-        $statement->execute(array($body['plant_id'], $body['timestamp'], $body['note'], $body['id']));
+        $statement = $database->prepare('UPDATE potting SET plant_id = ?, timestamp = ? WHERE id = ?');
+        $statement->execute(array($body['plant_id'], $body['timestamp'], $body['id']));
         $id = self::getByID($body['id']);
 
         return $id;
