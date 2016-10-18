@@ -326,6 +326,7 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+
     // GET BY ID
     public static function getById($id)
     {
@@ -336,7 +337,10 @@ class Plants implements \JsonSerializable
             return;
         }
 
-        return new self($statement->fetch());
+        return new self($statement->fetch(PDO::FETCH_ASSOC));
+
+
+
     }
 
     public static function getById2($id)
@@ -455,6 +459,14 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+    public static function updateLocation($body){
+        global $database;
+        $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
+        $statement->execute(array($body['location_id'], $body['id']));
+        $statement->closeCursor();
+        return self::getById($body['id']);
+    }
+
     //UPDATE
     public static function update($body)
     {
@@ -483,6 +495,17 @@ class Plants implements \JsonSerializable
         $statment->closeCursor();
 
         return self::getById($body['id']);
+    }
+
+    public static function createCritical($body){
+        global $database;
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, location_id = 7');
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name']));
+        $id = $database->lastInsertId();
+        $statment->closeCursor();
+
+
+        return self::getById($id);
     }
 
     public static function updateCulture($body){
