@@ -8,7 +8,6 @@ require_once "../utilities/response.php";
 $app->group('/api', function () use ($app){
    $app->group('/country', function() use ($app){
 
-
        /* ========================================================== *
         * GET
         * ========================================================== */

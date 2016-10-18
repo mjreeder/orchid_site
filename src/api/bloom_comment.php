@@ -11,7 +11,7 @@ $app->group('/api', function () use ($app){
        /* ========================================================== *
         * GET
         * ========================================================== */
-
+        global $validate_admin;
        /**
         * @SWG\Get(
         *     path="/bloom_comment",
@@ -75,6 +75,22 @@ $app->group('/api', function () use ($app){
         *          timestamp="1999-09-10"
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="3",
@@ -90,7 +106,7 @@ $app->group('/api', function () use ($app){
            $bloom = Bloom_Comment::createBloom($body);
            $output = new Response($bloom);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * PUT
@@ -109,6 +125,22 @@ $app->group('/api', function () use ($app){
         *          timestamp="2016-09-16"
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="3",
@@ -123,7 +155,7 @@ $app->group('/api', function () use ($app){
            $updateBloom = Bloom_Comment::updateBloom($body);
            $output = new Response($updateBloom);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * DELETE

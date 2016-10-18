@@ -6,7 +6,7 @@ use orchid_site\src\Model\Classification_link;
 
 $app->group('/api', function () use ($app) {
   $app->group('/classification_link', function () use ($app) {
-
+    global $validate_admin;
     /**
      * @SWG\Post(
      *     path="/classification_link",
@@ -29,6 +29,22 @@ $app->group('/api', function () use ($app) {
      *         type="int",
      *         format="int64"
      *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
@@ -50,7 +66,7 @@ $app->group('/api', function () use ($app) {
       $classificationLink = Classification_link::createClassificationLink($body);
       $output = new Response($classificationLink);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     /**
      * @SWG\Get(

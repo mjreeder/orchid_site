@@ -7,6 +7,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
    $app->group('/special_collection', function () use ($app){
+     global $validate_admin;
 
        /* ========================================================== *
         * GET
@@ -69,6 +70,22 @@ $app->group('/api', function () use ($app){
         *         name="special_collection_345"
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="345",
@@ -81,7 +98,7 @@ $app->group('/api', function () use ($app){
            $bloom = Special_Collection::createSpecialCollection($body);
            $output = new Response($bloom);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * PUT
@@ -98,6 +115,22 @@ $app->group('/api', function () use ($app){
         *         name="speical_collection_333"
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="3",
@@ -110,7 +143,7 @@ $app->group('/api', function () use ($app){
            $updateBloom = Special_Collection::updateSpecialCollection($body);
            $output = new Response($updateBloom);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * DELETE

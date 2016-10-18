@@ -7,7 +7,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
     $app->group('/plant_country_link', function() use ($app){
-
+      global $validate_admin;
 
         /* ========================================================== *
          * GET
@@ -35,7 +35,7 @@ $app->group('/api', function () use ($app){
             $potting = Plant_Country_Link::createLink($body);
             $output = new Response($potting);
             $response->getBody()->write(json_encode($output));
-        });
+        })->add($validate_admin);
 
 
         /* ========================================================== *
@@ -47,7 +47,7 @@ $app->group('/api', function () use ($app){
             $potting = Plant_Country_Link::updatePlantCountryLink($body);
             $output = new Response($potting);
             $response->getBody()->write(json_encode($output));
-        });
+        })->add($validate_admin);
 
         /* ========================================================== *
         * DELETE

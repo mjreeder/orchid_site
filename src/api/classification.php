@@ -8,6 +8,8 @@ require_once '../utilities/response.php';
 
 $app->group('/api', function () use ($app) {
   $app->group('/classification', function () use ($app) {
+    global $validate_admin;
+    
     /*
      * @SWG\Get(
      *     path="/classification",
@@ -80,6 +82,22 @@ $app->group('/api', function () use ($app) {
      *         type="string",
      *         format=""
      *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
@@ -101,7 +119,7 @@ $app->group('/api', function () use ($app) {
       $classification = Classification::createClassification($body);
       $output = new Response($classification);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     /*
      * @SWG\Put(
@@ -133,6 +151,22 @@ $app->group('/api', function () use ($app) {
      *         type="int",
      *         format="int64"
      *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
@@ -154,7 +188,7 @@ $app->group('/api', function () use ($app) {
       $classification = Classification::editClassification($body, $args['id']);
       $output = new Response($classification);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
   });
 });

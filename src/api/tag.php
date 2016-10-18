@@ -7,6 +7,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
    $app->group('/tag', function () use ($app){
+     global $validate_admin;
        /* ========================================================== *
         * GET
         * ========================================================== */
@@ -90,6 +91,22 @@ $app->group('/api', function () use ($app){
         *         plant_id="5",
         *         note="this is the note for the specific plant_id"
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="4",
@@ -105,7 +122,7 @@ $app->group('/api', function () use ($app){
            $output = new Response($tag);
            $response->getBody()->write(json_encode($output));
 
-       });
+       })->add($validate_admin);
 
 
        /* ========================================================== *
@@ -123,6 +140,22 @@ $app->group('/api', function () use ($app){
         *         note="Hello. This is the new note",
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="3",
@@ -137,8 +170,7 @@ $app->group('/api', function () use ($app){
            $updateTag = Tag::updateTag($body);
            $output = new Response($updateTag);
            $response->getBody()->write(json_encode($output));
-
-       });
+       })->add($validate_admin);
 
        /**
         * @SWG\PUT(
@@ -149,6 +181,22 @@ $app->group('/api', function () use ($app){
         *     @SWG\Parameter(
         *         plant_id="4",
         *
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
         *     ),
         *     @SWG\Response(
         *         response=200,
@@ -165,7 +213,7 @@ $app->group('/api', function () use ($app){
            $output = new Response($updateTag);
            $response->getBody()->write(json_encode($output));
 
-       });
+       })->add($validate_admin);
 
        /**
         * @SWG\PUT(
@@ -176,6 +224,22 @@ $app->group('/api', function () use ($app){
         *     @SWG\Parameter(
         *         plant_id="4",
         *
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
         *     ),
         *     @SWG\Response(
         *         response=200,
@@ -191,8 +255,7 @@ $app->group('/api', function () use ($app){
            $updateTag = Tag::deactiveTag($body);
            $output = new Response($updateTag);
            $response->getBody()->write(json_encode($output));
-
-       });
+       })->add($validate_admin);
 
 
 

@@ -8,7 +8,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
    $app->group('/blooming', function () use ($app){
-
+      global $validate_admin;
        /* ========================================================== *
          * GET
         * ========================================================== */
@@ -91,6 +91,22 @@ $app->group('/api', function () use ($app){
         *         start_date="2016-09-02"
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="100",
@@ -110,7 +126,7 @@ $app->group('/api', function () use ($app){
                'application/json; charset=utf-8'
            );
            return $formattedResponse;
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
          * PUT
@@ -128,6 +144,22 @@ $app->group('/api', function () use ($app){
         *         start_date="2016-09-03",
         *          end_date="2016-09-16"
         *
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
         *     ),
         *     @SWG\Response(
         *         response=200,
@@ -148,7 +180,7 @@ $app->group('/api', function () use ($app){
                'application/json; charset=utf-8'
            );
            return $formattedResponse;
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
          * DELETE

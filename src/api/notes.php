@@ -5,6 +5,7 @@ use orchid_site\src\Model\Notes;
 
 $app->group('/api', function () use ($app){
    $app->group('/notes', function() use ($app){
+     global $validate_admin;
        /* ========================================================== *
         * GET
         * ========================================================== */
@@ -71,6 +72,22 @@ $app->group('/api', function () use ($app){
         *         format=""
         *     ),
         *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
         *         name="timestamp",
         *         in="args",
         *         description="Timestamp for note",
@@ -88,11 +105,11 @@ $app->group('/api', function () use ($app){
         * )
         */
        $app->post('/create', function($request, $response, $args) use ($app){
-          $body = $request->getParsedBody();
+           $body = $request->getParsedBody();
            $notes = Notes::createNote($body);
            $output = new Response($notes);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * PUT
@@ -111,6 +128,22 @@ $app->group('/api', function () use ($app){
         *          note="This is the new updated comment for the 4th plant_id",
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="5",
@@ -124,7 +157,7 @@ $app->group('/api', function () use ($app){
           $body = $request->getParsedBody();
            $output = Notes::updateNotes($body);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * DELETE
