@@ -7,6 +7,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
    $app->group('/potting', function () use ($app){
+     global $validate_admin;
 
        /* ========================================================== *
         * GET
@@ -77,6 +78,22 @@ $app->group('/api', function () use ($app){
         *         plant_id="5",
         *         timestamp="2016-09-02"
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="4",
@@ -86,7 +103,7 @@ $app->group('/api', function () use ($app){
         * )
         */
        $app->post('/create', function($request, $response, $args) use ($app){
-          $body = $request->getParsedBody();
+           $body = $request->getParsedBody();
            $potting = Potting::createPotting($body);
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
@@ -95,7 +112,7 @@ $app->group('/api', function () use ($app){
                'application/json; charset=utf-8'
            );
            return $formattedResponse;
-       });
+       })->add($validate_admin);
 
 
        /* ========================================================== *
@@ -113,6 +130,22 @@ $app->group('/api', function () use ($app){
         *         plant_id="4",
         *         timestamp="2016-09-03",
         *
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
         *     ),
         *     @SWG\Response(
         *         response=200,
@@ -133,7 +166,7 @@ $app->group('/api', function () use ($app){
                'application/json; charset=utf-8'
            );
            return $formattedResponse;
-       });
+       })->add($validate_admin);
 
 
        /* ========================================================== *

@@ -7,7 +7,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app) {
    $app->group('/pest', function () use ($app) {
-
+      global $validate_admin;
        /* ========================================================== *
         * GET
         * ========================================================== */
@@ -71,6 +71,22 @@ $app->group('/api', function () use ($app) {
         *         timestamp="2016-09-02",
         *         note="Help... There are pests everywhere"
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="4",
@@ -85,7 +101,7 @@ $app->group('/api', function () use ($app) {
            $pest_control = Pests::createPestControl($body);
            $output = new Response($pest_control);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
 
        /* ========================================================== *
@@ -105,6 +121,22 @@ $app->group('/api', function () use ($app) {
         *          note="Update comment to the pest",
         *
         *     ),
+        *     @SWG\Parameter(
+        *         name="session_id",
+        *         in="args",
+        *         description="admin session id",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
+        *     @SWG\Parameter(
+        *         name="session_key",
+        *         in="args",
+        *         description="admin session key",
+        *         required=false,
+        *         type="string",
+        *         format=""
+        *     ),
         *     @SWG\Response(
         *         response=200,
         *         id="3",
@@ -119,7 +151,7 @@ $app->group('/api', function () use ($app) {
            $pest = Pests::updatePest($body);
            $output = new Response($pest);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * DELETE

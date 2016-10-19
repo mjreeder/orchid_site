@@ -7,6 +7,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
    $app->group('/photos', function () use ($app) {
+     global $validate_admin;
 
        /* ========================================================== *
         * GET
@@ -33,7 +34,7 @@ $app->group('/api', function () use ($app){
            $createPhoto = Photos::createPhoto($body);
            $output = new Response($createPhoto);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
        /* ========================================================== *
         * PUT
@@ -43,7 +44,7 @@ $app->group('/api', function () use ($app){
            $updatePhoto = Photos::updatePhoto($args['id']);
            $output = new Response($updatePhoto);
            $response->getBody()->write(json_encode($output));
-       });
+       })->add($validate_admin);
 
 
        /* ========================================================== *

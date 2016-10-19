@@ -23,6 +23,7 @@ class Session
      */
     public $session_key;
 
+
     public function __construct($session)
     {
         $this->session_id = $session['session_id'];
