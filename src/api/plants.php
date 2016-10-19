@@ -445,7 +445,7 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/updateVarifiedDate', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateVarifiedDate($body);
+      $plant = Plants::updateVarifiedDate($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
@@ -453,56 +453,56 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/updateCulture', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateCulture($body);
+      $plant = Plants::updateCulture($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/updateAccession', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateAccession($body);
+      $plant = Plants::updateAccession($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/updateDescription', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateDescription($body);
+      $plant = Plants::updateDescription($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/updateTaxonmic', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateTaxonmic($body);
+      $plant = Plants::updateTaxonmic($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/updateInactive', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateInactive($body);
+      $plant = Plants::updateInactive($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/updateSinglePhoto', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateSinglePhotos($body);
+      $plant = Plants::updateSinglePhotos($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/upateHyrbird', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateHybrid($body);
+      $plant = Plants::updateHybrid($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/updateLocation', function($request, $response, $formData) use ($app){
       $body = $request->getParsedBody();
-      $plant = Plants::updateLocation($body);
+      $plant = Plants::updateLocation($body['plant']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
