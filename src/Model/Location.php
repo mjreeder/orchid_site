@@ -99,6 +99,7 @@ class Location implements \JsonSerializable
             return;
         }
 
+
         return $statement->fetch(PDO::FETCH_ASSOC);
 
     }

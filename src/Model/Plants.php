@@ -460,9 +460,17 @@ class Plants implements \JsonSerializable
     }
 
     public static function updateLocation($body){
+
+        $location_id =  Location::getIDFromTableName($body['name']);
+        var_dump($location_id['id']);
+        $id = $body['id'];
+        $newBody = [];
+        $newBody['id'] = $id;
+        $newBody['location_id'] = ((float)$location_id['id']);
+
         global $database;
         $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
-        $statement->execute(array($body['location_id'], $body['id']));
+        $statement->execute(array($newBody['location_id'], $newBody['id']));
         $statement->closeCursor();
         return self::getById($body['id']);
     }
