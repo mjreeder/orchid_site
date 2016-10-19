@@ -10,9 +10,9 @@ class Validator
         global $database;
         global $current_admin_session;
         $body = $request->getParsedBody();
-        $session_key = $body['session_key'] ? @$body['session_key'] : @$request->getQueryParams()['session_key'];
-        $session_id = $body['session_id'] ? @$body['session_id'] : @$request->getQueryParams()['session_id'];
-        if (!$session_key) {
+        $session_key = $body['session_key'];
+        $session_id = $body['session_id'];
+        if ($session_key == null || $session_key == '') {
             throw new Exception('Session key required', 400);
         }
         if (!$session_id) {

@@ -431,14 +431,14 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/updateCritical', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateCritical($body);
+      $plant = Plants::updateCritical($body["plant"]);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
     $app->put('/updateCriticalTable', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateCriticalTable($body);
+      $plant = Plants::updateCriticalTable($body['table']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
