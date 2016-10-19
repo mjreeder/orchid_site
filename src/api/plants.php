@@ -9,6 +9,7 @@ require_once '../utilities/response.php';
 $app->group('/api', function () use ($app) {
   $app->group('/plants', function () use ($app) {
 
+    global $validate_admin;
     /**
     * @SWG\Get(
     *     path="/plants",
@@ -213,6 +214,22 @@ $app->group('/api', function () use ($app) {
      *         format=""
      *     ),
      *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
      *         name="distribution",
      *         in="args",
      *         description="The Plant's distribution",
@@ -407,38 +424,31 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      if(User::isUserAuthorized($body['session_key'])){
         $plant = Plants::update($body);
         $output = new Response($plant);
         $response->getBody()->write(json_encode($output));
-      }
-      else{
-        $output = new Response("current user not authorized", 403);
-        $response->write(json_encode($output));
-      }
-
-    });
+    })->add($validate_admin);
 
     $app->put('/updateCritical', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateCritical($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateCriticalTable', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateCriticalTable($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateVarifiedDate', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateVarifiedDate($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
 
     $app->put('/updateCulture', function ($request, $response, $formData) use ($app) {
@@ -446,49 +456,49 @@ $app->group('/api', function () use ($app) {
       $plant = Plants::updateCulture($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateAccession', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateAccession($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateDescription', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateDescription($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateTaxonmic', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateTaxonmic($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateInactive', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateInactive($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateSinglePhoto', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateSinglePhotos($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
-    $app->put('/upateHyrbrid', function ($request, $response, $formData) use ($app) {
+    $app->put('/upateHyrbird', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateHybrid($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->put('/updateLocation', function($request, $response, $formData) use ($app){
       $body = $request->getParsedBody();
@@ -515,6 +525,22 @@ $app->group('/api', function () use ($app) {
      *         type="int",
      *         format="int64"
      *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
@@ -535,7 +561,7 @@ $app->group('/api', function () use ($app) {
       $plant = Plants::delete($args['id']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
      /**
      * @SWG\Post(
@@ -557,6 +583,22 @@ $app->group('/api', function () use ($app) {
      *         name="distribution",
      *         in="args",
      *         description="The Plant's distribution",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
      *         required=false,
      *         type="string",
      *         format=""
@@ -750,7 +792,7 @@ $app->group('/api', function () use ($app) {
       $plant = Plants::createPlant($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     $app->post('/createPlant', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();

@@ -6,6 +6,7 @@ require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
     $app->group('/split', function() use ($app){
+      global $validate_admin;
         /* ========================================================== *
          * GET
          * ========================================================== */
@@ -72,6 +73,22 @@ $app->group('/api', function () use ($app){
          *          recipient="Sam Jones",
          *          note="hello",
          *     ),
+         *     @SWG\Parameter(
+         *         name="session_id",
+         *         in="args",
+         *         description="admin session id",
+         *         required=false,
+         *         type="string",
+         *         format=""
+         *     ),
+         *     @SWG\Parameter(
+         *         name="session_key",
+         *         in="args",
+         *         description="admin session key",
+         *         required=false,
+         *         type="string",
+         *         format=""
+         *     ),
          *     @SWG\Response(
          *         response=200,
          *         id="4",
@@ -88,7 +105,7 @@ $app->group('/api', function () use ($app){
             $split = Split::createSplit($body);
             $output = new Response($split);
             $response->getBody()->write(json_encode($output));
-        });
+        })->add($validate_admin);
 
         /* ========================================================== *
          * PUT
@@ -108,6 +125,22 @@ $app->group('/api', function () use ($app){
          *          recipient="Same Jones"
          *
          *     ),
+         *     @SWG\Parameter(
+         *         name="session_id",
+         *         in="args",
+         *         description="admin session id",
+         *         required=false,
+         *         type="string",
+         *         format=""
+         *     ),
+         *     @SWG\Parameter(
+         *         name="session_key",
+         *         in="args",
+         *         description="admin session key",
+         *         required=false,
+         *         type="string",
+         *         format=""
+         *     ),
          *     @SWG\Response(
          *         response=200,
          *         id="3",
@@ -124,7 +157,7 @@ $app->group('/api', function () use ($app){
             $split = Split::updateSplit($body);
             $output = new Response($split);
             $response->getBody()->write(json_encode($output));
-        });
+        })->add($validate_admin);
 
         /* ========================================================== *
          * DELETE

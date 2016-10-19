@@ -1,12 +1,15 @@
 <?php
-error_reporting( E_ALL);
-ini_set("display_errors", true);
-require_once "../utilities/response.php";
+
+error_reporting(E_ALL);
+ini_set('display_errors', true);
+require_once '../utilities/response.php';
+
 
 $app->group('/api', function () use ($app) {
   $app->group('/users', function () use ($app) {
 
-    /**
+    global $validate_admin;
+    /*
      * @SWG\Post(
      *     path="/users/login",
      *     summary="login for a user",
@@ -44,14 +47,14 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->post('/login', function($request, $response, $args) use ($app) {
+    $app->post('/login', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
       $session = Session::create_session($body);
       $output = new Response($session);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
+    /*
      * @SWG\Post(
      *     path="/users/logout",
      *     summary="logout function for a user",
@@ -73,6 +76,22 @@ $app->group('/api', function () use ($app) {
      *         type="int",
      *         format="int64"
      *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="plant response",
@@ -89,14 +108,14 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->post('/logout', function($request, $response, $args) use ($app) {
+    $app->post('/logout', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
       $session = Session::deleteSession($body);
       $output = new Response($session);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
-    /**
+    /*
      * @SWG\Post(
      *     path="/users",
      *     summary="create a user",
@@ -107,6 +126,22 @@ $app->group('/api', function () use ($app) {
      *         in="args",
      *         description="The users email",
      *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
      *         type="string",
      *         format=""
      *     ),
@@ -158,30 +193,14 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    // //  $body = $request->getParsedBody();
-    // if(User::isUserAuthorized($body['session_key'])){
-    //   $plant = Plants::update($body);
-    //   $output = new Response($plant);
-    //   $response->getBody()->write(json_encode($output));
-    // }
-    // else{
-    //
-    // }
-    $app->post('', function($request, $response, $args) use ($app) {
+    $app->post('', function ($request, $response, $args) use ($app) {
         $body = $request->getParsedBody();
-      if(User::isUserAuthorized($body['session_key'])){
         $user = User::createUser($body);
         $output = new Response($user);
         $response->getBody()->write(json_encode($output));
-      }
-      else{
-        $output = new Response("current user not authorized", 403);
-        $response->write(json_encode($output));
-      }
+    })->add($validate_admin);
 
-    });
-
-    /**
+    /*
      * @SWG\Put(
      *     path="/users",
      *     summary="change user password",
@@ -200,6 +219,22 @@ $app->group('/api', function () use ($app) {
      *         in="args",
      *         description="The users password",
      *         required=true,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_id",
+     *         in="args",
+     *         description="admin session id",
+     *         required=false,
+     *         type="string",
+     *         format=""
+     *     ),
+     *     @SWG\Parameter(
+     *         name="session_key",
+     *         in="args",
+     *         description="admin session key",
+     *         required=false,
      *         type="string",
      *         format=""
      *     ),
@@ -227,14 +262,14 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->put('/update_user_password/{id}', function($request, $response, $args) use ($app) {
+    $app->put('/update_user_password/{id}', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
       $user = User::createUser($body);
       $output = new Response($user);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
-    /**
+    /*
     * @SWG\Delete(
     *     path="/users/{id}",
     *     summary="delete user by Id",
@@ -247,6 +282,22 @@ $app->group('/api', function () use ($app) {
     *         required=false,
     *         type="int",
     *         format="int64"
+    *     ),
+    *     @SWG\Parameter(
+    *         name="session_id",
+    *         in="args",
+    *         description="admin session id",
+    *         required=false,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Parameter(
+    *         name="session_key",
+    *         in="args",
+    *         description="admin session key",
+    *         required=false,
+    *         type="string",
+    *         format=""
     *     ),
     *     @SWG\Response(
     *         response=200,
@@ -268,9 +319,9 @@ $app->group('/api', function () use ($app) {
       $user = Users::delete($args['id']);
       $output = new Response($user);
       $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
-    /**
+    /*
     * @SWG\Get(
     *     path="/users/session_key/{session_key}",
     *     summary="Get by session key",
@@ -305,7 +356,6 @@ $app->group('/api', function () use ($app) {
       $output = new Response($user);
       $response->getBody()->write(json_encode($output));
     });
-
 
   });
 });
