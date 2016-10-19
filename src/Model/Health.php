@@ -117,7 +117,7 @@ class Health implements \JsonSerializable
     public static function createHealth($body)
     {
         global $database;
-        $statement = $database->prepare('INSERT INTO health (plant_id, score, timestamp, comment) VALUES (?,?,?, ?)');
+        $statement = $database->prepare('INSERT INTO health (plant_id, score, timestamp, comment) VALUES (?,?,?,?)');
         $statement->execute(array($body['plant_id'], $body['score'], $body['timestamp'], $body['comment']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
@@ -133,7 +133,7 @@ class Health implements \JsonSerializable
     public static function updateHealth($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE health SET timestamp = ?, plant_id = ?, score = ? comment = ? WHERE id = ?');
+        $statement = $database->prepare('UPDATE health SET timestamp = ?, plant_id = ?, score = ?, comment = ? WHERE id = ?');
         $statement->execute(array($body['timestamp'], $body['plant_id'], $body['score'], $body['comment'], $body['id']));
         $id = self::getByID($body['id']);
 
