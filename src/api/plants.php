@@ -445,7 +445,7 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/updateVarifiedDate', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::updateVarifiedDate($body['plant']);
+      $plant = Plants::updateVarifiedDate($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
