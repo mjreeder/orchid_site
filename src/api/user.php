@@ -357,5 +357,64 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/auth', function ($request, $response, $args) use ($app) {
+      $code = $request->getQueryParam('code');
+
+      $error = $request->getQueryParam('error');
+
+      $errorDescription = $request->getQueryParam('error_description');
+
+      //return $response->getBody()->write(json_encode("HELLLO"));
+      if(isset($error)){
+        throw new Exception($errorDescription, 400);
+      }
+      if(!isset($code)){
+        throw new Exception("No code given", 400);
+      }
+
+      $url = 'https://api.box.com/oauth2/token';
+      $fields = array(
+          'grant_type' => urlencode("authorization_code"),
+          'code' => urlencode($code),
+          'client_id' => urlencode("xvgdpsrq8aof6f2eijnuclflm93alu8l"),
+          'client_secret' => urlencode("u0KIbCknZ01K1Sm4N3sxXfLD1ncQmpr2")
+      );
+
+
+
+      //url-ify the data for the POST
+      $fields_string = "";
+      foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+      rtrim($fields_string, '&');
+
+
+      //open connection
+      $ch = curl_init();
+
+      //set the url, number of POST vars, POST data
+      curl_setopt($ch,CURLOPT_URL, $url);
+      curl_setopt($ch,CURLOPT_POST, count($fields));
+      curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+      curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+
+      //execute post
+      $result = curl_exec($ch);
+
+      //close connection
+      curl_close($ch);
+
+      $fields = json_decode($result);
+//      return $response->getBody()->write($fields);
+      $fields_string = "";
+      foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+      rtrim($fields_string, '&');
+
+//      return $response->getBody()->write($fields_string);
+      $redirect = "http://localhost:8888/orchid_frontend/admin/#/auth?" . $fields_string;
+//      echo($redirect);
+      return $response->withStatus(302)->withHeader("Location", $redirect);
+
+    });
+
   });
 });

@@ -92,7 +92,7 @@ class Location implements \JsonSerializable
     public static function getIDFromTableName($tableName)
     {
         global $database;
-        $statement = $database->prepare('SELECT id FROM location where name = ?');
+        $statement = $database->prepare('SELECT id FROM location where `name` = ?');
         $statement->execute(array($tableName));
 
         if ($statement->rowCount() <= 0) {

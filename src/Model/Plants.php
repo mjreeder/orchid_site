@@ -338,7 +338,27 @@ class Plants implements \JsonSerializable
         }
 
         return new self($statement->fetch(PDO::FETCH_ASSOC));
+    }
 
+    public static function getSimilarPlant($species_name)
+    {
+        global $database;
+        $statement = $database->prepare("SELECT id FROM plants WHERE species_name = ?");
+        $statement->execute(array($species_name));
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        $plant_ids = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant_ids[] = $row;
+        }
+
+
+
+
+        return $plant_ids;
 
 
     }
@@ -462,7 +482,9 @@ class Plants implements \JsonSerializable
     public static function updateLocation($body){
 
         $location_id =  Location::getIDFromTableName($body['name']);
-        var_dump($location_id['id']);
+        var_dump($location_id);
+        die();
+
         $id = $body['id'];
         $newBody = [];
         $newBody['id'] = $id;
