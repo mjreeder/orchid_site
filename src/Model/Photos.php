@@ -52,7 +52,7 @@ class Photos implements \JsonSerializable
             $this->id = intval($data['id']);
             $this->plant_id = intval($data['plant_id']);
             $this->url = $data['url'];
-            $this->kind = intval($data['kind']);
+            $this->type = $data['type'];
             $this->active = intval($data['active']);
         }
     }
@@ -63,7 +63,7 @@ class Photos implements \JsonSerializable
             'id' => $this->id,
             'plant_id' => $this->plant_id,
             'url' => $this->url,
-            'kind' => $this->kind,
+            'type' => $this->type,
             'active' => $this->active,
         ];
     }
