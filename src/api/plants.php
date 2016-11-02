@@ -96,6 +96,42 @@ $app->group('/api', function () use ($app) {
 
     /**
     * @SWG\Get(
+    *     path="/plants/page/{index}",
+    *     summary="Get plants by index",
+    *     description="This is a descirption",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="index",
+    *         in="path",
+    *         description="The page of plants desired",
+    *         required=true,
+    *         type="int",
+    *         format="int64"
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/page/{index}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getPaginatedPlants($args['alpha'], $args['index']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
     *     path="/plants/{plant_id}",
     *     summary="Get by id",
     *     description="get plant by id",

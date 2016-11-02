@@ -415,6 +415,22 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+    public static function getAllPaginatedPlants($index){
+      global $database;
+      $limitIndex = ($index - 1) * 20;
+      $statement = $database->prepare("SELECT * FROM plants LIMIT $limitIndex, 20");
+      $statement->execute();
+      if ($statement->rowCount() <= 0) {
+          return;
+      }
+      $plants = [];
+      while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+          $plants[] = new self($row);
+      }
+
+      return $plants;
+    }
+
     public static function getByAccessionNumber($accession_number)
     {
         global $database;
