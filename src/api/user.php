@@ -406,11 +406,17 @@ $app->group('/api', function () use ($app) {
       $fields = json_decode($result);
 //      return $response->getBody()->write($fields);
       $fields_string = "";
-      foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-      rtrim($fields_string, '&');
+      foreach($fields as $key=>$value) {
+        if (key == "restricted_to") {
+          continue;
+        } else {
+          $fields_string .= $value.'/';
+        }
+      }
+      rtrim($fields_string, '/');
 
 //      return $response->getBody()->write($fields_string);
-      $redirect = "http://localhost:8888/orchid_frontend/admin/#/auth?" . $fields_string;
+      $redirect = "http://localhost:8888/orchid_frontend/admin/#/auth/" . $fields_string;
 //      echo($redirect);
       return $response->withStatus(302)->withHeader("Location", $redirect);
 
