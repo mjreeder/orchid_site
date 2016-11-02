@@ -175,7 +175,6 @@ class Plants implements \JsonSerializable
 
     public $special_collections_id;
 
-    public $last_varified;
 
     public $class_name;
 
@@ -222,7 +221,6 @@ class Plants implements \JsonSerializable
             $this->dead = $data['dead'];
             $this->special_collecions_id = $data['special_collections_id'];
             $this->is_donation = $data['is_donation'];
-            $this->last_varified = $data['last_varified'];
             $this->class_name = $data['class_name'];
             $this->tribe_name = $data['tribe_name'];
             $this->subtribe_name = $data['subtribe_name'];
@@ -264,7 +262,6 @@ class Plants implements \JsonSerializable
             'dead' => $this->dead,
             'special_collections_id' => $this->special_collections_id,
             'is_donation' => $this->is_donation,
-            'last_varified' => $this->last_varified,
             'class_name' => $this->class_name,
             'tribe_name' => $this->tribe_name,
             'subtribe_name' => $this->subtribe_name,
@@ -436,6 +433,22 @@ class Plants implements \JsonSerializable
         }
 
         return $plants;
+    }
+
+    public static function getAllPaginatedPlants($index){
+      global $database;
+      $limitIndex = ($index - 1) * 20;
+      $statement = $database->prepare("SELECT * FROM plants LIMIT $limitIndex, 20");
+      $statement->execute();
+      if ($statement->rowCount() <= 0) {
+          return;
+      }
+      $plants = [];
+      while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+          $plants[] = new self($row);
+      }
+
+      return $plants;
     }
 
     public static function getByAccessionNumber($accession_number)
@@ -619,13 +632,13 @@ class Plants implements \JsonSerializable
 //        return self::getById($body['id']);
 //    }
 
-    public static function updateVarifiedDate($body){
-        global $database;
-        $statement  = $database->prepare('UPDATE plants SET last_varified = CURDATE() WHERE id = ?');
-        $statement->execute(array($body['id']));
-        $statement->closeCursor();
-        return self::getById($body['id']);
-    }
+//    public static function updateVarifiedDate($body){
+//        global $database;
+//        $statement  = $database->prepare('UPDATE plants SET last_varified = CURDATE() WHERE id = ?');
+//        $statement->execute(array($body['id']));
+//        $statement->closeCursor();
+//        return self::getById($body['id']);
+//    }
 
 
 
