@@ -502,7 +502,7 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/updateLocation', function($request, $response, $formData) use ($app){
       $body = $request->getParsedBody();
-      $plant = Plants::updateLocation($body['plant']);
+      $plant = Plants::updateLocation($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
