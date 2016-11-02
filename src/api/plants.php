@@ -125,7 +125,7 @@ $app->group('/api', function () use ($app) {
     * )
     */
     $app->get('/page/{index}', function ($request, $response, $args) use ($app) {
-      $plants = Plants::getPaginatedPlants($args['alpha'], $args['index']);
+      $plants = Plants::getAllPaginatedPlants($args['index']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
