@@ -357,5 +357,11 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/allUsers', function ($request, $response, $args) use ($app) {
+      $user = User::getAllUsers();
+      $output = new Response($user);
+      $response->getBody()->write(json_encode($output));
+    });
+
   });
 });

@@ -116,6 +116,19 @@ class User implements \JsonSerializable
         }
     }
 
+    public static function getAllUsers(){
+        global $database;
+        $statement = $database->prepare('SELECT * FROM users');
+        $statement->execute();
+        $users = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $users[] = new self($row);
+        }
+
+        return $users;
+    }
+
     public static function getUserHashedPassword($id){
       global $database;
       $statement = $database->prepare('SELECT password_hash FROM users WHERE id= ?');

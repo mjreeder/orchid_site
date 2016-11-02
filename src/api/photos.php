@@ -40,8 +40,10 @@ $app->group('/api', function () use ($app){
         * PUT
         * ========================================================== */
 
-       $app->put('/update/{id}', function ($request, $response, $args) use ($app){
-           $updatePhoto = Photos::updatePhoto($args['id']);
+       $app->put('/update', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+
+           $updatePhoto = Photos::updatePhoto($body);
            $output = new Response($updatePhoto);
            $response->getBody()->write(json_encode($output));
        })->add($validate_admin);

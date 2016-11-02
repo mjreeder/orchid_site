@@ -46,6 +46,8 @@ class Photos implements \JsonSerializable
      */
     public $active;
 
+    public $fileName;
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -54,6 +56,7 @@ class Photos implements \JsonSerializable
             $this->url = $data['url'];
             $this->type = $data['type'];
             $this->active = intval($data['active']);
+            $this->fileName = $data['fileName'];
         }
     }
 
@@ -65,6 +68,7 @@ class Photos implements \JsonSerializable
             'url' => $this->url,
             'type' => $this->type,
             'active' => $this->active,
+            'fileName' => $this->fileName,
         ];
     }
 
@@ -134,7 +138,17 @@ class Photos implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    public static function updatePhoto($id){
+    public static function updatePhoto($body){
+        global $database;
+
+        $statement = $database->prepare("UPDATE photos SET url = ?, type = ?, plant_id = ?, active = 1 WHERE id = ?");
+        $statement->execute(array($body['url'], $body['type'], $body['plant_id'], $body['id']));
+        $updateID = Photos::getByID($body['id']);
+
+        return $updateID;
+    }
+
+    public static function deactive($id){
         global $database;
         $statement = $database->prepare("UPDATE photos SET active = 0 WHERE id = ?");
         $statement->execute(array($id));
