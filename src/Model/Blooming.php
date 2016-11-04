@@ -39,6 +39,8 @@ class Blooming implements \JsonSerializable
      */
     public $end_date;
 
+    public $note;
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -56,6 +58,7 @@ class Blooming implements \JsonSerializable
             'plant_id' => $this->plant_id,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'note' => $this->note
         ];
     }
 
@@ -84,7 +87,7 @@ class Blooming implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM blooming WHERE plant_id = ?');
+        $statement = $database->prepare('SELECT * FROM blooming INNER JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ?');
         $statement->execute(array($plant_id));
         if ($statement->rowCount() <= 0) {
             return;
@@ -93,7 +96,9 @@ class Blooming implements \JsonSerializable
         $blooming = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $blooming[] = new self($row);
+            $item = new self($row);
+            $item->note = $row['note'];
+            $blooming[] = $item;
         }
 
         return $blooming;

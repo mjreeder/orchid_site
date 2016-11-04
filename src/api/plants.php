@@ -529,7 +529,7 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
-    $app->put('/upateHyrbird', function ($request, $response, $formData) use ($app) {
+    $app->put('/updateHybrid', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateHybrid($body['plant']);
       $output = new Response($plant);
