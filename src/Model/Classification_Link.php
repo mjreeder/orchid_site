@@ -21,25 +21,37 @@ class Classification_Link implements \JsonSerializable
     /**
      * @SWG\Property(type="integer", format="int64")
      */
-    public $plant_id;
-    /**
-     * @SWG\Property(type="integer", format="int64")
-     */
-    public $class_id;
+    public $id;
+    public $class;
+    public $tribe;
+    public $subtribe;
+    public $genus;
+    public $species;
+    public $variety;
 
     public function __construct($data)
     {
         if (is_array($data)) {
-            $this->plant_id = intval($data['plant_id']);
-            $this->class_id = intval($data['class_id']);
+            $this->id = intval($data['id']);
+            $this->class = $data['class'];
+            $this->tribe = $data['tribe'];
+            $this->subtribe = $data['subtribe'];
+            $this->genus = $data['genus'];
+            $this->species = $data['species'];
+            $this->variety = $data['variety'];
         }
     }
 
     public function jsonSerialize()
     {
         return [
-            'plant_id' => $this->plant_id,
-            'class_id' => $this->class_id,
+            'plant_id' => $this->id,
+            'class' => $this->class,
+            'tribe' => $this->tribe,
+            'subtribe' => $this->subtribe,
+            'genus' => $this->genus,
+            'species' => $this->species,
+            'variety' => $this->variety
         ];
     }
 
@@ -80,14 +92,12 @@ class Classification_Link implements \JsonSerializable
     {
       //
         global $database;
-        $statement = $database->prepare('SELECT * FROM classification_link
-        INNER JOIN scientific_class ON classification_link.class_id=scientific_class.id
-        INNER JOIN classification ON classification.id=scientific_class.classification_id
-        WHERE plant_id = ? ORDER BY rank');
+        $statement = $database->prepare('SELECT `id`, `class_name` AS `class`, `tribe_name` AS `tribe`, `subtribe_name` AS `subtribe`, `genus_name` AS `genus`, `species_name` AS `species`, `variety_name` AS `variety` FROM plants WHERE id = 1');
         $statement->execute(array($id));
         $relations = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $relations[] = $row;
+            $item = new Classification_Link($row);
+            $relations[] = $item;
         }
         $statement->closeCursor();
 
