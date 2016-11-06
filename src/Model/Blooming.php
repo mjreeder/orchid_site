@@ -88,7 +88,7 @@ class Blooming implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare('SELECT blooming.*, bloom_comment.note, bloom_comment.timestamp as note_time FROM blooming INNER JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ?');
+        $statement = $database->prepare('SELECT blooming.*, bloom_comment.note, bloom_comment.timestamp as note_time FROM blooming LEFT JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ?');
         $statement->execute(array($plant_id));
         if ($statement->rowCount() <= 0) {
             return;
