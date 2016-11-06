@@ -144,20 +144,24 @@ class User implements \JsonSerializable
 
     public static function changeUserPassword($body)
     {
+
+
         global $database;
-        if (!$body['id'] || $body['passwordHash'] || $body['newPassword']) {
+        if (!$body['id'] || !$body['newPassword']) {
             throw new Exception('Missing required information', 400);
         }
         $hashed_password = password_hash($body['newPassword'], PASSWORD_BCRYPT);
-        $statement = $database->prepare('UPDATE users SET password = ? WHERE id = ?');
-        $statement->execute(array($hashed_password, $user->id));
+        $statement = $database->prepare('UPDATE users SET password_hash = ?, email = ? WHERE id = ?');
+        $statement->execute(array($hashed_password, $body['email'], $body['id']));
         $affected_rows = $statement->rowCount();
         $statement->closeCursor();
+
         if ($affected_rows < 1) {
             return false;
         }
 
-        return true;
+
+        return self::getById($body['id']);
     }
 
     public static function delete($id)
