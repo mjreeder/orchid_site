@@ -113,6 +113,7 @@ class Blooming implements \JsonSerializable
             return true;
         }
         $begin = new DateTime($begin);
+        $middle = new DateTime($middle);
         $end = new DateTime($end);
         if(($begin <= $middle) && ($middle >= $end)){
             return true;
