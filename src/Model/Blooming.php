@@ -7,6 +7,7 @@ ini_set('display_errors', true);
 require_once '../utilities/response.php';
 require_once '../utilities/database.php';
 use PDO;
+use \DateTime;
 /**
  * @SWG\Definition(
  *  required={
@@ -87,7 +88,7 @@ class Blooming implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM blooming INNER JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ?');
+        $statement = $database->prepare('SELECT blooming.*, bloom_comment.note, bloom_comment.timestamp as note_time FROM blooming INNER JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ?');
         $statement->execute(array($plant_id));
         if ($statement->rowCount() <= 0) {
             return;
@@ -96,12 +97,28 @@ class Blooming implements \JsonSerializable
         $blooming = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            if(!self::dateRangeCheck($row['start_date'], $row['end_date'], $row['note_time'])){
+                continue;
+            }
             $item = new self($row);
             $item->note = $row['note'];
             $blooming[] = $item;
         }
 
         return $blooming;
+    }
+
+    private static function dateRangeCheck($begin, $end, $middle){
+        if($end == "0000-00-00"){
+            return true;
+        }
+        $begin = new DateTime($begin);
+        $end = new DateTime($end);
+        if(($begin <= $middle) && ($middle >= $end)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function getByID($id)
