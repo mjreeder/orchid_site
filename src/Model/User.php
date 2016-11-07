@@ -40,6 +40,9 @@ class User implements \JsonSerializable
      * @var int
      */
     public $authLevel;
+    public $didLogin;
+
+    public $active;
 
     public function __construct($user)
     {
@@ -48,6 +51,8 @@ class User implements \JsonSerializable
         $this->lastName = $user['last_name'];
         $this->email = $user['email'];
         $this->authLevel = $user['auth_level'];
+        $this->didLogin = $user['didLogin'];
+        $this->active = $user['active'];
     }
 
     public function jsonSerialize()
@@ -58,6 +63,8 @@ class User implements \JsonSerializable
           'lastName' => $this->lastName,
           'email' => $this->email,
           'authLevel' => $this->authLevel,
+            'didLogin' => $this->didLogin,
+            'active' => $this->active,
       ];
     }
 
@@ -80,7 +87,7 @@ class User implements \JsonSerializable
         $checkExistingUserStatement->closeCursor();
 
         $hashedPassword = password_hash($body['password'], PASSWORD_BCRYPT);
-        $statement = $database->prepare('INSERT INTO users (first_name, last_name, email, password_hash, auth_level) VALUES (?,?,?,?,?)');
+        $statement = $database->prepare('INSERT INTO users (first_name, last_name, email, password_hash, auth_level, didLogin, active) VALUES (?,?,?,?,?, 0, 1)');
         $statement->execute(array($body['firstName'], $body['lastName'], $body['email'], $hashedPassword, $body['authLevel']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
@@ -118,7 +125,7 @@ class User implements \JsonSerializable
 
     public static function getAllUsers(){
         global $database;
-        $statement = $database->prepare('SELECT * FROM users');
+        $statement = $database->prepare('SELECT * FROM users WHERE active = 1');
         $statement->execute();
         $users = [];
 
@@ -167,7 +174,7 @@ class User implements \JsonSerializable
     public static function delete($id)
     {
         global $database;
-        $statement = $database->prepare("DELETE FROM users WHERE id = $id");
+        $statement = $database->prepare("UPDATE users SET active = 0 WHERE id = $id");
         $statement->execute();
         $statement->closeCursor();
         if ($statement->rowCount() > 0) {
