@@ -262,12 +262,13 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->put('/update_user_password/{id}', function ($request, $response, $args) use ($app) {
+    $app->put('/update_user_password', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
-      $user = User::createUser($body);
+      $user = User::changeUserPassword($body);
       $output = new Response($user);
       $response->getBody()->write(json_encode($output));
-    })->add($validate_admin);
+    });
+//        ->add($validate_admin);
 
     /*
     * @SWG\Delete(
@@ -315,11 +316,12 @@ $app->group('/api', function () use ($app) {
     *     )
     * )
     */
-    $app->delete('/{id}', function ($request, $response, $args) use ($app) {
-      $user = Users::delete($args['id']);
+    $app->post('/delete/{id}', function ($request, $response, $args) use ($app) {
+      $user = User::delete($args['id']);
       $output = new Response($user);
       $response->getBody()->write(json_encode($output));
-    })->add($validate_admin);
+    });
+//        ->add($validate_admin);
 
     /*
     * @SWG\Get(
@@ -356,6 +358,14 @@ $app->group('/api', function () use ($app) {
       $output = new Response($user);
       $response->getBody()->write(json_encode($output));
     });
+
+    $app->get('/allUsers', function ($request, $response, $args) use ($app) {
+      $user = User::getAllUsers();
+      $output = new Response($user);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
 
     $app->get('/auth', function ($request, $response, $args) use ($app) {
       $code = $request->getQueryParam('code');
