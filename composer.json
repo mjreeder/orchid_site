@@ -17,6 +17,7 @@
         "slim/php-view": "^2.0",
         "monolog/monolog": "^1.17",
         "zircote/swagger-php": "^2.0",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "aws/aws-sdk-php": "^3.19"
     }
 }
