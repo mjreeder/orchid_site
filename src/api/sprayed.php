@@ -51,8 +51,13 @@ $app->group('/api', function () use ($app){
          *     ),
          * )
          */
-        $app->get('/plant_id/{plant_id}', function($resquest, $response, $args) use ($app){
-           $sprayed = Sprayed::getByPlantID($args['plant_id']);
+        $app->get('/plant_id/{plant_id}', function($request, $response, $args) use ($app){
+            $page = 1;
+            $body = $request->getParsedBody();
+            if(isset($body['page'])){
+                $page = $body['page'];
+            }
+           $sprayed = Sprayed::getByPlantID($args['plant_id'], $page);
             $output = new Response($sprayed);
             $response->getBody()->write(json_encode($output));
             $formattedResponse = $response->withHeader(

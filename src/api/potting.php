@@ -54,7 +54,12 @@ $app->group('/api', function () use ($app){
         * )
         */
        $app->get('/plant_id/{plant_id}', function($request, $response, $args) use ($app){
-          $potting = Potting::getByPlantID($args['plant_id']);
+           $page = 1;
+           $body = $request->getParsedBody();
+           if(isset($body['page'])){
+               $page = $body['page'];
+           }
+          $potting = Potting::getByPlantID($args['plant_id'], $page);
            $output = new Response($potting);
            $response->getBody()->write(json_encode($output));
            $formattedResponse = $response->withHeader(

@@ -73,10 +73,11 @@ class Potting implements \JsonSerializable
         return $potting;
     }
 
-    public static function getByPlantID($plant_id)
+    public static function getByPlantID($plant_id, $page)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM potting WHERE plant_id = ?');
+        $offset = intval(($page - 1) * 5);
+        $statement = $database->prepare('SELECT * FROM potting WHERE plant_id = ? ORDER BY `potting`.`id` DESC LIMIT 5 OFFSET ' . $offset);
         $statement->execute(array($plant_id));
         $potting = [];
 
