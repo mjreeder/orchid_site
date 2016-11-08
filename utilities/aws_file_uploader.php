@@ -3,19 +3,21 @@
 
 require_once '../vendor/autoload.php';
 require_once "./aws_file_upload_constants.php";
+require_once "./Config.php";
 
+$CONFIG = Config::AWS();
 
-
-$s3Client = new \Aws\S3\S3Client([
+$options = [
     'version'     => 'latest',
-    'region'      => AWS_FT_REGION,
+    'region'      => $CONFIG["region"],
     'credentials' => [
-        'key'    => AWS_FT_KEY,
-        'secret' => AWS_FT_SECRET,
+        'key'    => $CONFIG["key"],
+        'secret' => $CONFIG["secret"],
     ],
-]);
+];
 
 
+$s3Client = new \Aws\S3\S3Client($options);
 
 
 function does_bucket_exist($bucket){

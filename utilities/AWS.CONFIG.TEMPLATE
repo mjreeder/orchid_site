@@ -1,0 +1,10 @@
+<?php
+
+return [
+    "key" => "~~KEY~~~",
+    "secret" => "~~SECRET~~~",
+        "bucket" => "bsuorchid",
+        "region" => "us-east-1",
+        "base_domain" => "http://s3.amazonaws.com/bsuorchid/"
+];
+?>

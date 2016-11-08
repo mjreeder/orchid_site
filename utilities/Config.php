@@ -30,4 +30,10 @@ class Config
             "variety"            => "variety"
         );
     }
+
+    public static function AWS(){
+        return include "AWS.CONFIG.php";
+
+    }
+
 }
