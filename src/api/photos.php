@@ -48,6 +48,14 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        })->add($validate_admin);
 
+       $app->put('/deactive', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+
+           $updatePhoto = Photos::deactive($body);
+           $output = new Response($updatePhoto);
+           $response->getBody()->write(json_encode($output));
+       })->add($validate_admin);
+
 
        /* ========================================================== *
         * DELETE

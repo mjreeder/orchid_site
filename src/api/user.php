@@ -365,6 +365,20 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/getUser/{email}', function ($request, $response, $args) use ($app) {
+      $body = $request->getParsedBody();
+      $user = User::getByEmail($args['email']);
+      $output = new Response($user);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->put('/getAuth', function ($request, $response, $args) use ($app) {
+      $body = $request->getParsedBody();
+      $user = User::getAuthLevel($body);
+      $output = new Response($user);
+      $response->getBody()->write(json_encode($output));
+    });
+
 
 
     $app->get('/auth', function ($request, $response, $args) use ($app) {

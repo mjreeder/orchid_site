@@ -79,7 +79,7 @@ class Photos implements \JsonSerializable
     public static function getAll()
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM photos');
+        $statement = $database->prepare('SELECT * FROM photos WHERE active = 1');
         $statement->execute();
         $photos = [];
 
@@ -93,7 +93,7 @@ class Photos implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = $plant_id");
+        $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = $plant_id AND active = 1");
         $statement->execute();
         $photos = [];
 
@@ -148,11 +148,11 @@ class Photos implements \JsonSerializable
         return $updateID;
     }
 
-    public static function deactive($id){
+    public static function deactive($body){
         global $database;
         $statement = $database->prepare("UPDATE photos SET active = 0 WHERE id = ?");
-        $statement->execute(array($id));
-        $updateID = Photos::getByID($id);
+        $statement->execute(array($body['id']));
+        $updateID = Photos::getByID($body['id']);
 
         return $updateID;
     }

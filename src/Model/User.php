@@ -123,6 +123,21 @@ class User implements \JsonSerializable
         }
     }
 
+    public static function getAuthLevel($body)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM users u, session s WHERE u.id = user_id AND s.session_id = ?');
+
+        $statement->execute(array($body['key']));
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+        if ($row) {
+            return new self($row);
+        } else {
+            return;
+        }
+    }
+
     public static function getAllUsers(){
         global $database;
         $statement = $database->prepare('SELECT * FROM users WHERE active = 1');
