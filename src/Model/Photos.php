@@ -126,8 +126,8 @@ class Photos implements \JsonSerializable
 
     public static function createPhoto($body){
         global $database;
-        $statement = $database->prepare("INSERT INTO photos (plant_id, url, kind, active) VALUES (?,?,?,1)");
-        $statement->execute(array($body['plant_id'], $body['url'], $body['kind']));
+        $statement = $database->prepare("INSERT INTO photos (plant_id, url, type, active, fileName) VALUES (?,?,?,1, ?)");
+        $statement->execute(array($body['plant_id'], $body['url'], $body['type'], $body['fileName']));
         $id = $database->lastInsertId();
         $updateID = Photos::getByID($id);
 
