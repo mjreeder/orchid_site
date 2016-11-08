@@ -55,7 +55,16 @@ $app->group('/api', function () use ($app){
         * )
         */
        $app->get('/plant_id/{plant_id}', function ($request, $response, $args) use ($app){
-           $blooming = Blooming::getByPlantID($args['plant_id']);
+           $start = 0;
+           $end = -1;
+           $body = $request->getParsedBody();
+           if(isset($body['start'])){
+               $start = $body['start'];
+           }
+           if(isset($body['end'])){
+               $end = $body['end'];
+           }
+           $blooming = Blooming::getByPlantID($args['plant_id'], $start, $end);
            $output = new Response($blooming);
            $response->getBody()->write(json_encode($output));
            $formattedResponse = $response->withHeader(
