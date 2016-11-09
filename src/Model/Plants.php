@@ -406,7 +406,7 @@ class Plants implements \JsonSerializable
             $whereString .=" $attribute LIKE '%$searchItem%' ";
         }
 
-        $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $whereString LIMIT $limitIndex, 20");
+        $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $whereString LIMIT $limitIndex, 30");
         $wildcardStatement->execute(array($whereString, $limitIndex));
         if (!$wildcardStatement->rowCount() <= 0) {
             while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
@@ -422,7 +422,7 @@ class Plants implements \JsonSerializable
         global $database;
         $limitIndex = ($index - 1) * 20;
         $alpha = $alpha.'%';
-        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT $limitIndex, 20");
+        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT $limitIndex, 30");
         $statement->execute(array($alpha));
         if ($statement->rowCount() <= 0) {
             return;
