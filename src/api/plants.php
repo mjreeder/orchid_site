@@ -154,7 +154,7 @@ $app->group('/api', function () use ($app) {
     * )
     */
     $app->get('/{plant_id}', function ($request, $response, $args) use ($app) {
-      $plant = Plants::getById($args['id']);
+      $plant = Plants::getById($args['plant_id']);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });

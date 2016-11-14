@@ -84,7 +84,19 @@ $app->group('/api', function () use ($app) {
          * )
          */
         $app->get('/plant_id/{plant_id}', function ($request, $response, $args) use ($app){
-           $health = Health::getByPlantID($args['plant_id']);
+            $page = 1;
+           $health = Health::getByPlantID($args['plant_id'], $page);
+            $output = new Response($health);
+            $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
+        });
+
+        $app->get('/plant_id/{plant_id}/page/{page}', function ($request, $response, $args) use ($app){
+            $health = Health::getByPlantID($args['plant_id'], $args['page']);
             $output = new Response($health);
             $response->getBody()->write(json_encode($output));
             $formattedResponse = $response->withHeader(

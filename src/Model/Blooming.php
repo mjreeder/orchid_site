@@ -85,10 +85,11 @@ class Blooming implements \JsonSerializable
         return $blooming;
     }
 
-    public static function getByPlantID($plant_id, $start, $end)
+    public static function getByPlantID($plant_id, $page)
     {
         global $database;
-        $statement = $database->prepare('SELECT blooming.*, bloom_comment.note, bloom_comment.timestamp as note_time FROM blooming LEFT JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ?');
+        $count = intval(($page - 1) * 5);
+        $statement = $database->prepare('SELECT blooming.*, bloom_comment.note, bloom_comment.timestamp as note_time FROM blooming LEFT JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ? ORDER BY `blooming`.`id` DESC LIMIT 5 OFFSET '.$count);
         $statement->execute(array($plant_id));
         if ($statement->rowCount() <= 0) {
             return;
@@ -105,11 +106,7 @@ class Blooming implements \JsonSerializable
             $blooming[] = $item;
         }
 
-        if($end == -1){
-            $end = count($blooming);
-        }
-
-        return array_slice($blooming, $start, $end);
+        return $blooming;
     }
 
     private static function dateRangeCheck($begin, $end, $middle){

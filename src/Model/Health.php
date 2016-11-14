@@ -96,10 +96,11 @@ class Health implements \JsonSerializable
         return $health;
     }
 
-    public static function getByPlantID($plant_id)
+    public static function getByPlantID($plant_id, $page)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM health WHERE plant_id = ? ORDER BY TIMESTAMP DESC");
+        $offset = intval(($page - 1) * 5);
+        $statement = $database->prepare("SELECT * FROM health WHERE plant_id = ? ORDER BY TIMESTAMP DESC LIMIT 5 OFFSET " . $offset);
         $statement->execute(array($plant_id));
         $health = [];
 

@@ -51,8 +51,20 @@ $app->group('/api', function () use ($app){
          *     ),
          * )
          */
-        $app->get('/plant_id/{plant_id}', function($resquest, $response, $args) use ($app){
-           $sprayed = Sprayed::getByPlantID($args['plant_id']);
+        $app->get('/plant_id/{plant_id}', function($request, $response, $args) use ($app){
+            $page = 1;
+           $sprayed = Sprayed::getByPlantID($args['plant_id'], $page);
+            $output = new Response($sprayed);
+            $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
+        });
+
+        $app->get('/plant_id/{plant_id}/page/{page}', function($request, $response, $args) use ($app){
+            $sprayed = Sprayed::getByPlantID($args['plant_id'], $args['page']);
             $output = new Response($sprayed);
             $response->getBody()->write(json_encode($output));
             $formattedResponse = $response->withHeader(
