@@ -39,7 +39,7 @@ $app->group('/api', function () use ($app) {
          * PUT
          * ========================================================== */
 
-        $app->post('/update', function ($request, $response, $args) use ($app) {
+        $app->put('/update', function ($request, $response, $args) use ($app) {
             $body = $request->getParsedBody();
             $updateVerification = Verified::updateVerification($body);
             $output = new Response($updateVerification);
