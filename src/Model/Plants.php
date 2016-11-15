@@ -598,8 +598,8 @@ class Plants implements \JsonSerializable
 
     public static function updateInactive($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET inactive = ?, dead = ?, inactive_comment = ? WHERE id = ?');
-        $statment->execute(array($body['inactive'], $body['dead'], $body['inactive_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET inactive_date = ?, dead_date = ?, inactive_comment = ? WHERE id = ?');
+        $statment->execute(array($body['inactive_date'], $body['dead_date'], $body['inactive_comment'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
