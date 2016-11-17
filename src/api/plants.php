@@ -830,9 +830,9 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
-    $app->post('/createPlant', function ($request, $response, $args) use ($app) {
+    $app->post('/create', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
-      $plant = Plants::createCritical($body);
+      $plant = Plants::createNewPlant($body);
       $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });

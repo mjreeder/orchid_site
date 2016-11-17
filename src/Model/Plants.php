@@ -540,10 +540,12 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
-    public static function createCritical($body){
+    public static function createNewPlant($body){
         global $database;
-        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, location_id = 7');
-        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name']));
+//        var_dump($body);
+//        die();
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, date_received = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?');
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['date_received'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'] ));
         $id = $database->lastInsertId();
         $statment->closeCursor();
 
