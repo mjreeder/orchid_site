@@ -118,13 +118,13 @@ class Blooming implements \JsonSerializable
     }
 
     private static function dateRangeCheck($begin, $end, $middle){
-        if($end == "0000-00-00"){
-            return true;
-        }
+        $empty_date = new DateTime("0000-00-00");
         $begin = new DateTime($begin);
         $middle = new DateTime($middle);
         $end = new DateTime($end);
         if(($begin <= $middle) && ($middle <= $end)){
+            return true;
+        } else if(($begin <= $middle) && ($end == $empty_date)){
             return true;
         } else {
             return false;
