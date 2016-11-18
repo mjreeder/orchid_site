@@ -219,7 +219,7 @@ class Plants implements \JsonSerializable
             $this->origin_comment = $data['origin_comment'];
             $this->location_id = intval($data['location_id']);
             $this->dead = $data['dead'];
-            $this->special_collecions_id = $data['special_collections_id'];
+            $this->special_collections_id = intval($data['special_collections_id']);
             $this->is_donation = $data['is_donation'];
             $this->class_name = $data['class_name'];
             $this->tribe_name = $data['tribe_name'];
@@ -607,6 +607,17 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
+    public static function updateSpecialCollection($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET special_collections_id = (SELECT id FROM special_collections WHERE name = ?) WHERE id = ?');
+        $statment->execute(array($body['name'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+
+
     public static function updateCriticalTable($body){
 
         $location =  Location::getIDFromTableName($body['name']);
@@ -614,11 +625,11 @@ class Plants implements \JsonSerializable
         $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
 
 
-        $statement->execute(array($location['id'], $body['id']));
+        $statement->execute(array($location['id'], $body['plant_id']));
 
         $statement->closeCursor();
 
-        return self::getById($body['id']);
+        return self::getById($body['plant_id']);
     }
 
 
