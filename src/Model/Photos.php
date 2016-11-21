@@ -120,6 +120,10 @@ class Photos implements \JsonSerializable
 
     public static function getSimilarPhotos($species_name)
     {
+        if($species_name == ""){
+            return false;
+        }
+
         global $database;
         $statement = $database->prepare("SELECT * FROM photos Pl WHERE pl.plant_id IN (SELECT id FROM plants Pt WHERE Pt.species_name = ?)");
         $statement->execute(array($species_name));

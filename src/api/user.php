@@ -268,7 +268,13 @@ $app->group('/api', function () use ($app) {
       $output = new Response($user);
       $response->getBody()->write(json_encode($output));
     });
-//        ->add($validate_admin);
+
+    $app->put('/update', function ($request, $response, $args) use ($app) {
+      $body = $request->getParsedBody();
+      $user = User::updateUser($body);
+      $output = new Response($user);
+      $response->getBody()->write(json_encode($output));
+    });
 
     /*
     * @SWG\Delete(
