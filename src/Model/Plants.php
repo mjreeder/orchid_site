@@ -495,8 +495,6 @@ class Plants implements \JsonSerializable
     public static function updateLocation($body){
 
         $location_id =  Location::getIDFromTableName($body['name']);
-        var_dump($location_id);
-        die();
 
         $id = $body['id'];
         $newBody = [];
@@ -540,14 +538,29 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
-    public static function createNewPlant($body){
+    public static function createNewPlant($plantData){
         global $database;
+//        var_dump($body['plant']);
+//        die();
+        $bo = $plantData['plant'];
+        $body = $bo['data'];
+
 //        var_dump($body);
 //        die();
-        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, date_received = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?');
-        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['date_received'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'] ));
+
+
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?');
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'] ));
         $id = $database->lastInsertId();
+
+        $location = [];
+        $location['name'] = $body['table'];
+        $location['id'] = $id;
+        self::updateLocation($location);
+
         $statment->closeCursor();
+
+
 
 
         return self::getById($id);
@@ -630,6 +643,20 @@ class Plants implements \JsonSerializable
         $statement->closeCursor();
 
         return self::getById($body['plant_id']);
+    }
+
+    public static function checkAccessionNumber($accession_number){
+        global $database;
+        $statement = $database->prepare('SELECT accession_number FROM plants WHERE accession_number = ?');
+        $statement->execute(array($accession_number));
+        $statement->closeCursor();
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
 

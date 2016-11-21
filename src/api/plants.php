@@ -50,6 +50,12 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/checkAccessionNumber/{accession_number}', function($request, $response, $args) use ($app){
+      $plants = Plants::checkAccessionNumber($args['accession_number']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     /**
     * @SWG\Get(
     *     path="/plants/alpha/{alpha}/{index}",
@@ -836,7 +842,7 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
-    $app->post('/create', function ($request, $response, $args) use ($app) {
+    $app->post('/createPlant', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::createNewPlant($body);
       $output = new Response($plant);
