@@ -157,8 +157,8 @@ class Tag implements \JsonSerializable
     public static function updateTag($body)
     {
         global $database;
-        $statement = $database->prepare('UPDATE tag SET note = (?), active = 1 WHERE plant_id = (?)');
-        $statement->execute(array($body['note'], $body['plant_id']));
+        $statement = $database->prepare('UPDATE tag SET note = ?, active = ? WHERE plant_id = ?');
+        $statement->execute(array($body['note'], $body['active'], $body['plant_id']));
         $id = self::getByPlantID($body['plant_id']);
 
         return $id;
