@@ -86,20 +86,62 @@ class Special_Collection implements \JsonSerializable
         return $special_collection;
     }
 
+    public static function getIDFromName($name)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM special_collections WHERE name = ?');
+        $statement->execute(array($name));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        $special_collection = new self($statement->fetch(PDO::FETCH_ASSOC));
+
+        return $special_collection;
+    }
+
+    public static function isName($name){
+        global $database;
+//        var_dump($name);
+        $statement = $database->prepare('SELECT * FROM special_collections WHERE name = ?');
+        $statement->execute(array($name));
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+        return true;
+
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
 
     public static function createSpecialCollection($body)
     {
-        global $database;
-        $statement = $database->prepare('INSERT INTO special_collections (name) VALUES (?)');
-        $statement->execute(array($body['name']));
-        $id = $database->lastInsertId();
-        $statement->closeCursor();
-        $updateID = self::getByID($id);
 
-        return $updateID;
+            $variable = self::isName($body['name']);
+
+        if($variable == false) {
+
+
+            global $database;
+
+            $statement = $database->prepare('INSERT INTO special_collections (name) VALUES (?)');
+            $statement->execute(array($body['name']));
+            $id = $database->lastInsertId();
+            $statement->closeCursor();
+            $updateID = self::getByID($id);
+
+            return $updateID;
+
+            return self::getIDFromName($body['name']);
+        } else {
+            return self::getIDFromName($body['name']);
+        }
+
+
     }
 
     /* ========================================================== *

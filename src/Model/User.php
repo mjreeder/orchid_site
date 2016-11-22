@@ -21,13 +21,13 @@ class User implements \JsonSerializable
      *
      * @var string
      */
-    public $firstName;
+    public $first_name;
     /**
      * @SWG\Property()
      *
      * @var string
      */
-    public $lastName;
+    public $last_name;
     /**
      * @SWG\Property()
      *
@@ -39,7 +39,7 @@ class User implements \JsonSerializable
      *
      * @var int
      */
-    public $authLevel;
+    public $auth_level;
     public $didLogin;
 
     public $active;
@@ -47,10 +47,10 @@ class User implements \JsonSerializable
     public function __construct($user)
     {
         $this->id = $user['id'];
-        $this->firstName = $user['first_name'];
-        $this->lastName = $user['last_name'];
+        $this->first_name = $user['first_name'];
+        $this->last_name = $user['last_name'];
         $this->email = $user['email'];
-        $this->authLevel = $user['auth_level'];
+        $this->auth_level = $user['auth_level'];
         $this->didLogin = $user['didLogin'];
         $this->active = $user['active'];
     }
@@ -59,10 +59,10 @@ class User implements \JsonSerializable
     {
         return [
           'id' => $this->id,
-          'firstName' => $this->firstName,
-          'lastName' => $this->lastName,
+          'first_name' => $this->first_name,
+          'last_name' => $this->last_name,
           'email' => $this->email,
-          'authLevel' => $this->authLevel,
+          'auth_level' => $this->auth_level,
             'didLogin' => $this->didLogin,
             'active' => $this->active,
       ];
@@ -72,8 +72,8 @@ class User implements \JsonSerializable
     {
         global $database;
 
-        if (!$body['firstName'] || !$body['lastName'] || !$body['email'] ||
-    !$body['password'] || !$body['authLevel']) {
+        if (!$body['first_name'] || !$body['last_name'] || !$body['email'] ||
+    !$body['password'] || !$body['auth_level']) {
             throw new Exception('Missing required user information', 400);
         }
         $checkExistingUserStatement = $database->prepare('SELECT * FROM users WHERE email = ?');
@@ -185,6 +185,21 @@ class User implements \JsonSerializable
 
         return self::getById($body['id']);
     }
+
+    public static function updateUser($body)
+    {
+
+        global $database;
+        $statement = $database->prepare('UPDATE users SET first_name = ?, last_name = ?, email = ?, auth_level = ? WHERE id = ?');
+        $statement->execute(array($body['first_name'], $body['last_name'], $body['email'], $body['auth_level'],  $body['id']));
+        $statement->closeCursor();
+
+
+
+        return self::getById($body['id']);
+    }
+
+
 
     public static function delete($id)
     {

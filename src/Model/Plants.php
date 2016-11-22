@@ -219,7 +219,7 @@ class Plants implements \JsonSerializable
             $this->origin_comment = $data['origin_comment'];
             $this->location_id = intval($data['location_id']);
             $this->dead = $data['dead'];
-            $this->special_collecions_id = $data['special_collections_id'];
+            $this->special_collections_id = intval($data['special_collections_id']);
             $this->is_donation = $data['is_donation'];
             $this->class_name = $data['class_name'];
             $this->tribe_name = $data['tribe_name'];
@@ -527,8 +527,6 @@ class Plants implements \JsonSerializable
     public static function updateLocation($body){
 
         $location_id =  Location::getIDFromTableName($body['name']);
-        var_dump($location_id);
-        die();
 
         $id = $body['id'];
         $newBody = [];
@@ -572,12 +570,21 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
-    public static function createCritical($body){
+    public static function createNewPlant($plantData){
         global $database;
-        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, location_id = 7');
-        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name']));
+
+        $bo = $plantData['plant'];
+        $body = $bo['data'];
+
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, `special_collections_id` = ?');
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id']));
+
         $id = $database->lastInsertId();
+
+
         $statment->closeCursor();
+
+
 
 
         return self::getById($id);
@@ -630,12 +637,23 @@ class Plants implements \JsonSerializable
 
     public static function updateInactive($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET inactive = ?, dead = ?, inactive_comment = ? WHERE id = ?');
-        $statment->execute(array($body['inactive'], $body['dead'], $body['inactive_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET inactive_date = ?, dead_date = ?, inactive_comment = ? WHERE id = ?');
+        $statment->execute(array($body['inactive_date'], $body['dead_date'], $body['inactive_comment'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
     }
+
+    public static function updateSpecialCollection($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET special_collections_id = (SELECT id FROM special_collections WHERE name = ?) WHERE id = ?');
+        $statment->execute(array($body['name'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+
 
     public static function updateCriticalTable($body){
 
@@ -644,11 +662,25 @@ class Plants implements \JsonSerializable
         $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
 
 
-        $statement->execute(array($location['id'], $body['id']));
+        $statement->execute(array($location['id'], $body['plant_id']));
 
         $statement->closeCursor();
 
-        return self::getById($body['id']);
+        return self::getById($body['plant_id']);
+    }
+
+    public static function checkAccessionNumber($accession_number){
+        global $database;
+        $statement = $database->prepare('SELECT accession_number FROM plants WHERE accession_number = ?');
+        $statement->execute(array($accession_number));
+        $statement->closeCursor();
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
 

@@ -40,6 +40,11 @@ class Blooming implements \JsonSerializable
      */
     public $end_date;
 
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $note;
 
     public function __construct($data)
@@ -59,7 +64,7 @@ class Blooming implements \JsonSerializable
             'plant_id' => $this->plant_id,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
-            'note' => $this->note
+            'note' => $this->note,
         ];
     }
 
@@ -88,14 +93,12 @@ class Blooming implements \JsonSerializable
     public static function getByPlantID($plant_id, $page)
     {
         global $database;
-        $count = intval(($page - 1) * 5);
-        $statement = $database->prepare('SELECT blooming.*, bloom_comment.note, bloom_comment.timestamp as note_time FROM blooming LEFT JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ? ORDER BY `blooming`.`id` DESC LIMIT 5 OFFSET '.$count);
+        $start = intval(($page - 1) * 5);
+        $end = intval($page * 5);
+        $statement = $database->prepare('SELECT blooming.*, bloom_comment.note, bloom_comment.timestamp as note_time FROM blooming LEFT JOIN bloom_comment ON blooming.plant_id = bloom_comment.plant_id WHERE blooming.plant_id = ? ORDER BY `blooming`.`id` DESC');
         $statement->execute(array($plant_id));
-        if ($statement->rowCount() <= 0) {
-            return;
-        }
 
-        $blooming = [];
+        $blooming_entries = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             if(!self::dateRangeCheck($row['start_date'], $row['end_date'], $row['note_time'])){
@@ -103,20 +106,64 @@ class Blooming implements \JsonSerializable
             }
             $item = new self($row);
             $item->note = $row['note'];
-            $blooming[] = $item;
+            $blooming_entries[] = $item;
+        }
+        $statement->closeCursor();
+
+        $statement = $database->prepare('SELECT * FROM blooming WHERE plant_id = ?');
+        $statement->execute(array($plant_id));
+        if ($statement->rowCount() <= 0) {
+            return;
         }
 
-        return $blooming;
+//        var_dump($blooming_entries);
+//        die();
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $matchingIdFound = false;
+            for($i = 0; $i < count($blooming_entries); $i++){
+//                die(json_encode($blooming_entries));
+                $bloom_entry = $blooming_entries[$i];
+//                die(json_encode($bloom_entry));
+                if($bloom_entry->id == $row['id']){
+                    $matchingIdFound = true;
+                    continue;
+                }
+            }
+            if(!$matchingIdFound){
+                $item = new self($row);
+                $blooming_entries[] = $item;
+            }
+        }
+        $statement->closeCursor();
+
+        usort($blooming_entries, array("self", "orderByComparison"));
+
+        //Assign new ids to blooms; this is because we may have ids show multiple times
+        for($i = 0; $i < count($blooming_entries); $i++){
+            $blooming_entries[$i]->id = $i+1;
+        }
+
+        $blooming_entries = array_slice($blooming_entries, $start, $end);
+
+        return $blooming_entries;
+    }
+
+    public static function orderByComparison($a, $b){
+        if($a->start_date == $b->start_date){
+            return 0;
+        }
+        return ($a->start_date > $b->start_date) ? -1 : 1;
     }
 
     private static function dateRangeCheck($begin, $end, $middle){
-        if($end == "0000-00-00"){
-            return true;
-        }
+        $empty_date = new DateTime("0000-00-00");
         $begin = new DateTime($begin);
         $middle = new DateTime($middle);
         $end = new DateTime($end);
-        if(($begin <= $middle) && ($middle >= $end)){
+        if(($begin <= $middle) && ($middle <= $end)){
+            return true;
+        } else if(($begin <= $middle) && ($end == $empty_date)){
             return true;
         } else {
             return false;

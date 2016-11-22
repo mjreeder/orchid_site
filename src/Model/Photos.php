@@ -118,6 +118,24 @@ class Photos implements \JsonSerializable
         return $photos;
     }
 
+    public static function getSimilarPhotos($species_name)
+    {
+        if($species_name == ""){
+            return false;
+        }
+
+        global $database;
+        $statement = $database->prepare("SELECT * FROM photos Pl WHERE pl.plant_id IN (SELECT id FROM plants Pt WHERE Pt.species_name = ?)");
+        $statement->execute(array($species_name));
+        $similarPhotos = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $similarPhotos[] = new self($row);
+        }
+
+        return $similarPhotos;
+    }
+
 
 
     /* ========================================================== *
@@ -126,8 +144,8 @@ class Photos implements \JsonSerializable
 
     public static function createPhoto($body){
         global $database;
-        $statement = $database->prepare("INSERT INTO photos (plant_id, url, kind, active) VALUES (?,?,?,1)");
-        $statement->execute(array($body['plant_id'], $body['url'], $body['kind']));
+        $statement = $database->prepare("INSERT INTO photos (plant_id, url, type, active, fileName) VALUES (?,?,?,1, ?)");
+        $statement->execute(array($body['plant_id'], $body['url'], $body['type'], $body['fileName']));
         $id = $database->lastInsertId();
         $updateID = Photos::getByID($id);
 
@@ -141,8 +159,8 @@ class Photos implements \JsonSerializable
     public static function updatePhoto($body){
         global $database;
 
-        $statement = $database->prepare("UPDATE photos SET url = ?, type = ?, plant_id = ?, active = 1 WHERE id = ?");
-        $statement->execute(array($body['url'], $body['type'], $body['plant_id'], $body['id']));
+        $statement = $database->prepare("UPDATE photos SET url = ?, type = ?, plant_id = ?, fileName = ?, active = 1 WHERE id = ?");
+        $statement->execute(array($body['url'], $body['type'], $body['plant_id'], $body['fileName'] ,$body['id']));
         $updateID = Photos::getByID($body['id']);
 
         return $updateID;

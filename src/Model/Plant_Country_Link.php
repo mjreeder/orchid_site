@@ -159,4 +159,11 @@ class Plant_Country_Link implements \JsonSerializable
     /* ========================================================== *
      * DELETE
      * ========================================================== */
+
+    public static function deletePlantCountryRelationship($body){
+        global $database;
+        $statement = $database->prepare("DELETE FROM `plant_country_link` WHERE country_id = ? AND plant_id = ?");
+        $statement->execute(array($body['country_id'], $body['plant_id']));
+        throw new Exception('Deleted', 200);
+    }
 }

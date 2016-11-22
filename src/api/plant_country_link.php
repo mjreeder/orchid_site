@@ -53,5 +53,13 @@ $app->group('/api', function () use ($app){
         * DELETE
         * ========================================================== */
 
+        $app->put('/delete', function($request, $response, $args) use ($app){
+            $body = $request->getParsedBody();
+            $potting = Plant_Country_Link::deletePlantCountryRelationship($body);
+            $output = new Response($potting);
+            $response->getBody()->write(json_encode($output));
+        })->add($validate_admin);
+
+
     });
 });
