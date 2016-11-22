@@ -130,6 +130,36 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/page/{index}",
+    *     summary="Get plants by index",
+    *     description="This is a descirption",
+    *     tags={"Plants"},
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/pages/amount', function ($request, $response, $args) use ($app) {
+      $numberOfPages = Plants::getNumberOfPages();
+      $output = new Response($numberOfPages);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
     /**
     * @SWG\Get(
     *     path="/plants/{plant_id}",

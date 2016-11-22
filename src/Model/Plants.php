@@ -385,7 +385,7 @@ class Plants implements \JsonSerializable
     public static function wildcardSearch($searchItem, $index)
     {
         global $database;
-        $limitIndex = ($index - 1) * 20;
+        $limitIndex = ($index - 1) * 30;
         $statement = $database->prepare('DESCRIBE plants');
         $statement->execute();
         if ($statement->rowCount() <= 0) {
@@ -414,13 +414,43 @@ class Plants implements \JsonSerializable
             }
         }
 
-        return $plants;
+        $allPlants = [];
+        $getTotalPlantsCount = $database->prepare("SELECT * FROM Plants WHERE $whereString");
+        $getTotalPlantsCount->execute(array($whereString));
+        if($getTotalPlantsCount->rowCount()<= 0){
+          $numberOfPages = 0;
+        }
+        else{
+          $numberOfPages = ceil(($getTotalPlantsCount->rowCount()) / 30);
+
+        }
+
+        $returnArray = array('pages' => $numberOfPages, 'total' => $getTotalPlantsCount->rowCount(), 'plants' => $plants);
+        return $returnArray;
+    }
+
+    public static function getNumberOfPages(){
+      global $database;
+      $statement = $database->prepare('SELECT * FROM plants');
+      $statement->execute();
+      $allPlants = array();
+      if ($statement->rowCount() <= 0) {
+          return;
+      }
+      $plants = [];
+      while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+          $plants[] = new self($row);
+      }
+
+      return ceil(sizeOf($plants) / 30);
+
+
     }
 
     public static function getPaginatedPlants($alpha, $index)
     {
         global $database;
-        $limitIndex = ($index - 1) * 20;
+        $limitIndex = ($index - 1) * 30;
         $alpha = $alpha.'%';
         $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT $limitIndex, 30");
         $statement->execute(array($alpha));
@@ -437,8 +467,8 @@ class Plants implements \JsonSerializable
 
     public static function getAllPaginatedPlants($index){
       global $database;
-      $limitIndex = ($index - 1) * 20;
-      $statement = $database->prepare("SELECT * FROM plants LIMIT $limitIndex, 20");
+      $limitIndex = ($index - 1) * 30;
+      $statement = $database->prepare("SELECT * FROM plants LIMIT $limitIndex, 30");
       $statement->execute();
       if ($statement->rowCount() <= 0) {
           return;
@@ -448,7 +478,9 @@ class Plants implements \JsonSerializable
           $plants[] = new self($row);
       }
 
-      return $plants;
+
+      $returnArray = array('pages' => Plants::getNumberOfPages(), 'total' => sizeOf(Plants::getAll()), 'plants' => $plants);
+      return $returnArray;
     }
 
     public static function getByAccessionNumber($accession_number)
