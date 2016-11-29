@@ -89,7 +89,7 @@ class Sprayed implements \JsonSerializable
     {
         global $database;
         $offset = intval(($page - 1) * 5);
-        $statement = $database->prepare('SELECT * FROM sprayed WHERE plant_id = ? ORDER BY `sprayed`.`id` DESC LIMIT 5 OFFSET ' . $offset);
+        $statement = $database->prepare('SELECT * FROM sprayed WHERE plant_id = ? ORDER BY `sprayed`.`timestamp` DESC LIMIT 5 OFFSET ' . $offset);
         $statement->execute(array($plant_id));
         if ($statement->rowCount() <= 0) {
             return;
