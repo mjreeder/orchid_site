@@ -228,7 +228,6 @@ class Plants implements \JsonSerializable
             $this->species_name = $data['species_name'];
             $this->variety_name = $data['variety_name'];
             $this->dead_date = $data['dead_date'];
-
         }
     }
 
@@ -323,6 +322,88 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+    public static function getBlooming(){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM blooming WHERE end_date != '0000-00-00')");
+        $statement->execute();
+        $allPlants = array();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+    public static function getCountries($country){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM plant_country_link WHERE country_id IN (SELECT id FROM country WHERE name = ?))");
+        $statement->execute(array($country));
+        $allPlants = array();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+
+    public static function getCommonNameFromAlphabet($collectionName){
+        global $database;
+        $collectionName = 'a';
+
+        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE 'a%'");
+        $statement->execute();
+   
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+    public static function getSubtribeNames($speciesName){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE subtribe_name = ?");
+        $statement->execute(array($speciesName));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+    public static function getSpecialCollection($collectionName){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE special_collections_id IN (SELECT id FROM special_collections WHERE name = ?)");
+        $statement->execute(array($collectionName));
+        $allPlants = array();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
 
     // GET BY ID
     public static function getById($id)
@@ -385,7 +466,7 @@ class Plants implements \JsonSerializable
     public static function wildcardSearch($searchItem, $index)
     {
         global $database;
-        $limitIndex = ($index - 1) * 20;
+        $limitIndex = ($index - 1) * 30;
         $statement = $database->prepare('DESCRIBE plants');
         $statement->execute();
         if ($statement->rowCount() <= 0) {
@@ -414,13 +495,43 @@ class Plants implements \JsonSerializable
             }
         }
 
-        return $plants;
+        $allPlants = [];
+        $getTotalPlantsCount = $database->prepare("SELECT * FROM Plants WHERE $whereString");
+        $getTotalPlantsCount->execute(array($whereString));
+        if($getTotalPlantsCount->rowCount()<= 0){
+          $numberOfPages = 0;
+        }
+        else{
+          $numberOfPages = ceil(($getTotalPlantsCount->rowCount()) / 30);
+
+        }
+
+        $returnArray = array('pages' => $numberOfPages, 'total' => $getTotalPlantsCount->rowCount(), 'plants' => $plants);
+        return $returnArray;
+    }
+
+    public static function getNumberOfPages(){
+      global $database;
+      $statement = $database->prepare('SELECT * FROM plants');
+      $statement->execute();
+      $allPlants = array();
+      if ($statement->rowCount() <= 0) {
+          return;
+      }
+      $plants = [];
+      while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+          $plants[] = new self($row);
+      }
+
+      return ceil(sizeOf($plants) / 30);
+
+
     }
 
     public static function getPaginatedPlants($alpha, $index)
     {
         global $database;
-        $limitIndex = ($index - 1) * 20;
+        $limitIndex = ($index - 1) * 30;
         $alpha = $alpha.'%';
         $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT $limitIndex, 30");
         $statement->execute(array($alpha));
@@ -437,8 +548,8 @@ class Plants implements \JsonSerializable
 
     public static function getAllPaginatedPlants($index){
       global $database;
-      $limitIndex = ($index - 1) * 20;
-      $statement = $database->prepare("SELECT * FROM plants LIMIT $limitIndex, 20");
+      $limitIndex = ($index - 1) * 30;
+      $statement = $database->prepare("SELECT * FROM plants LIMIT $limitIndex, 30");
       $statement->execute();
       if ($statement->rowCount() <= 0) {
           return;
@@ -448,7 +559,9 @@ class Plants implements \JsonSerializable
           $plants[] = new self($row);
       }
 
-      return $plants;
+
+      $returnArray = array('pages' => Plants::getNumberOfPages(), 'total' => sizeOf(Plants::getAll()), 'plants' => $plants);
+      return $returnArray;
     }
 
     public static function getByAccessionNumber($accession_number)
@@ -544,16 +657,13 @@ class Plants implements \JsonSerializable
         $bo = $plantData['plant'];
         $body = $bo['data'];
 
-        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, `special_collections_id` = ?');
-        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id']));
+
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?');
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id'], $body['date_received']));
 
         $id = $database->lastInsertId();
 
-
         $statment->closeCursor();
-
-
-
 
         return self::getById($id);
     }

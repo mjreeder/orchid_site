@@ -2,7 +2,32 @@
 <html>
 <head>
     <title>Upload File</title>
-    <link rel="stylesheet" href="../assets/upload.css">
+    <style>
+        .upload-file{
+            	width: 0.1px;
+            	height: 0.1px;
+            	opacity: 0;
+            	overflow: hidden;
+            	position: absolute;
+            	z-index: -1;
+        }
+
+        .upload-file + label {
+            cursor: pointer;
+            background-color: #01997B;
+            color: white;
+            font-family: Raleway, sans-serif;
+            font-size: 14px;
+            border-radius: 8px;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+
+    body {
+    margin: 0;
+    }
+
+    </style>
 </head>
 <body>
 
@@ -44,10 +69,22 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
 }
 ?>
 <form enctype="multipart/form-data" action="file_frame.php?session_key=<?php echo $session_key;?>&session_id=<?php echo $session_id ?>&url_section=<?php echo $url_section ?>" method="post">
-    <label for="file">
-        <input type="file" name="upload_file" id="file" class="upload-file" onChange="form.submit()"/> Upload
-    </label>
+
+    <input type="file" name="upload_file" id="upload-file" class="upload-file" onChange="form.submit()"/>
+    <label for="file">Choose a file</label>
+
 </form>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+

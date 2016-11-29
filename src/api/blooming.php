@@ -66,6 +66,7 @@ $app->group('/api', function () use ($app){
            return $formattedResponse;
        });
 
+
        $app->get('/plant_id/{plant_id}/page/{page}', function ($request, $response, $args) use ($app){
            $blooming = Blooming::getByPlantID($args['plant_id'], $args['page']);
            $output = new Response($blooming);

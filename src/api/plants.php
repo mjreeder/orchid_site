@@ -38,6 +38,37 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/getBlooming', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getBlooming();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/getCountries/{country}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getCountries($args['country']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/getCollections/{collection}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getSpecialCollection($args['collection']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/commonName/{letter}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getCommonNameFromAlphabet($args['letter']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/subtribe/{subtribe}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getSubtribeNames($args['subtribe']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
     $app->get('/table/{id}', function ($request, $response, $args) use ($app){
       $plants = Plants::getPlantsByTable($args['id']);
       $output = new Response($plants);
@@ -135,6 +166,36 @@ $app->group('/api', function () use ($app) {
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
+
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/page/{index}",
+    *     summary="Get plants by index",
+    *     description="This is a descirption",
+    *     tags={"Plants"},
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/pages/amount', function ($request, $response, $args) use ($app) {
+      $numberOfPages = Plants::getNumberOfPages();
+      $output = new Response($numberOfPages);
+      $response->getBody()->write(json_encode($output));
+    });
+
 
     /**
     * @SWG\Get(

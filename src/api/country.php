@@ -32,6 +32,14 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        });
 
+       $app->get('/currentCountries', function($request, $response, $args) use ($app){
+           $countries = Country::getCurrentCountires();
+           $output = new Response($countries);
+           $response->getBody()->write(json_encode($output));
+       });
+
+
+
 
        /* ========================================================== *
        * POST
