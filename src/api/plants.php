@@ -38,6 +38,37 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/getBlooming', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getBlooming();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/getCountries/{country}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getCountries($args['country']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/getCollections/{collection}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getSpecialCollection($args['collection']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/commonName/{letter}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getCommonNameFromAlphabet($args['letter']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/subtribe/{subtribe}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getSubtribeNames($args['subtribe']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
     $app->get('/table/{id}', function ($request, $response, $args) use ($app){
       $plants = Plants::getPlantsByTable($args['id']);
       $output = new Response($plants);

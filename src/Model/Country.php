@@ -76,7 +76,23 @@ class Country implements \JsonSerializable
         return $country;
     }
 
-      public static function getByCountryID($id){
+
+    public static function getCurrentCountires(){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM country WHERE id IN (SELECT country_id FROM plant_country_link)");
+        $statement->execute();
+
+        $countriesList = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $countriesList[] = new self($row);
+        }
+
+        return $countriesList;
+
+    }
+
+    public static function getByCountryID($id){
       global $database;
       $statement = $database->prepare("SELECT * FROM country WHERE id = ?");
       $statement->execute(array($id));

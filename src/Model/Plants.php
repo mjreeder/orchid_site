@@ -322,6 +322,88 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+    public static function getBlooming(){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM blooming WHERE end_date != '0000-00-00')");
+        $statement->execute();
+        $allPlants = array();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+    public static function getCountries($country){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM plant_country_link WHERE country_id IN (SELECT id FROM country WHERE name = ?))");
+        $statement->execute(array($country));
+        $allPlants = array();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+
+    public static function getCommonNameFromAlphabet($collectionName){
+        global $database;
+        $collectionName = 'a';
+
+        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE 'a%'");
+        $statement->execute();
+   
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+    public static function getSubtribeNames($speciesName){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE subtribe_name = ?");
+        $statement->execute(array($speciesName));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
+    public static function getSpecialCollection($collectionName){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE special_collections_id IN (SELECT id FROM special_collections WHERE name = ?)");
+        $statement->execute(array($collectionName));
+        $allPlants = array();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
 
     // GET BY ID
     public static function getById($id)
