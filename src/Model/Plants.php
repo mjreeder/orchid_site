@@ -555,7 +555,7 @@ class Plants implements \JsonSerializable
 
         }
 
-        $returnArray = array('pages' => $numberOfPages, 'total' => $getTotalPlantsCount->rowCount(), 'plants' => $plants);
+        $returnArray = array('pages' => $numberOfPages, 'plants' => $plants);
         return $returnArray;
     }
 
