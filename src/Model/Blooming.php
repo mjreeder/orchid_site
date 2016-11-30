@@ -140,11 +140,6 @@ class Blooming implements \JsonSerializable
 
         usort($blooming_entries, array("self", "orderByComparison"));
 
-        //Assign new ids to blooms; this is because we may have ids show multiple times
-        for($i = 0; $i < count($blooming_entries); $i++){
-            $blooming_entries[$i]->id = $i+1;
-        }
-
         $blooming_entries = array_slice($blooming_entries, $start, $end);
 
         return $blooming_entries;
