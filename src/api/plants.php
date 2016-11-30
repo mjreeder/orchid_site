@@ -125,8 +125,11 @@ $app->group('/api', function () use ($app) {
     *     )
     * )
     */
-    $app->get('/alpha/{alpha}/{index}', function ($request, $response, $args) use ($app) {
-      $plants = Plants::getPaginatedPlants($args['alpha'], $args['index']);
+    $app->get('/alpha/{alpha}/{index}[/{itemsPerPage}]', function ($request, $response, $args) use ($app) {
+        if(!isset($args['itemsPerPage'])) {
+            $args['itemsPerPage'] = 30;
+        }
+        $plants = Plants::getPaginatedPlants($args['alpha'], $args['index'], $args['itemsPerPage']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
@@ -161,6 +164,7 @@ $app->group('/api', function () use ($app) {
     *     )
     * )
     */
+
     $app->get('/page/{index}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getAllPaginatedPlants($args['index']);
       $output = new Response($plants);
