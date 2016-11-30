@@ -361,7 +361,7 @@ class Plants implements \JsonSerializable
 
         $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE 'a%'");
         $statement->execute();
-   
+
         if ($statement->rowCount() <= 0) {
             return;
         }
@@ -543,7 +543,20 @@ class Plants implements \JsonSerializable
             $plants[] = new self($row);
         }
 
-        return $plants;
+
+        $allPlants = [];
+        $getTotalPlantsCount = $database->prepare("SELECT * FROM plants WHERE name LIKE ?");
+        $getTotalPlantsCount->execute(array($alpha));
+        if($getTotalPlantsCount->rowCount()<= 0){
+          $numberOfPages = 0;
+        }
+        else{
+          $numberOfPages = ceil(($getTotalPlantsCount->rowCount()) / 30);
+
+        }
+
+        $returnArray = array('pages' => $numberOfPages, 'total' => $getTotalPlantsCount->rowCount(), 'plants' => $plants);
+        return $returnArray;
     }
 
     public static function getAllPaginatedPlants($index){
