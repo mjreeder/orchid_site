@@ -354,6 +354,21 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+    public static function findCommonName($commonName){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM plants WHERE name = ? LIMIT 1");
+        $statement->execute(array($commonName));
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
 
     public static function getCommonNameFromAlphabet($collectionName){
         global $database;
@@ -361,7 +376,7 @@ class Plants implements \JsonSerializable
 
         $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE 'a%'");
         $statement->execute();
-   
+
         if ($statement->rowCount() <= 0) {
             return;
         }

@@ -35,6 +35,12 @@ $app->group('/api', function () use ($app) {
             $response->getBody()->write(json_encode($output));
         });
 
+        $app->post('/createSpecificDate', function ($request, $response, $args) use ($app) {
+            $body = $request->getParsedBody();
+            $createVerified = Verified::createSpecificVerification($body);
+            $output = new Response($createVerified);
+            $response->getBody()->write(json_encode($output));
+        });
         /* ========================================================== *
          * PUT
          * ========================================================== */
@@ -45,6 +51,8 @@ $app->group('/api', function () use ($app) {
             $output = new Response($updateVerification);
             $response->getBody()->write(json_encode($output));
         });
+
+
 
         /* ========================================================== *
          * DELETE

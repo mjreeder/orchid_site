@@ -89,11 +89,15 @@ class Verified implements \JsonSerializable
         $statement->execute(array($body['plant_id']));
         $id = $database->lastInsertId();
         return self::getByID($id);
+    }
 
-
-
-
-
+    public static function createSpecificVerification($body)
+    {
+        global $database;
+        $statement = $database->prepare('INSERT INTO verified (plant_id, verified_date, active) VALUES (?, ?, 1)');
+        $statement->execute(array($body['plant_id'], $body['verified_date']));
+        $id = $database->lastInsertId();
+        return self::getByID($id);
     }
 
     public static function updateVerification($body)

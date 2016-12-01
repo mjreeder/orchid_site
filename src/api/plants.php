@@ -68,6 +68,11 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/specificCommonName/{name}', function ($request, $response, $args) use ($app) {
+      $plants = Plants::findCommonName($args['name']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
 
     $app->get('/table/{id}', function ($request, $response, $args) use ($app){
       $plants = Plants::getPlantsByTable($args['id']);
