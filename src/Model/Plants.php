@@ -543,12 +543,13 @@ class Plants implements \JsonSerializable
 
     }
 
-    public static function getPaginatedPlants($alpha, $index)
+    public static function getPaginatedPlants($alpha, $index, $itemsPerPage)
     {
         global $database;
-        $limitIndex = ($index - 1) * 30;
+        $itemsPerPage = intval($itemsPerPage);
+        $limitIndex = ($index - 1) * $itemsPerPage;
         $alpha = $alpha.'%';
-        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT $limitIndex, 30");
+        $statement = $database->prepare("SELECT * FROM plants WHERE name LIKE ? LIMIT $limitIndex, $itemsPerPage");
         $statement->execute(array($alpha));
         if ($statement->rowCount() <= 0) {
             return;
@@ -558,7 +559,20 @@ class Plants implements \JsonSerializable
             $plants[] = new self($row);
         }
 
-        return $plants;
+
+        $allPlants = [];
+        $getTotalPlantsCount = $database->prepare("SELECT * FROM plants WHERE name LIKE ?");
+        $getTotalPlantsCount->execute(array($alpha));
+        if($getTotalPlantsCount->rowCount()<= 0){
+          $numberOfPages = 0;
+        }
+        else{
+          $numberOfPages = ceil(($getTotalPlantsCount->rowCount()) / 30);
+
+        }
+
+        $returnArray = array('pages' => $numberOfPages, 'plants' => $plants);
+        return $returnArray;
     }
 
     public static function getAllPaginatedPlants($index){
