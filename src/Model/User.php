@@ -88,7 +88,7 @@ class User implements \JsonSerializable
 
         $hashedPassword = password_hash($body['password'], PASSWORD_BCRYPT);
         $statement = $database->prepare('INSERT INTO users (first_name, last_name, email, password_hash, auth_level, didLogin, active) VALUES (?,?,?,?,?, 0, 1)');
-        $statement->execute(array($body['firstName'], $body['lastName'], $body['email'], $hashedPassword, $body['authLevel']));
+        $statement->execute(array($body['first_name'], $body['last_name'], $body['email'], $hashedPassword, $body['auth_level']));
         $id = $database->lastInsertId();
         $statement->closeCursor();
 
@@ -112,7 +112,7 @@ class User implements \JsonSerializable
     public static function getByEmail($email)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM users WHERE email = ?');
+        $statement = $database->prepare('SELECT * FROM users WHERE email = ? AND active = 1');
         $statement->execute(array($email));
         $row = $statement->fetch(PDO::FETCH_ASSOC);
         $statement->closeCursor();
