@@ -5,6 +5,7 @@ namespace orchid_site\src\Model;
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 require_once '../utilities/database.php';
+use orchid_site\src\Model\Location;
 use PDO;
 use Exception;
 
@@ -159,7 +160,7 @@ class Plants implements \JsonSerializable
      *
      * @var string
      */
-    public $location_id;
+    public $location;
     /**
      * @SWG\Property()
      *
@@ -217,7 +218,7 @@ class Plants implements \JsonSerializable
             $this->hybrid_comment = $data['hybrid_comment'];
             $this->hybrid_status = $data['hybrid_status'];
             $this->origin_comment = $data['origin_comment'];
-            $this->location_id = intval($data['location_id']);
+            $this->location = Location::getTableNameFromId(intval($data['location_id']))['name'];
             $this->dead = $data['dead'];
             $this->special_collections_id = intval($data['special_collections_id']);
             $this->is_donation = $data['is_donation'];
@@ -257,7 +258,7 @@ class Plants implements \JsonSerializable
             'hybrid_comment' => $this->hybrid_comment,
             'hybrid_status' => $this->hybrid_status,
             'origin_comment' => $this->origin_comment,
-            'location_id' => $this->location_id,
+            'location' => $this->location,
             'dead' => $this->dead,
             'special_collections_id' => $this->special_collections_id,
             'is_donation' => $this->is_donation,
