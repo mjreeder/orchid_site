@@ -18,9 +18,16 @@
             color: white;
             font-family: Raleway, sans-serif;
             font-size: 14px;
-            border-radius: 8px;
             padding: 10px 15px;
             display: inline-block;
+            -webkit-box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.28);
+            -moz-box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.28);
+            box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.28);
+            text-align: center;
+            border-radius: 5px;
+            font-weight: 600;
+            border: none;
+            margin-left: 12px;
         }
 
     body {
