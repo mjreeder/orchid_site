@@ -76,7 +76,7 @@ class User implements \JsonSerializable
     !$body['password'] || !$body['auth_level']) {
             throw new Exception('Missing required user information', 400);
         }
-        $checkExistingUserStatement = $database->prepare('SELECT * FROM users WHERE email = ?');
+        $checkExistingUserStatement = $database->prepare('SELECT * FROM users WHERE email = ? AND active = 1');
 
         $checkExistingUserStatement->execute(array($body['email']));
         $row = $checkExistingUserStatement->fetch(PDO::FETCH_ASSOC);
