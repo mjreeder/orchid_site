@@ -139,15 +139,20 @@ class Tag implements \JsonSerializable
 
     public static function createTag($body)
     {
-        global $database;
-        $statement = $database->prepare('INSERT INTO tag (plant_id, note, active) VALUES (?,?,1)');
-        $statement->execute(array($body['plant_id'], $body['note']));
-        $id = $database->lastInsertId();
-        $statement->closeCursor();
+        if($body['active'] == 0){
 
-        $updateID = Tag::getByID($id);
+        } else {
+            global $database;
+            $statement = $database->prepare('INSERT INTO tag (plant_id, note, active) VALUES (?,?,1)');
+            $statement->execute(array($body['plant_id'], $body['note']));
+            $id = $database->lastInsertId();
+            $statement->closeCursor();
 
-        return $updateID;
+            $updateID = Tag::getByID($id);
+
+            return $updateID;
+        }
+
     }
 
     /* ========================================================== *

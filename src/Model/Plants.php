@@ -791,6 +791,23 @@ class Plants implements \JsonSerializable
         }
 
     }
+//
+//    public static function checkOneAccessionNumber($accession_number){
+//        global $database;
+//        $statement = $database->prepare('SELECT * FROM plants WHERE accession_number = 4455');
+//        $statement->execute();
+//        $statement->closeCursor();
+//
+//
+//        $plants = [];
+//        while ($row = $statement->fetchAll(PDO::FETCH_ASSOC)) {
+//            $plants[] = new self($row);
+//        }
+//
+//        return $plants;
+//
+//
+//    }
 
 
 

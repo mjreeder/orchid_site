@@ -92,6 +92,12 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/checkOneAccessionNumber/{accession_number}', function($request, $response, $args) use ($app){
+      $plants = Plants::checkOneAccessionNumber($args['accession_number']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     /**
     * @SWG\Get(
     *     path="/plants/alpha/{alpha}/{index}",
