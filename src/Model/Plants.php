@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', true);
 require_once '../utilities/database.php';
 use orchid_site\src\Model\Location;
+use orchid_site\src\Model\Special_Collection;
 use PDO;
 use Exception;
 
@@ -174,7 +175,7 @@ class Plants implements \JsonSerializable
      */
     public $is_donation;
 
-    public $special_collections_id;
+    public $special_collection;
 
 
     public $class_name;
@@ -220,7 +221,7 @@ class Plants implements \JsonSerializable
             $this->origin_comment = $data['origin_comment'];
             $this->location = Location::getTableNameFromId(intval($data['location_id']))['name'];
             $this->dead = $data['dead'];
-            $this->special_collections_id = intval($data['special_collections_id']);
+            $this->special_collection = isset($data['special_collections_id']) ? Special_Collection::getByID(intval($data['special_collections_id']))->{'name'} : null;
             $this->is_donation = $data['is_donation'];
             $this->class_name = $data['class_name'];
             $this->tribe_name = $data['tribe_name'];
@@ -260,14 +261,14 @@ class Plants implements \JsonSerializable
             'origin_comment' => $this->origin_comment,
             'location' => $this->location,
             'dead' => $this->dead,
-            'special_collections_id' => $this->special_collections_id,
+            'special_collection' => $this->special_collection,
             'is_donation' => $this->is_donation,
-            'class_name' => $this->class_name,
-            'tribe_name' => $this->tribe_name,
-            'subtribe_name' => $this->subtribe_name,
-            'genus_name' => $this->genus_name,
-            'species_name' => $this->species_name,
-            'variety_name' => $this->variety_name,
+            'class' => $this->class_name,
+            'tribe' => $this->tribe_name,
+            'subtribe' => $this->subtribe_name,
+            'genus' => $this->genus_name,
+            'species' => $this->species_name,
+            'variety' => $this->variety_name,
             'dead_date' => $this->dead_date,
 
         ];
