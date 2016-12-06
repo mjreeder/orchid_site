@@ -98,6 +98,14 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/getPlantsFromSubTribe/{subtribe}', function($request, $response, $args) use ($app){
+      $plants = Plants::getPlantsFromSubTribe($args['subtribe']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+//
+
     /**
     * @SWG\Get(
     *     path="/plants/alpha/{alpha}/{index}",
