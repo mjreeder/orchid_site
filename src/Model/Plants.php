@@ -635,6 +635,24 @@ class Plants implements \JsonSerializable
 
         return $plants;
     }
+    public static function getPlantsFromSubTribe($tribe)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM plants WHERE tribe_name = ?');
+        $statement->execute(array($tribe));
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+//
 
     public static function updateLocation($body){
 

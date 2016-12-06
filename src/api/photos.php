@@ -31,6 +31,26 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        });
 
+       $app->get('/onePhotoCountry/{country}', function ($request, $response, $args) use ($app){
+           $photos = Photos::onePhotoCountry($args['country']);
+           $output = new Response($photos);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       $app->get('/onePhotoCollections/{sp}', function ($request, $response, $args) use ($app){
+           $photos = Photos::onePhotoCollections($args['sp']);
+           $output = new Response($photos);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       $app->get('/onePhotoTribe/{tribe}', function ($request, $response, $args) use ($app){
+           $photos = Photos::onePhotoTribe($args['tribe']);
+           $output = new Response($photos);
+           $response->getBody()->write(json_encode($output));
+       });
+
+
+
        /* ========================================================== *
         * POST
         * ========================================================== */
