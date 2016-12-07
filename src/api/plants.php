@@ -153,6 +153,18 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/topFiveCollections', function($request, $response, $args) use ($app){
+      $plant = Plants::collectionTop();
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/topFiveSpecies', function($request, $response, $args) use ($app){
+      $plant = Plants::collectionSpecies();
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
     /**
     * @SWG\Get(
     *     path="/plants/page/{index}",
