@@ -458,6 +458,35 @@ class Plants implements \JsonSerializable
 
     }
 
+    public static function collectionTop(){
+        global $database;
+
+        $statement = $database->prepare("SELECT COUNT(*) as num, P.`special_collections_id`, SP.name   FROM plants P, special_collections SP WHERE P.`special_collections_id` IS NOT NULL AND P.special_collections_id = SP.id GROUP BY P.`special_collections_id` ORDER BY num DESC LIMIT 5");
+        $statement->execute();
+        $plant_ids = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant_ids[] = $row;
+        }
+
+        return $plant_ids;
+    }
+
+    public static function collectionSpecies(){
+        global $database;
+
+        $statement = $database->prepare("SELECT COUNT(*) as num, `tribe_name`, `accession_number` FROM plants GROUP BY `tribe_name` ORDER BY num DESC");
+        $statement->execute();
+        $plant_ids = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant_ids[] = $row;
+        }
+
+        return $plant_ids;
+    }
+
+
     public static function getById2($id)
     {
         global $database;
@@ -635,6 +664,24 @@ class Plants implements \JsonSerializable
 
         return $plants;
     }
+    public static function getPlantsFromSubTribe($tribe)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM plants WHERE tribe_name = ?');
+        $statement->execute(array($tribe));
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+//
 
     public static function updateLocation($body){
 

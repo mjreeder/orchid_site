@@ -168,6 +168,21 @@ class Special_Collection implements \JsonSerializable
 
     }
 
+    public static function getSpecificCollectionID($id){
+        global $database;
+
+        $statement = $database->prepare("SELECT special_collections_id FROM plants WHERE id = $id");
+        $statement->execute();
+        $plant_ids = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant_ids[] = $row;
+        }
+
+        return $plant_ids;
+
+    }
+
     /* ========================================================== *
      * PUT
      * ========================================================== */

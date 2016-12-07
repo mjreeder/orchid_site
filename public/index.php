@@ -67,6 +67,8 @@ require __DIR__ . '/../src/api/user.php';
 require __DIR__ . '/../src/api/location.php';
 require __DIR__ . '/../src/api/plant_country_link.php';
 require __DIR__ . '/../src/api/verified.php';
+require __DIR__ . '/../src/api/email.php';
+
 
 
 //Register Models
