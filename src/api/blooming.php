@@ -66,6 +66,16 @@ $app->group('/api', function () use ($app){
            return $formattedResponse;
        });
 
+       $app->get('/get_all/blooms/plant_id/{plant_id}', function ($request, $response, $args) use ($app){
+           $blooming = Blooming::getAllByPlantID($args['plant_id']);
+           $output = new Response($blooming);
+           $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
+       });
 
        $app->get('/plant_id/{plant_id}/page/{page}', function ($request, $response, $args) use ($app){
            $blooming = Blooming::getByPlantID($args['plant_id'], $args['page']);
