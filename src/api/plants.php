@@ -596,6 +596,13 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
+    $app->put('/updateGeneralNotes', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateGeneralNotes($body['plant']);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    })->add($validate_admin);
+
     $app->put('/updateAccession', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateAccession($body['plant']);
@@ -931,12 +938,6 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->post('', function ($request, $response, $args) use ($app) {
-      $body = $request->getParsedBody();
-      $plant = Plants::createPlant($body);
-      $output = new Response($plant);
-      $response->getBody()->write(json_encode($output));
-    })->add($validate_admin);
 
     $app->post('/createPlant', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();
