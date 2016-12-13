@@ -136,6 +136,52 @@ class Photos implements \JsonSerializable
         return $similarPhotos;
     }
 
+    public static function onePhotoCountry($country_id)
+    {
+
+        global $database;
+        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active FROM plant_country_link PCL, photos Ph WHERE Ph.plant_id = PCL.plant_id AND PCL.country_id = ? AND Ph.active = 1 LIMIT 1");
+        $statement->execute(array($country_id));
+        $similarPhotos = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $similarPhotos[] = new self($row);
+        }
+
+        return $similarPhotos;
+    }
+
+    public static function onePhotoCollections($collection_id)
+    {
+
+        global $database;
+        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active FROM special_collections SP, photos Ph, plants Pl WHERE Ph.plant_id = Pl.id AND Pl.special_collections_id = ? AND Ph.active = 1 LIMIT 1");
+        $statement->execute(array($collection_id));
+        $similarPhotos = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $similarPhotos[] = new self($row);
+        }
+
+        return $similarPhotos;
+    }
+
+//
+
+    public static function onePhotoTribe($tribe)
+    {
+
+        global $database;
+        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active FROM photos Ph, plants Pl WHERE Ph.plant_id = Pl.id AND Ph.active = 1 AND Pl.tribe_name = ? LIMIT 1");
+        $statement->execute(array($tribe));
+        $similarPhotos = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $similarPhotos[] = new self($row);
+        }
+
+        return $similarPhotos;
+    }
 
 
     /* ========================================================== *

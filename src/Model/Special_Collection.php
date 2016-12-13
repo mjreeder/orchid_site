@@ -101,6 +101,30 @@ class Special_Collection implements \JsonSerializable
         return $special_collection;
     }
 
+    public static function getPlantsWithSpeicalCollections($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM plants WHERE special_collections_id = ?');
+        $statement->execute(array($id));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        $special_collections = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $special_collections[] = new Plants($row);
+        }
+
+        return $special_collections;
+    }
+
+
+
+
+
+
     public static function isName($name){
         global $database;
 //        var_dump($name);
@@ -141,6 +165,21 @@ class Special_Collection implements \JsonSerializable
             return self::getIDFromName($body['name']);
         }
 
+
+    }
+
+    public static function getSpecificCollectionID($id){
+        global $database;
+
+        $statement = $database->prepare("SELECT special_collections_id FROM plants WHERE id = $id");
+        $statement->execute();
+        $plant_ids = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant_ids[] = $row;
+        }
+
+        return $plant_ids;
 
     }
 

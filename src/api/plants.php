@@ -92,6 +92,20 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/checkOneAccessionNumber/{accession_number}', function($request, $response, $args) use ($app){
+      $plants = Plants::checkOneAccessionNumber($args['accession_number']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/getPlantsFromSubTribe/{subtribe}', function($request, $response, $args) use ($app){
+      $plants = Plants::getPlantsFromSubTribe($args['subtribe']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+//
+
     /**
     * @SWG\Get(
     *     path="/plants/alpha/{alpha}/{index}",
@@ -136,6 +150,18 @@ $app->group('/api', function () use ($app) {
         }
         $plants = Plants::getPaginatedPlants($args['alpha'], $args['index'], $args['itemsPerPage']);
       $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/topFiveCollections', function($request, $response, $args) use ($app){
+      $plant = Plants::collectionTop();
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/topFiveSpecies', function($request, $response, $args) use ($app){
+      $plant = Plants::collectionSpecies();
+      $output = new Response($plant);
       $response->getBody()->write(json_encode($output));
     });
 
@@ -570,6 +596,13 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
+    $app->put('/updateGeneralNotes', function ($request, $response, $formData) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::updateGeneralNotes($body['plant']);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    })->add($validate_admin);
+
     $app->put('/updateAccession', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateAccession($body['plant']);
@@ -905,12 +938,6 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
-    $app->post('', function ($request, $response, $args) use ($app) {
-      $body = $request->getParsedBody();
-      $plant = Plants::createPlant($body);
-      $output = new Response($plant);
-      $response->getBody()->write(json_encode($output));
-    })->add($validate_admin);
 
     $app->post('/createPlant', function ($request, $response, $args) use ($app) {
       $body = $request->getParsedBody();

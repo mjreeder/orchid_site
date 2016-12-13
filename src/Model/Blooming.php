@@ -172,6 +172,25 @@ class Blooming implements \JsonSerializable
         $statement = $database->prepare('SELECT * FROM blooming WHERE id = ?');
         $statement->execute(array($id));
         if ($statement->rowCount() <= 0) {
+            var_dump("derp");
+            return;
+        }
+
+        $blooming = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $blooming[] = new self($row);
+        }
+
+        return $blooming;
+    }
+
+    public static function getAllByPlantID($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM blooming WHERE plant_id = ?');
+        $statement->execute(array($id));
+        if ($statement->rowCount() <= 0) {
             return;
         }
 

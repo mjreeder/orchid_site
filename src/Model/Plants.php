@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', true);
 require_once '../utilities/database.php';
 use orchid_site\src\Model\Location;
+use orchid_site\src\Model\Special_Collection;
 use PDO;
 use Exception;
 
@@ -174,7 +175,7 @@ class Plants implements \JsonSerializable
      */
     public $is_donation;
 
-    public $special_collections_id;
+    public $special_collection;
 
 
     public $class_name;
@@ -189,6 +190,10 @@ class Plants implements \JsonSerializable
 
     public $variety_name;
 
+    public $phylum_name;
+
+    public $general_note;
+
     public $dead_date;
 
 
@@ -197,7 +202,7 @@ class Plants implements \JsonSerializable
         if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->name = $data['name'];
-            $this->accession_number = intval($data['accession_number']);
+            $this->accession_number = $data['accession_number'];
             $this->authority = $data['authority'];
             $this->distribution = $data['distribution'];
             $this->habitat = $data['habitat'];
@@ -220,7 +225,7 @@ class Plants implements \JsonSerializable
             $this->origin_comment = $data['origin_comment'];
             $this->location = Location::getTableNameFromId(intval($data['location_id']))['name'];
             $this->dead = $data['dead'];
-            $this->special_collections_id = intval($data['special_collections_id']);
+            $this->special_collection = isset($data['special_collections_id']) ? Special_Collection::getByID(intval($data['special_collections_id']))->{'name'} : null;
             $this->is_donation = $data['is_donation'];
             $this->class_name = $data['class_name'];
             $this->tribe_name = $data['tribe_name'];
@@ -229,6 +234,9 @@ class Plants implements \JsonSerializable
             $this->species_name = $data['species_name'];
             $this->variety_name = $data['variety_name'];
             $this->dead_date = $data['dead_date'];
+            $this->general_note = $data['general_note'];
+            $this->phylum_name = $data['phylum_name'];
+            $this->countries_note = $data['countries_note'];
         }
     }
 
@@ -260,49 +268,19 @@ class Plants implements \JsonSerializable
             'origin_comment' => $this->origin_comment,
             'location' => $this->location,
             'dead' => $this->dead,
-            'special_collections_id' => $this->special_collections_id,
+            'special_collection' => $this->special_collection,
             'is_donation' => $this->is_donation,
-            'class_name' => $this->class_name,
-            'tribe_name' => $this->tribe_name,
-            'subtribe_name' => $this->subtribe_name,
-            'genus_name' => $this->genus_name,
-            'species_name' => $this->species_name,
-            'variety_name' => $this->variety_name,
+            'class' => $this->class_name,
+            'tribe' => $this->tribe_name,
+            'subtribe' => $this->subtribe_name,
+            'genus' => $this->genus_name,
+            'species' => $this->species_name,
+            'variety' => $this->variety_name,
             'dead_date' => $this->dead_date,
-
+            'general_note' => $this->general_note,
+            'phylum' => $this->phylum_name,
+            'countries_note' => $this->countries_note
         ];
-    }
-
-    public static function createPlant($body)
-    {
-        global $database;
-        if (!$body['accession_number'] || !$body['authority'] || !$body['distribution'] ||
-       !$body['habitat'] || !$body['culture'] || !$body['donation_comment'] || !$body['date_received'] ||
-       !$body['received_from'] || !$body['description'] || !$body['username'] || !$body['inactive_date'] ||
-       !$body['inactive_comment'] || !$body['size'] || !$body['value'] || !$body['parent_one'] ||
-       !$body['parent_two'] || !$body['grex_status'] || !$body['hybrid_comment'] ||
-       !$body['hybrid_status'] || !$body['scientific_name'] || !$body['location_id'] || !$body['origin_comment'] || !$body['name'] || !$body['is_donation']) {
-            throw new Exception('Missing required information', 400);
-        }
-
-        if (!in_array('special_collections_id', $body)) {
-            $body['special_collections_id'] = null;
-        }
-
-        $statement = $database->prepare('INSERT INTO plants (accession_number, name, authority, distribution, habitat, culture,
-      donation_comment, date_received, received_from, description, username, inactive_date, inactive_comment, size,
-      scientific_name, hybrid_status, hybrid_comment, value, parent_one, parent_two, grex_status, origin_comment,
-      location_id, dead, special_collections_id, is_donation) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        $statement->execute(array($body['accession_number'], $body['name'], $body['authority'], $body['distribution'],
-    $body['habitat'], $body['culture'], $body['donation_comment'], $body['date_received'], $body['received_from'],
-    $body['description'], $body['username'], $body['inactive_date'], $body['inactive_comment'], $body['size'], $body['scientific_name'],
-    $body['hybrid_status'], $body['hybrid_comment'], $body['value'], $body['parent_one'], $body['parent_two'], $body['grex_status'],
-    $body['origin_comment'], $body['location_id'], $body['dead'], $body['special_collections_id'], $body['is_donation'], ));
-
-        $id = $database->lastInsertId();
-        $statement->closeCursor();
-
-        return $id;
     }
 
     //GET ALL
@@ -449,13 +427,37 @@ class Plants implements \JsonSerializable
             $plant_ids[] = $row;
         }
 
+        return $plant_ids;
+    }
 
+    public static function collectionTop(){
+        global $database;
 
+        $statement = $database->prepare("SELECT COUNT(*) as num, P.`special_collections_id`, SP.name   FROM plants P, special_collections SP WHERE P.`special_collections_id` IS NOT NULL AND P.special_collections_id = SP.id GROUP BY P.`special_collections_id` ORDER BY num DESC LIMIT 5");
+        $statement->execute();
+        $plant_ids = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant_ids[] = $row;
+        }
 
         return $plant_ids;
-
-
     }
+
+    public static function collectionSpecies(){
+        global $database;
+
+        $statement = $database->prepare("SELECT COUNT(*) as num, `tribe_name`, `accession_number` FROM plants GROUP BY `tribe_name` ORDER BY num DESC");
+        $statement->execute();
+        $plant_ids = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant_ids[] = $row;
+        }
+
+        return $plant_ids;
+    }
+
 
     public static function getById2($id)
     {
@@ -540,8 +542,6 @@ class Plants implements \JsonSerializable
       }
 
       return ceil(sizeOf($plants) / 30);
-
-
     }
 
     public static function getPaginatedPlants($alpha, $index, $itemsPerPage)
@@ -589,7 +589,6 @@ class Plants implements \JsonSerializable
           $plants[] = new self($row);
       }
 
-
       $returnArray = array('pages' => Plants::getNumberOfPages(), 'total' => sizeOf(Plants::getAll()), 'plants' => $plants);
       return $returnArray;
     }
@@ -634,6 +633,23 @@ class Plants implements \JsonSerializable
 
         return $plants;
     }
+    public static function getPlantsFromSubTribe($tribe)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM plants WHERE tribe_name = ?');
+        $statement->execute(array($tribe));
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
 
     public static function updateLocation($body){
 
@@ -648,27 +664,6 @@ class Plants implements \JsonSerializable
         $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
         $statement->execute(array($newBody['location_id'], $newBody['id']));
         $statement->closeCursor();
-        return self::getById($body['id']);
-    }
-
-    //UPDATE
-    public static function update($body)
-    {
-        global $database;
-        $statement = $database->prepare('UPDATE plants SET name=?, accession_number=?,
-        authority=?, distribution=?, habitat=?, scientific_name=?, culture=?, donation_comment=?,
-        date_received=?, received_from, description=?, username=?, inactive_comment=?, inactive_date=?,
-        size=?, value=?, parent_one=?, parent_two=?, grex_status=?, hybrid_status=?, hybrid_comment=?,
-        origin_comment=?, location_id,=? special_collections_id=?, dead=? WHERE id = ?');
-
-        $statement->execute(array($body['name'], $body['accession_number'], $body['authority'], $body['distribution'],
-        $body['habitat'], $body['scientific_name'], $body['culture'], $body['donation_comment'], $body['date_received'],
-        $body['received_from'], $body['description'], $body['username'], $body['inactive_comment'], $body['inactive_date'],
-        $body['size'], $body['value'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_status'],
-        $body['hybrid_comment'], $body['origin_comment'], $body['location_id'], $body['special_collections_id'], $body['dead'], ));
-
-        $statement->closeCursor();
-
         return self::getById($body['id']);
     }
 
@@ -687,9 +682,8 @@ class Plants implements \JsonSerializable
         $bo = $plantData['plant'];
         $body = $bo['data'];
 
-
-        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?');
-        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id'], $body['date_received']));
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, phylum_name = ?, general_note = ?, countries_note = ?');
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id'], $body['date_received'], $body['phylum_name'], $body['general_note'], $body['countries_note']));
 
         $id = $database->lastInsertId();
 
@@ -700,8 +694,17 @@ class Plants implements \JsonSerializable
 
     public static function updateCulture($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ? WHERE id = ?');
-        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ?, countries_note = ? WHERE id = ?');
+        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'],$body['countries_note'], $body['id']));
+        $statment->closeCursor();
+
+        return self::getById($body['id']);
+    }
+
+    public static function updateGeneralNotes($body){
+        global $database;
+        $statment = $database->prepare('UPDATE plants SET general_note = ? WHERE id = ?');
+        $statment->execute(array($body['general_note'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
@@ -727,8 +730,8 @@ class Plants implements \JsonSerializable
 
     public static function updateTaxonmic($body){
         global $database;
-        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ? WHERE id = ?');
-        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ? WHERE id = ?');
+        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['phylum_name'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
@@ -761,17 +764,11 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
 
-
-
     public static function updateCriticalTable($body){
-
         $location =  Location::getIDFromTableName($body['name']);
         global $database;
         $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
-
-
         $statement->execute(array($location['id'], $body['plant_id']));
-
         $statement->closeCursor();
 
         return self::getById($body['plant_id']);
@@ -788,33 +785,7 @@ class Plants implements \JsonSerializable
         } else {
             return true;
         }
-
     }
-
-
-
-
-
-//    public static function updateHyrbid($body){
-//        global $database;
-//        $statment = $database->prepare('UPDATE plants SET parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ? WHERE id = ?');
-//        $statment->execute(array($body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['id']));
-//        $statment->closeCursor();
-//
-//        return self::getById($body['id']);
-//    }
-
-//    public static function updateVarifiedDate($body){
-//        global $database;
-//        $statement  = $database->prepare('UPDATE plants SET last_varified = CURDATE() WHERE id = ?');
-//        $statement->execute(array($body['id']));
-//        $statement->closeCursor();
-//        return self::getById($body['id']);
-//    }
-
-
-
-
 
     //DELETE
     public static function delete($id)

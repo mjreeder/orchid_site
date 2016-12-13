@@ -56,6 +56,24 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        });
 
+       $app->get('/name/{name}', function($request, $response, $args) use ($app){
+           $special_collection = Special_Collection::getIDFromName($args['name']);
+           $output = new Response($special_collection);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       $app->get('/getSpecificCollectionID/{id}', function($request, $response, $args) use ($app){
+           $plant = Special_Collection::getSpecificCollectionID($args['id']);
+           $output = new Response($plant);
+           $response->getBody()->write(json_encode($output));
+       });
+
+       $app->get('/plants/{id}', function($request, $response, $args) use ($app){
+           $special_collection = Special_Collection::getPlantsWithSpeicalCollections($args['id']);
+           $output = new Response($special_collection);
+           $response->getBody()->write(json_encode($output));
+       });
+
        /* ========================================================== *
         * POST
         * ========================================================== */
