@@ -60,6 +60,24 @@ function add_new_file($bucket, $key, $file_path){
 
 }
 
+function add_new_thumbnail_file($bucket, $key, $string_data){
+    global $s3Client;
+    //check if bucket exists;
+    if(!does_bucket_exist($bucket)){
+        return null;
+    }
+
+    try{
+        //if this is successful then the key is already being used
+        $s3Client->getObject(["Key"=>$key,"Bucket"=>$bucket]);
+        return null;
+    }catch(Exception $e){
+        //add object to bucket
+        $model = $s3Client->putObject(["Key"=>$key,"Bucket"=>$bucket, "Body"=>$string_data]);
+        return build_aws_url($key);
+    }
+}
+
 function list_all_files_in_bucket($bucket){
     global $s3Client;
     $objects = $s3Client->listObjects(["Bucket"=>$bucket])["Contents"];
