@@ -164,8 +164,8 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        })->add($validate_admin);
 
-       $app->put('/delete/{id}', function ($request, $response, $args) use ($app){
-           $updateBloom = Special_Collection::deleteSpecialCollection($args['id']);
+       $app->put('/delete/{name}', function ($request, $response, $args) use ($app){
+           $updateBloom = Special_Collection::deleteSpecialCollection($args['name']);
            $output = new Response($updateBloom);
            $response->getBody()->write(json_encode($output));
        })->add($validate_admin);
