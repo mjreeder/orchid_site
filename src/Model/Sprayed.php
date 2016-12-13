@@ -123,6 +123,20 @@ class Sprayed implements \JsonSerializable
         return $sprayed;
     }
 
+    public static function getSinglePlantByID($plant_id)
+    {
+        global $database;
+        $statement = $database->prepare("SELECT * FROM sprayed WHERE plant_id = ? ORDER BY id DESC LIMIT 1");
+        $statement->execute(array($plant_id));
+        $spray = null;
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $spray = new Sprayed($row);
+        }
+
+        return $spray;
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
