@@ -660,8 +660,6 @@ $app->group('/api', function () use ($app) {
     });
 
 
-
-
      /**
      * @SWG\Delete(
      *     path="/plants/{id}",

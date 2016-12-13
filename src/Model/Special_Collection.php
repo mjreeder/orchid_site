@@ -197,6 +197,21 @@ class Special_Collection implements \JsonSerializable
         return $id;
     }
 
+//    deleteSpecialCollection
+
+    public static function deleteSpecialCollection($id)
+    {
+        global $database;
+
+        $statementPlants = $database->prepare('UPDATE plants SET special_collections_id =  NULL WHERE special_collections_id = ?');
+        $statementPlants->execute(array($id));
+
+        $statementSpecialCollections = $database->prepare('DELETE FROM `special_collections` WHERE id = ?');
+        $statementSpecialCollections->execute(array($id));
+
+        return true;
+    }
+
     /* ========================================================== *
      * DELETE
      * ========================================================== */

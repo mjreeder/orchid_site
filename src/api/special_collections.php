@@ -74,6 +74,7 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        });
 
+
        /* ========================================================== *
         * POST
         * ========================================================== */
@@ -159,6 +160,12 @@ $app->group('/api', function () use ($app){
        $app->put('/update', function ($request, $response, $args) use ($app){
            $body = $request->getParsedBody();
            $updateBloom = Special_Collection::updateSpecialCollection($body);
+           $output = new Response($updateBloom);
+           $response->getBody()->write(json_encode($output));
+       })->add($validate_admin);
+
+       $app->put('/delete/{id}', function ($request, $response, $args) use ($app){
+           $updateBloom = Special_Collection::deleteSpecialCollection($args['id']);
            $output = new Response($updateBloom);
            $response->getBody()->write(json_encode($output));
        })->add($validate_admin);
