@@ -114,7 +114,7 @@ class Health implements \JsonSerializable
     public static function getSinglePlantByID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM health WHERE plant_id = ? ORDER BY id ASC LIMIT 1");
+        $statement = $database->prepare("SELECT * FROM health WHERE plant_id = ? ORDER BY id DESC LIMIT 1");
         $statement->execute(array($plant_id));
         $health = null;
 
