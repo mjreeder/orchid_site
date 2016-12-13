@@ -74,6 +74,17 @@ $app->group('/api', function () use ($app){
             return $formattedResponse;
         });
 
+        $app->get('/plant_id/single/{plant_id}', function($request, $response, $args) use ($app){
+            $sprayed = Sprayed::getSinglePlantByID($args['plant_id']);
+            $output = new Response($sprayed);
+            $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
+        });
+
         /* ========================================================== *
          * POST
          * ========================================================== */
