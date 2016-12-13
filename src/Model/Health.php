@@ -111,6 +111,20 @@ class Health implements \JsonSerializable
         return $health;
     }
 
+    public static function getSinglePlantByID($plant_id)
+    {
+        global $database;
+        $statement = $database->prepare("SELECT * FROM health WHERE plant_id = ? ORDER BY id DESC LIMIT 1");
+        $statement->execute(array($plant_id));
+        $health = null;
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $health = new Health($row);
+        }
+
+        return $health;
+    }
+
     /* ========================================================== *
      * POST
      * ========================================================== */
