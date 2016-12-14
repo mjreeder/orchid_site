@@ -99,7 +99,6 @@ class Location implements \JsonSerializable
             return;
         }
 
-
         return $statement->fetch(PDO::FETCH_ASSOC);
 
     }
@@ -109,7 +108,7 @@ class Location implements \JsonSerializable
         global $database;
         $statement = $database->prepare("SELECT * FROM location WHERE name = ?");
         $statement->execute(array($name));
-
+        
         if($statement->rowCount() == 1){
             return $statement->fetch(PDO::FETCH_ASSOC);
         } else {

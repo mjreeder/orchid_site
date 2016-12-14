@@ -183,6 +183,10 @@ class Plants implements \JsonSerializable
 
     public $dead_date;
 
+    public $countries_note;
+
+    public $general_note;
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -219,6 +223,8 @@ class Plants implements \JsonSerializable
             $this->species_name = $data['species_name'];
             $this->variety_name = $data['variety_name'];
             $this->dead_date = $data['dead_date'];
+            $this->countries_note = $data['countries_note'];
+            $this->general_note = $data['general_note'];
         }
     }
 
@@ -258,6 +264,8 @@ class Plants implements \JsonSerializable
             'species' => $this->species_name,
             'variety' => $this->variety_name,
             'dead_date' => $this->dead_date,
+            'general_note' => $this->general_note,
+            'countries_note' => $this->countries_note
 
         ];
     }
@@ -286,7 +294,7 @@ class Plants implements \JsonSerializable
     $body['habitat'], $body['culture'], $body['donation_comment'], $body['date_received'], $body['received_from'],
     $body['description'], $body['username'], $body['inactive_date'], $body['inactive_comment'], $body['scientific_name'],
     $body['hybrid_status'], $body['hybrid_comment'], $body['value'], $body['parent_one'], $body['parent_two'], $body['grex_status'],
-    $body['origin_comment'], $body['location_id'], $body['dead'], $body['special_collections_id'], $body['is_donation'], ));
+    $body['origin_comment'], $body['location_id'], $body['dead'], $body['special_collections_id'], $body['general_note'], $body['countries_note']));
 
         $id = $database->lastInsertId();
         $statement->closeCursor();
