@@ -48,6 +48,8 @@ class Photos implements \JsonSerializable
 
     public $fileName;
 
+    public $thumb_url;
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -57,6 +59,7 @@ class Photos implements \JsonSerializable
             $this->type = $data['type'];
             $this->active = intval($data['active']);
             $this->fileName = $data['fileName'];
+            $this->thumb_url = $data['thumb_url'];
         }
     }
 
@@ -69,6 +72,7 @@ class Photos implements \JsonSerializable
             'type' => $this->type,
             'active' => $this->active,
             'fileName' => $this->fileName,
+            'thumb_url' => $this->thumb_url,
         ];
     }
 
@@ -140,7 +144,7 @@ class Photos implements \JsonSerializable
     {
 
         global $database;
-        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active FROM plant_country_link PCL, photos Ph WHERE Ph.plant_id = PCL.plant_id AND PCL.country_id = ? AND Ph.active = 1 LIMIT 1");
+        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active, Ph.thumb_url FROM plant_country_link PCL, photos Ph WHERE Ph.plant_id = PCL.plant_id AND PCL.country_id = ? AND Ph.active = 1 LIMIT 1");
         $statement->execute(array($country_id));
         $similarPhotos = [];
 
@@ -155,7 +159,7 @@ class Photos implements \JsonSerializable
     {
 
         global $database;
-        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active FROM special_collections SP, photos Ph, plants Pl WHERE Ph.plant_id = Pl.id AND Pl.special_collections_id = ? AND Ph.active = 1 LIMIT 1");
+        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active,Ph.thumb_url FROM special_collections SP, photos Ph, plants Pl WHERE Ph.plant_id = Pl.id AND Pl.special_collections_id = ? AND Ph.active = 1 LIMIT 1");
         $statement->execute(array($collection_id));
         $similarPhotos = [];
 
@@ -172,7 +176,7 @@ class Photos implements \JsonSerializable
     {
 
         global $database;
-        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active FROM photos Ph, plants Pl WHERE Ph.plant_id = Pl.id AND Ph.active = 1 AND Pl.tribe_name = ? LIMIT 1");
+        $statement = $database->prepare("SELECT Ph.plant_id, Ph.fileName, Ph.id, Ph.url, Ph.id, Ph.type, Ph.active,Ph.thumb_url FROM photos Ph, plants Pl WHERE Ph.plant_id = Pl.id AND Ph.active = 1 AND Pl.tribe_name = ? LIMIT 1");
         $statement->execute(array($tribe));
         $similarPhotos = [];
 
@@ -190,8 +194,8 @@ class Photos implements \JsonSerializable
 
     public static function createPhoto($body){
         global $database;
-        $statement = $database->prepare("INSERT INTO photos (plant_id, url, type, active, fileName) VALUES (?,?,?,1, ?)");
-        $statement->execute(array($body['plant_id'], $body['url'], $body['type'], $body['fileName']));
+        $statement = $database->prepare("INSERT INTO photos (plant_id, url, type, active, fileName, thumb_url) VALUES (?,?,?,1, ?, ?)");
+        $statement->execute(array($body['plant_id'], $body['url'], $body['type'], $body['fileName'] , $body['thumb_url']));
         $id = $database->lastInsertId();
         $updateID = Photos::getByID($id);
 

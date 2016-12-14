@@ -197,8 +197,6 @@ class Special_Collection implements \JsonSerializable
         return $id;
     }
 
-//    deleteSpecialCollection
-
     public static function deleteSpecialCollection($name)
     {
         global $database;
@@ -206,9 +204,6 @@ class Special_Collection implements \JsonSerializable
         $statementIDSpecialCollections = $database->prepare("SELECT id FROM special_collections WHERE name = ?");
         $statementIDSpecialCollections->execute(array($name));
         $id = $statementIDSpecialCollections->fetch(PDO::FETCH_ASSOC);
-
-//        var_dump($id['id']);
-//        die();
 
         $statementPlants = $database->prepare('UPDATE plants SET special_collections_id =  NULL WHERE special_collections_id = ?');
         $statementPlants->execute(array($id['id']));
