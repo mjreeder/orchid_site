@@ -504,7 +504,7 @@ class Plants implements \JsonSerializable
         }
 
         $allPlants = [];
-        $getTotalPlantsCount = $database->prepare("SELECT * FROM Plants WHERE $whereString");
+        $getTotalPlantsCount = $database->prepare("SELECT * FROM plants WHERE $whereString");
         $getTotalPlantsCount->execute(array($whereString));
         if ($getTotalPlantsCount->rowCount() <= 0) {
             $numberOfPages = 0;
