@@ -157,6 +157,38 @@ class Split implements \JsonSerializable
 
         return $id;
     }
+
+    public static function addLetter($body)
+    {
+        global $database;
+        $plant = null;
+        $statement = $database->prepare('SELECT * FROM `plants` WHERE `id` = ?');
+        $statement->execute(array($body['id']));
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant = new Plants($row);
+        }
+
+        $statement = $database->prepare('SELECT * FROM `plants` WHERE `accession_number` LIKE ?%');
+        $statement->execute(array($plant->accession_number));
+        $asciiCode = 65; //A code in ASCII
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new Plants($row);
+        }
+
+        foreach ($plants as $temp){
+            $accession_number = $temp->accession_number;
+            $endIndex = strlen($accession_number) - 1;
+            $str = substr($accession_number, 0, $endIndex);
+            if(strlen($str) != 0){
+                $asciiCode++;
+            }
+        }
+        $newAccessionNumber = chr($asciiCode);
+
+        $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
+        $statement->execute(array($plant->accession_number, $plant->id));
+    }
     /* ========================================================== *
      * DELETE
      * ========================================================== */

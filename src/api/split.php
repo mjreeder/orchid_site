@@ -159,6 +159,12 @@ $app->group('/api', function () use ($app){
             $response->getBody()->write(json_encode($output));
         })->add($validate_admin);
 
+        $app->put('/add_letter/{plant_id}', function ($request, $response, $args) use ($app){
+            $split = Split::addLetter($args);
+            $output = new Response($split);
+            $response->getBody()->write(json_encode($output));
+        })->add($validate_admin);;
+
         /* ========================================================== *
          * DELETE
          * ========================================================== */
