@@ -188,7 +188,7 @@ class Plants implements \JsonSerializable
         if (is_array($data)) {
             $this->id = intval($data['id']);
             $this->name = $data['name'];
-            $this->accession_number = intval($data['accession_number']);
+            $this->accession_number = $data['accession_number'];
             $this->authority = $data['authority'];
             $this->distribution = $data['distribution'];
             $this->habitat = $data['habitat'];
@@ -762,6 +762,18 @@ class Plants implements \JsonSerializable
         $statement = $database->prepare('UPDATE plants SET location_id = ? WHERE id = ?');
 
         $statement->execute(array($location['id'], $body['plant_id']));
+
+        $statement->closeCursor();
+
+        return self::getById($body['plant_id']);
+    }
+
+    public static function updateGeneralNotes($body){
+
+        global $database;
+        $statement = $database->prepare('UPDATE plants SET general_note = ? WHERE id = ?');
+
+        $statement->execute(array($body['general_note'], $body['plant_id']));
 
         $statement->closeCursor();
 
