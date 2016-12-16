@@ -163,12 +163,18 @@ class Split implements \JsonSerializable
         global $database;
         $plant = null;
         $statement = $database->prepare('SELECT * FROM `plants` WHERE `id` = ?');
-        $statement->execute(array($body['id']));
+        $statement->execute(array($body['plant_id']));
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plant = new Plants($row);
         }
 
-        $statement = $database->prepare('SELECT * FROM `plants` WHERE `accession_number` LIKE ?%');
+        //See if last character is a alphabetical character
+        if(ctype_alpha($plant->accession_number[strlen($plant->accession_number) - 1])){
+            $accession_number = $plant->accession_number;
+            $plant->accession_number = substr($accession_number, 0, strlen($accession_number) - 2);
+        }
+
+        $statement = $database->prepare("SELECT * FROM `plants` WHERE `accession_number` LIKE ?");
         $statement->execute(array($plant->accession_number));
         $asciiCode = 65; //A code in ASCII
         $plants = [];
