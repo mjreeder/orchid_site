@@ -494,8 +494,9 @@ class Plants implements \JsonSerializable
             $whereString .= " $attribute LIKE '%$searchItem%' ";
         }
 
-        $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $whereString LIMIT $limitIndex, 30");
+        $wildcardStatement = $database->prepare("SELECT * FROM plants WHERE $whereString LIMIT $limitIndex, 30");
         $wildcardStatement->execute(array($whereString, $limitIndex));
+
         if (!$wildcardStatement->rowCount() <= 0) {
             while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
                 $plants[] = new self($row);
@@ -503,7 +504,7 @@ class Plants implements \JsonSerializable
         }
 
         $allPlants = [];
-        $getTotalPlantsCount = $database->prepare("SELECT * FROM Plants WHERE $whereString");
+        $getTotalPlantsCount = $database->prepare("SELECT * FROM plants WHERE $whereString");
         $getTotalPlantsCount->execute(array($whereString));
         if ($getTotalPlantsCount->rowCount() <= 0) {
             $numberOfPages = 0;
@@ -675,7 +676,7 @@ class Plants implements \JsonSerializable
         $body = $bo['data'];
 
         $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, phylum_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, countries_note = ? ,general_note = ?');
-  
+
         $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['phylum_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id'], $body['date_received'], $body['countries_note'], $body['general_note']));
 
         $id = $database->lastInsertId();
