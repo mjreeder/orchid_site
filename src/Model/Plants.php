@@ -6,7 +6,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', true);
 require_once '../utilities/database.php';
 use PDO;
-use Exception;
 
 /**
  * @SWG\Definition(
@@ -261,7 +260,7 @@ class Plants implements \JsonSerializable
             'variety' => $this->variety_name,
             'dead_date' => $this->dead_date,
             'general_note' => $this->general_note,
-            'countries_note' => $this->countries_note
+            'countries_note' => $this->countries_note,
 
         ];
     }
@@ -769,8 +768,8 @@ class Plants implements \JsonSerializable
         return self::getById($body['plant_id']);
     }
 
-    public static function updateGeneralNotes($body){
-
+    public static function updateGeneralNotes($body)
+    {
         global $database;
         $statement = $database->prepare('UPDATE plants SET general_note = ? WHERE id = ?');
 
@@ -793,6 +792,27 @@ class Plants implements \JsonSerializable
         } else {
             return true;
         }
+    }
+
+    public static function getPlantTaxonomyNames($taxonomyName, $tableName)
+    {
+        global $database;
+
+        $statement = $database->prepare("SELECT DISTINCT $tableName FROM plants WHERE $tableName LIKE ?");
+        $statement->execute(array("%$taxonomyName%"));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        $taxonomyNames = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+          $taxonomyNames[] = $row;
+        }
+
+        $statement->closeCursor();
+        return $taxonomyNames;
     }
 
     //DELETE

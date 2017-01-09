@@ -944,5 +944,221 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/class/{class}",
+    *     summary="get plant class names",
+    *     description="Get plant class names from searching possible class names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="class",
+    *         in="args",
+    *         description="the typed class",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/class/{class}', function ($request, $response, $args) use ($app) {
+      $classNames = Plants::getPlantTaxonomyNames($args['class'], 'class_name');
+      $output = new Response($classNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/tribe/{tribe}",
+    *     summary="get plant tribe names",
+    *     description="Get plant tribe names from searching possible tribe names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="tribe",
+    *         in="args",
+    *         description="the typed tribe",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/tribe/{tribe}', function ($request, $response, $args) use ($app) {
+      $tribeNames = Plants::getPlantTaxonomyNames($args['tribe'], 'tribe_name');
+      $output = new Response($tribeNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/genus/{genus}",
+    *     summary="get plant genus names",
+    *     description="Get plant genus names from searching possible genus names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="genus",
+    *         in="args",
+    *         description="the typed genus",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/genus/{genus}', function ($request, $response, $args) use ($app) {
+      $genusNames = Plants::getPlantTaxonomyNames($args['genus'], 'genus_name');
+      $output = new Response($genusNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/species/{species}",
+    *     summary="get plant species names",
+    *     description="Get plant species names from searching possible species names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="species",
+    *         in="args",
+    *         description="the typed species",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/species/{species}', function ($request, $response, $args) use ($app) {
+      $speciesNames = Plants::getPlantTaxonomyNames($args['species'], 'species_name');
+      $output = new Response($speciesNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/variety/{variety}",
+    *     summary="get plant variety names",
+    *     description="Get plant variety names from searching possible variety names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="variety",
+    *         in="args",
+    *         description="the typed variety",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/variety/{variety}', function ($request, $response, $args) use ($app) {
+      $varietyNames = Plants::getPlantTaxonomyNames($args['variety'], 'variety_name');
+      $output = new Response($varietyNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/phylum/{phylum}",
+    *     summary="get plant phylum names",
+    *     description="Get plant phylum names from searching possible phylum names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="phylum",
+    *         in="args",
+    *         description="the typed phylum",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/phylum/{phylum}', function ($request, $response, $args) use ($app) {
+      $varietyNames = Plants::getPlantTaxonomyNames($args['phylum'], 'phylum_name');
+      $output = new Response($varietyNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
   });
 });
