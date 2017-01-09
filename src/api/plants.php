@@ -946,7 +946,7 @@ $app->group('/api', function () use ($app) {
 
     /**
     * @SWG\Get(
-    *     path="/plants/get_autofill_classes/{class}",
+    *     path="/plants/autofill/class/{class}",
     *     summary="get plant class names",
     *     description="Get plant class names from searching possible class names",
     *     tags={"Plants"},
@@ -974,51 +974,15 @@ $app->group('/api', function () use ($app) {
     *     )
     * )
     */
-    $app->get('/get_autofill_classes/{class}', function ($request, $response, $args) use ($app) {
-      $classNames = Plants::getPlantClassNames($args['class']);
+    $app->get('/autofill/class/{class}', function ($request, $response, $args) use ($app) {
+      $classNames = Plants::getPlantTaxonomyNames($args['class'], 'class_name');
       $output = new Response($classNames);
       $response->getBody()->write(json_encode($output));
     });
 
     /**
     * @SWG\Get(
-    *     path="/plants/autofill/classes/{class}",
-    *     summary="get plant class names",
-    *     description="Get plant class names from searching possible class names",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="class",
-    *         in="args",
-    *         description="the typed class",
-    *         required=true,
-    *         type="string",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
-    $app->get('/autofill/classes/{class}', function ($request, $response, $args) use ($app) {
-      $classNames = Plants::getPlantClassNames($args['class']);
-      $output = new Response($classNames);
-      $response->getBody()->write(json_encode($output));
-    });
-
-    /**
-    * @SWG\Get(
-    *     path="/plants/get_autofill_tribe/{tribe}",
+    *     path="/plants/autofill/tribe/{tribe}",
     *     summary="get plant tribe names",
     *     description="Get plant tribe names from searching possible tribe names",
     *     tags={"Plants"},
@@ -1046,8 +1010,8 @@ $app->group('/api', function () use ($app) {
     *     )
     * )
     */
-    $app->get('/autofill/tribes/{tribe}', function ($request, $response, $args) use ($app) {
-      $tribeNames = Plants::getPlantTribeNames($args['tribe'], 'tribe_name');
+    $app->get('/autofill/tribe/{tribe}', function ($request, $response, $args) use ($app) {
+      $tribeNames = Plants::getPlantTaxonomyNames($args['tribe'], 'tribe_name');
       $output = new Response($tribeNames);
       $response->getBody()->write(json_encode($output));
     });
