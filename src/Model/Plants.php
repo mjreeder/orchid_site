@@ -493,8 +493,9 @@ class Plants implements \JsonSerializable
             $whereString .= " $attribute LIKE '%$searchItem%' ";
         }
 
-        $wildcardStatement = $database->prepare("SELECT * FROM Plants WHERE $whereString LIMIT $limitIndex, 30");
+        $wildcardStatement = $database->prepare("SELECT * FROM plants WHERE $whereString LIMIT $limitIndex, 30");
         $wildcardStatement->execute(array($whereString, $limitIndex));
+
         if (!$wildcardStatement->rowCount() <= 0) {
             while ($row = $wildcardStatement->fetch(PDO::FETCH_ASSOC)) {
                 $plants[] = new self($row);
@@ -502,7 +503,7 @@ class Plants implements \JsonSerializable
         }
 
         $allPlants = [];
-        $getTotalPlantsCount = $database->prepare("SELECT * FROM Plants WHERE $whereString");
+        $getTotalPlantsCount = $database->prepare("SELECT * FROM plants WHERE $whereString");
         $getTotalPlantsCount->execute(array($whereString));
         if ($getTotalPlantsCount->rowCount() <= 0) {
             $numberOfPages = 0;
