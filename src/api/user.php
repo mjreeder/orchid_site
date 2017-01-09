@@ -198,7 +198,7 @@ $app->group('/api', function () use ($app) {
         $user = User::createUser($body);
         $output = new Response($user);
         $response->getBody()->write(json_encode($output));
-    });
+    })->add($validate_admin);
 
     /*
      * @SWG\Put(
