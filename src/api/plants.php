@@ -946,42 +946,6 @@ $app->group('/api', function () use ($app) {
 
     /**
     * @SWG\Get(
-    *     path="/plants/autofill/class/{class}",
-    *     summary="get plant class names",
-    *     description="Get plant class names from searching possible class names",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="class",
-    *         in="args",
-    *         description="the typed class",
-    *         required=true,
-    *         type="string",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
-    $app->get('/autofill/class/{class}', function ($request, $response, $args) use ($app) {
-      $classNames = Plants::getPlantTaxonomyNames($args['class'], 'class_name');
-      $output = new Response($classNames);
-      $response->getBody()->write(json_encode($output));
-    });
-
-    /**
-    * @SWG\Get(
     *     path="/plants/autofill/tribe/{tribe}",
     *     summary="get plant tribe names",
     *     description="Get plant tribe names from searching possible tribe names",
