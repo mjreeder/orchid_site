@@ -450,7 +450,7 @@ class Plants implements \JsonSerializable
     public static function getById2($id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
+        $statement = $database->prepare("SELECT * FROM plants WHERE id = ?");
         $statement->execute(array($id));
         if ($statement->rowCount() <= 0) {
             return;
