@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 ini_set("display_errors", true);
 use orchid_site\src\Model\Split;
+use orchid_site\src\Model\Plants;
 require_once "../utilities/response.php";
 
 $app->group('/api', function () use ($app){
@@ -160,10 +161,11 @@ $app->group('/api', function () use ($app){
         })->add($validate_admin);
 
         $app->put('/add_letter/{plant_id}', function ($request, $response, $args) use ($app){
-            $split = Split::addLetter($args);
-            $output = new Response($split);
+            $oldPlant = Split::addLetter($args);
+            $newPlant = Plants::copyPlant($oldPlant->id);
+            $output = new Response($newPlant);
             $response->getBody()->write(json_encode($output));
-        })->add($validate_admin);;
+        });
 
         /* ========================================================== *
          * DELETE

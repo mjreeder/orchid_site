@@ -199,6 +199,7 @@ class Split implements \JsonSerializable
 
         $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
         $statement->execute(array($newAccessionNumber, $plant->id));
+        return Plants::getByID($plant->id);
     }
     /* ========================================================== *
      * DELETE
