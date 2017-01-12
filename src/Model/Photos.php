@@ -122,15 +122,21 @@ class Photos implements \JsonSerializable
         return $photos;
     }
 
-    public static function getSimilarPhotos($species_name)
+    public static function getSimilarPhotos($body)
     {
-        if($species_name == ""){
-            return false;
+        global $database;
+
+        if($body['species'] != "NULL" && $body['genus'] != "NULL"){
+            $statement = $database->prepare("SELECT * FROM photos Pl WHERE pl.plant_id IN (SELECT id FROM plants Pt WHERE Pt.species_name = ? OR Pt.genus_name = ?) AND pl.active = 1 ) AND pl.active = 1");
+            $statement->execute(array($body['species'], $body['genus']));
+        } else if($body['species'] != "NULL"){
+            $statement = $database->prepare("SELECT * FROM photos Pl WHERE pl.plant_id IN (SELECT id FROM plants Pt WHERE Pt.species_name = ?) AND pl.active = 1");
+            $statement->execute(array($body['species']));
+        } else if($body['genus'] != "NULL"){
+            $statement = $database->prepare("SELECT * FROM photos Pl WHERE pl.plant_id IN (SELECT id FROM plants Pt WHERE Pt.genus_name = ?) AND pl.active = 1");
+            $statement->execute(array($body['genus']));
         }
 
-        global $database;
-        $statement = $database->prepare("SELECT * FROM photos Pl WHERE pl.plant_id IN (SELECT id FROM plants Pt WHERE Pt.species_name = ?)");
-        $statement->execute(array($species_name));
         $similarPhotos = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {

@@ -1124,5 +1124,77 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/subtribe/{subtribe}",
+    *     summary="get plant subtribe names",
+    *     description="Get plant subtribe names from searching possible subtribe names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="subtribe",
+    *         in="args",
+    *         description="the typed subtribe",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/subtribe/{subtribe}', function ($request, $response, $args) use ($app) {
+      $varietyNames = Plants::getPlantTaxonomyNames($args['subtribe'], 'subtribe_name');
+      $output = new Response($varietyNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    /**
+    * @SWG\Get(
+    *     path="/plants/autofill/authority/{authority}",
+    *     summary="get plant authority names",
+    *     description="Get plant authority names from searching possible authority names",
+    *     tags={"Plants"},
+    *     @SWG\Parameter(
+    *         name="authority",
+    *         in="args",
+    *         description="the typed authority",
+    *         required=true,
+    *         type="string",
+    *         format=""
+    *     ),
+    *     @SWG\Response(
+    *         response=200,
+    *         description="Success",
+    *         @SWG\Schema(
+    *             ref="#/definitions/ArrayPlantsSuccess"
+    *         )
+    *     ),
+    *     @SWG\Response(
+    *         response="default",
+    *         description="unexpected error",
+    *         @SWG\Schema(
+    *             ref="#/definitions/Error"
+    *         )
+    *     )
+    * )
+    */
+    $app->get('/autofill/authority/{authority}', function ($request, $response, $args) use ($app) {
+      $varietyNames = Plants::getPlantTaxonomyNames($args['authority'], 'authority');
+      $output = new Response($varietyNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
   });
 });

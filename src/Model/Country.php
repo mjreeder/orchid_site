@@ -79,7 +79,7 @@ class Country implements \JsonSerializable
 
     public static function getCurrentCountires(){
         global $database;
-        $statement = $database->prepare("SELECT * FROM country WHERE id IN (SELECT country_id FROM plant_country_link)");
+        $statement = $database->prepare("SELECT * FROM country WHERE id IN (SELECT country_id FROM plant_country_link PCL, plants pl WHERE (pl.inactive_date ='0000-00-00' AND pl.dead_date = '0000-00-00') AND pl.id = PCL.plant_id)");
         $statement->execute();
 
         $countriesList = [];
@@ -88,7 +88,31 @@ class Country implements \JsonSerializable
             $countriesList[] = new self($row);
         }
 
-        return $countriesList;
+        $newData = $countriesList;
+
+        for($i = 0; $i < count($newData); $i++){
+//            var_dump($countriesList[$i]->id);
+            $statement = $database->prepare("SELECT * FROM photos WHERE active = 1 AND plant_id IN (SELECT plant_id FROM plant_country_link PCL, plants pl WHERE (pl.inactive_date ='0000-00-00' AND pl.dead_date = '0000-00-00') AND pl.id = PCL.plant_id AND PCL.country_id = ?) LIMIT 1");
+            $statement->execute(array($newData[$i]->id));
+
+
+            $thumb_url = $statement->fetch(PDO::FETCH_ASSOC)['thumb_url'];
+
+            if($thumb_url != NULL){
+                $newData[$i]->hasPicture = true;
+                $newData[$i]->picture = $thumb_url;
+            } else {
+                $newData[$i]->hasPicture = false;
+            }
+        }
+//        var_dump($newData);
+//        die();
+//        die(json_encode($newData));
+
+//        $response->getBody()->write(json_encode($output));
+
+
+        return $newData;
 
     }
 
