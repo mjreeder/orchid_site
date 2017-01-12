@@ -804,6 +804,28 @@ class Plants implements \JsonSerializable
         }
     }
 
+    public static function getPlantTaxonomyNames($taxonomyName, $tableName)
+    {
+        global $database;
+
+        $statement = $database->prepare("SELECT DISTINCT $tableName FROM plants WHERE $tableName LIKE ?");
+        $statement->execute(array("%$taxonomyName%"));
+
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        $taxonomyNames = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $taxonomyNames[] = $row;
+        }
+
+        $statement->closeCursor();
+        return $taxonomyNames;
+    }
+
+
     public static function copy($id)
     {
         global $database;
