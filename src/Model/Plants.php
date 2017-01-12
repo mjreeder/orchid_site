@@ -794,13 +794,21 @@ class Plants implements \JsonSerializable
         }
     }
 
-    public static function copyPlant($id)
+    public static function copy($id)
     {
         global $database;
         $plant = self::getById($id);
         $statement = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, phylum_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, countries_note = ? ,general_note = ?');
+        if(!isset($plant->location_id)){
+            $plant->location_id = null;
+        }
+        if(!isset($plant->special_collections_id)){
+            $plant->special_collections_id = null;
+        }
         $statement->execute(array($plant->accession_number, $plant->name, $plant->scientific_name, $plant->class_name, $plant->tribe_name, $plant->subtribe_name, $plant->genus_name, $plant->variety_name, $plant->authority, $plant->species_name, $plant->phylum_name, $plant->distribution, $plant->habitat, $plant->origin_comment, $plant->received_from, $plant->donation_comment, $plant->description, $plant->parent_one, $plant->parent_two, $plant->grex_status, $plant->hybrid_comment, $plant->location_id, $plant->special_collections_id, $plant->date_received, $plant->countries_note, $plant->general_note));
         $statement->closeCursor();
+        $newId = $database->lastInsertId();
+        return self::getById($newId);
     }
 
     //DELETE

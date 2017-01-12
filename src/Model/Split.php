@@ -158,28 +158,34 @@ class Split implements \JsonSerializable
         return $id;
     }
 
-    public static function addLetter($body)
+    public static function addLetter($id, $firstLetter=false)
     {
         global $database;
         $plant = null;
         $statement = $database->prepare('SELECT * FROM `plants` WHERE `id` = ?');
-        $statement->execute(array($body['plant_id']));
+        $statement->execute(array($id));
 
         //TODO Remove loop
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plant = new Plants($row);
         }
 
+        $asciiCode = 64; //A code in ASCII -1
+
         //See if last character is a alphabetical character
         if(ctype_alpha($plant->accession_number[strlen($plant->accession_number) - 1])){
             $accession_number = $plant->accession_number;
             $plant->accession_number = substr($accession_number, 0, strlen($accession_number) - 1);
             $plant->accession_number .= "%";
+        } else if($firstLetter == true) {
+            $plant->accession_number .= "A";
+            $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
+            $statement->execute(array($plant->accession_number, $id));
+            return Plants::getByID($id);
         }
 
         $statement = $database->prepare("SELECT * FROM `plants` WHERE `accession_number` LIKE ?");
         $statement->execute(array($plant->accession_number));
-        $asciiCode = 65; //A code in ASCII
         $plants = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plants[] = new Plants($row);
