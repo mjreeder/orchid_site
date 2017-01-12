@@ -286,18 +286,28 @@ class Plants implements \JsonSerializable
     public static function getBlooming()
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM blooming WHERE end_date != '0000-00-00')");
+        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM blooming WHERE end_date = '0000-00-00')");
         $statement->execute();
         $allPlants = array();
         if ($statement->rowCount() <= 0) {
             return;
         }
         $plants = [];
+        $photo = [];
+
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plants[] = new self($row);
         }
 
-        return $plants;
+        for($i = 0; $i < count($plants); $i++){
+            $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = ?");
+            $statement->execute(array($plants[$i]->id));
+            array_push($photo, $statement->fetch(PDO::FETCH_ASSOC));
+        }
+
+        $returnObject = (object) ['plants' => $plants, 'photo' => $photo];
+
+        return $returnObject;
     }
 
     public static function getCountries($country)

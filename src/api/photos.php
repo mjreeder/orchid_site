@@ -25,8 +25,9 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        });
 
-       $app->get('/getSimilarPlants/{species_name}', function ($request, $response, $args) use ($app){
-           $photos = Photos::getSimilarPhotos($args['species_name']);
+       $app->post('/getSimilarPlants', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+           $photos = Photos::getSimilarPhotos($body);
            $output = new Response($photos);
            $response->getBody()->write(json_encode($output));
        });
