@@ -226,7 +226,7 @@ class Plants implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'accession number' => $this->accession_number,
+            'accession_number' => $this->accession_number,
             'genus' => $this->genus_name,
             'variety grex' => $this->variety_name,
             'authority' => $this->authority,
