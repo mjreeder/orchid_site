@@ -157,6 +157,56 @@ class Split implements \JsonSerializable
 
         return $id;
     }
+
+    public static function addLetter($id, $firstLetter=false)
+    {
+        global $database;
+        $plant = null;
+        $statement = $database->prepare('SELECT * FROM `plants` WHERE `id` = ?');
+        $statement->execute(array($id));
+
+        //TODO Remove loop
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plant = new Plants($row);
+        }
+
+        $asciiCode = 64; //A code in ASCII -1
+
+        //See if last character is a alphabetical character
+        if(ctype_alpha($plant->accession_number[strlen($plant->accession_number) - 1])){
+            $accession_number = $plant->accession_number;
+            $plant->accession_number = substr($accession_number, 0, strlen($accession_number) - 1);
+            $plant->accession_number .= "%";
+        } else if($firstLetter == true) {
+            $plant->accession_number .= "A";
+            $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
+            $statement->execute(array($plant->accession_number, $id));
+            return Plants::getByID($id);
+        }
+
+        $statement = $database->prepare("SELECT * FROM `plants` WHERE `accession_number` LIKE ?");
+        $statement->execute(array($plant->accession_number));
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $plants[] = new Plants($row);
+        }
+
+        //Increments letter by one for each occurrence of the letter
+        foreach ($plants as $temp){
+            $accession_number = $temp->accession_number;
+            $endIndex = strlen($accession_number) - 1;
+            if(ctype_alpha($accession_number[$endIndex])){
+                $asciiCode++;
+            }
+        }
+
+        $plant->accession_number = str_replace("%", "", $plant->accession_number);
+        $newAccessionNumber = $plant->accession_number . chr($asciiCode);
+
+        $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
+        $statement->execute(array($newAccessionNumber, $plant->id));
+        return Plants::getByID($plant->id);
+    }
     /* ========================================================== *
      * DELETE
      * ========================================================== */
