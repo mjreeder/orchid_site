@@ -170,7 +170,7 @@ class Split implements \JsonSerializable
             $plant = new Plants($row);
         }
 
-        $asciiCode = 64; //A code in ASCII -1
+        $asciiCode = 65; //A code in ASCII
 
         //See if last character is a alphabetical character
         if(ctype_alpha($plant->accession_number[strlen($plant->accession_number) - 1])){
@@ -192,12 +192,26 @@ class Split implements \JsonSerializable
         }
 
         //Increments letter by one for each occurrence of the letter
+        $lastAscii = 0;
         foreach ($plants as $temp){
             $accession_number = $temp->accession_number;
             $endIndex = strlen($accession_number) - 1;
             if(ctype_alpha($accession_number[$endIndex])){
-                $asciiCode++;
+                $lastCharacter = (string)$accession_number[$endIndex]; //force a conversion since ord() only works on strings
+                var_dump($lastCharacter);
+                //Prevent duplication of letters
+                if(ord($lastCharacter) == $asciiCode) {
+                    $asciiCode = ord($lastCharacter);
+                    $asciiCode++;
+                } else {
+                    //Get last letter ASCII value
+                    $lastPlant = $plants[count($plants) - 1];
+                    $accessionLetter = (string)$lastPlant->accession_number[$endIndex];
+                    $asciiCode = ord($accessionLetter);
+                    continue;
+                }
             }
+
         }
 
         $plant->accession_number = str_replace("%", "", $plant->accession_number);
