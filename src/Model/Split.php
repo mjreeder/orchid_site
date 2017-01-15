@@ -197,7 +197,6 @@ class Split implements \JsonSerializable
             $endIndex = strlen($accession_number) - 1;
             if(ctype_alpha($accession_number[$endIndex])){
                 $lastCharacter = (string)$accession_number[$endIndex];
-                var_dump($lastCharacter);
                 //Prevent duplication of letters
                 if(ord($lastCharacter) == $asciiCode) {
                     $asciiCode = ord($lastCharacter);
