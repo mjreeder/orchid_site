@@ -192,12 +192,11 @@ class Split implements \JsonSerializable
         }
 
         //Increments letter by one for each occurrence of the letter
-        $lastAscii = 0;
         foreach ($plants as $temp){
             $accession_number = $temp->accession_number;
             $endIndex = strlen($accession_number) - 1;
             if(ctype_alpha($accession_number[$endIndex])){
-                $lastCharacter = (string)$accession_number[$endIndex]; //force a conversion since ord() only works on strings
+                $lastCharacter = (string)$accession_number[$endIndex];
                 var_dump($lastCharacter);
                 //Prevent duplication of letters
                 if(ord($lastCharacter) == $asciiCode) {
