@@ -98,7 +98,7 @@ class Photos implements \JsonSerializable
     {
         global $database;
         $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = ? AND active = 1");
-        $statement->execute($plant_id);
+        $statement->execute(array($plant_id));
         $photos = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
