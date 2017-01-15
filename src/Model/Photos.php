@@ -97,8 +97,8 @@ class Photos implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = $plant_id AND active = 1");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = ? AND active = 1");
+        $statement->execute($plant_id);
         $photos = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
