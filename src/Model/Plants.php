@@ -228,7 +228,7 @@ class Plants implements \JsonSerializable
         return [
             'accession_number' => $this->accession_number,
             'genus' => $this->genus_name,
-            'variety grex' => $this->variety_name,
+            'variety_name' => $this->variety_name,
             'authority' => $this->authority,
             'location' => $this->location,
             'distribution' => $this->distribution,
