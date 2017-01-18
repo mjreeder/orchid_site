@@ -861,12 +861,14 @@ class Plants implements \JsonSerializable
 
     private static function linkCountriesCopy($ori_id, $last_id){
         $plantCountryLink = Plant_Country_Link::getByID($ori_id);
-        $plantCountryLink->plant_id = $last_id;
-        //To reuse the old model we will create an associative array
-        $bodyFake = array();
-        $bodyFake["plant_id"] = $plantCountryLink->plant_id;
-        $bodyFake["country_id"] = $plantCountryLink->country_id;
-        Plant_Country_Link::createLink($bodyFake);
+        if($plantCountryLink != false){
+            $plantCountryLink->plant_id = $last_id;
+            //To reuse the old model we will create an associative array
+            $bodyFake = array();
+            $bodyFake["plant_id"] = $plantCountryLink->plant_id;
+            $bodyFake["country_id"] = $plantCountryLink->country_id;
+            Plant_Country_Link::createLink($bodyFake);
+        }
     }
 
     //DELETE
