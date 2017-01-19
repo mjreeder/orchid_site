@@ -170,59 +170,37 @@ class Split implements \JsonSerializable
             $plant = new Plants($row);
         }
 
-        $asciiCode = 65; //A code in ASCII
-
-        //See if last character is a alphabetical character
-        if(ctype_alpha($plant->accession_number[strlen($plant->accession_number) - 1])){
-            $accession_number = $plant->accession_number;
-            $plant->accession_number = substr($accession_number, 0, strlen($accession_number) - 1);
-            $plant->accession_number .= "%";
-//            die("made it");
-        } else if($firstLetter == true) {
+        $lastCharacter = $plant->accession_number[strlen($plant->accession_number) - 1];
+        if(!ctype_alpha($lastCharacter)){
             $plant->accession_number .= "A";
             $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
             $statement->execute(array($plant->accession_number, $id));
+            var_dump("I ran");
             return Plants::getByID($id);
+        } else if ($firstLetter){
+            return null;
         }
 
-        $statement = $database->prepare("SELECT * FROM `plants` WHERE `accession_number` LIKE ? ORDER BY id DESC LIMIT 1");
+        $plant->accession_number = substr($plant->accession_number, 0, -1);
+        $plant->accession_number .= "%";
+
+        $statement = $database->prepare("SELECT * FROM `plants` WHERE `accession_number` LIKE ? ORDER BY `accession_number` DESC LIMIT 1");
         $statement->execute(array($plant->accession_number));
         $plants = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plants[] = new Plants($row);
         }
-
-//        //Increments letter by one for each occurrence of the letter
-//        foreach ($plants as $temp){
-//            $accession_number = $temp->accession_number;
-//            $endIndex = strlen($accession_number) - 1;
-//            if(ctype_alpha($accession_number[$endIndex])){
-//                $lastCharacter = (string)$accession_number[$endIndex];
-//                //Prevent duplication of letters
-//                if(ord($lastCharacter) == $asciiCode) {
-//                    $asciiCode = ord($lastCharacter);
-//                    $asciiCode++;
-//                } else {
-                    //Get last letter ASCII value
-                    $accession_number = $plants[0]->accession_number;
-                    $lastPlant = $plants[count($plants) - 1];
-                    $endIndex = strlen($accession_number) - 1;
-                    $accessionLetter = (string)$lastPlant->accession_number[$endIndex];
-                    $asciiCode = ord($accessionLetter) + 1;
-//                    continue;
-//                }
-//            }
-//
-//        }
+        $accession_number = $plants[0]->accession_number;
+        $endIndex = strlen($accession_number) - 1;
+        $accessionLetter = $accession_number[$endIndex];
+        $asciiCode = ord($accessionLetter) + 1;
 
         $plant->accession_number = str_replace("%", "", $plant->accession_number);
         $newAccessionNumber = $plant->accession_number . chr($asciiCode);
 
-//        die(json_encode($newAccessionNumber));
 
         $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
         $statement->execute(array($newAccessionNumber, $plant->id));
-//        die(json_encode($plant));
         return Plants::getByID($plant->id);
     }
     /* ========================================================== *
