@@ -286,7 +286,7 @@ class Plants implements \JsonSerializable
     public static function getBlooming()
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM blooming WHERE end_date != '0000-00-00')");
+        $statement = $database->prepare("SELECT * FROM plants WHERE id IN (SELECT plant_id FROM blooming WHERE end_date = '0000-00-00')");
         $statement->execute();
         $allPlants = array();
         if ($statement->rowCount() <= 0) {
@@ -688,8 +688,8 @@ class Plants implements \JsonSerializable
     public static function updateCulture($body)
     {
         global $database;
-        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ? WHERE id = ?');
-        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ?, countries_note = ? WHERE id = ?');
+        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['countries_note'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
@@ -718,8 +718,8 @@ class Plants implements \JsonSerializable
     public static function updateTaxonmic($body)
     {
         global $database;
-        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ? WHERE id = ?');
-        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ? WHERE id = ?');
+        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['phylum_name'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
