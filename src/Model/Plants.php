@@ -226,42 +226,41 @@ class Plants implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
             'accession_number' => $this->accession_number,
+            'genus' => $this->genus_name,
+            'variety_name' => $this->variety_name,
             'authority' => $this->authority,
+            'location' => $this->location,
             'distribution' => $this->distribution,
             'habitat' => $this->habitat,
-            'scientific_name' => $this->scientific_name,
             'culture' => $this->culture,
-            'donation_comment' => $this->donation_comment,
-            'date_received' => $this->date_received,
-            'received_from' => $this->received_from,
+            'general note' => $this->general_note,
+            'special collection' => $this->special_collection,
+            'parent one' => $this->parent_one,
+            'parent two' => $this->parent_two,
+            'id' => $this->id,
+            'name' => $this->name,
+            'scientific name' => $this->scientific_name,
+            'donation comment' => $this->donation_comment,
+            'date received' => $this->date_received,
+            'received from' => $this->received_from,
             'description' => $this->description,
             'username' => $this->username,
-            'inactive_date' => $this->inactive_date,
-            'inactive_comment' => $this->inactive_comment,
+            'inactive date' => $this->inactive_date,
+            'inactive comment' => $this->inactive_comment,
             'value' => $this->value,
-            'parent_one' => $this->parent_one,
-            'parent_two' => $this->parent_two,
-            'grex_status' => $this->grex_status,
-            'hybrid_comment' => $this->hybrid_comment,
-            'hybrid_status' => $this->hybrid_status,
-            'origin_comment' => $this->origin_comment,
-            'location' => $this->location,
+            'grex hybrid' => $this->grex_status,
+            'hybrid comment' => $this->hybrid_comment,
+            'hybrid status' => $this->hybrid_status,
+            'origin comment' => $this->origin_comment,
             'dead' => $this->dead,
-            'special_collection' => $this->special_collection,
             'class' => $this->class_name,
             'tribe' => $this->tribe_name,
             'subtribe' => $this->subtribe_name,
-            'genus' => $this->genus_name,
             'species' => $this->species_name,
             'phylum' => $this->phylum_name,
-            'variety' => $this->variety_name,
-            'dead_date' => $this->dead_date,
-            'general_note' => $this->general_note,
-            'countries_note' => $this->countries_note,
-
+            'dead date' => $this->dead_date,
+            'countries note' => $this->countries_note,
         ];
     }
 
@@ -293,11 +292,21 @@ class Plants implements \JsonSerializable
             return;
         }
         $plants = [];
+        $photo = [];
+
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plants[] = new self($row);
         }
 
-        return $plants;
+        for($i = 0; $i < count($plants); $i++){
+            $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = ?");
+            $statement->execute(array($plants[$i]->id));
+            array_push($photo, $statement->fetch(PDO::FETCH_ASSOC));
+        }
+
+        $returnObject = (object) ['plants' => $plants, 'photo' => $photo];
+
+        return $returnObject;
     }
 
     public static function getCountries($country)
@@ -390,7 +399,7 @@ class Plants implements \JsonSerializable
     public static function getById($id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
+        $statement = $database->prepare("SELECT * FROM plants WHERE id = ?");
         $statement->execute(array($id));
         if ($statement->rowCount() <= 0) {
             return;
@@ -450,7 +459,7 @@ class Plants implements \JsonSerializable
     public static function getById2($id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM plants WHERE id = $id");
+        $statement = $database->prepare("SELECT * FROM plants WHERE id = ?");
         $statement->execute(array($id));
         if ($statement->rowCount() <= 0) {
             return;
@@ -808,19 +817,66 @@ class Plants implements \JsonSerializable
         $taxonomyNames = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-          $taxonomyNames[] = $row;
+            $taxonomyNames[] = $row;
         }
 
         $statement->closeCursor();
         return $taxonomyNames;
     }
 
+
+    public static function copy($id)
+    {
+        global $database;
+        $plant = self::getById($id);
+        $statement = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, phylum_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, countries_note = ? ,general_note = ?');
+        if(!isset($plant->location_id)){
+            $plant->location_id = null;
+        }
+        if(!isset($plant->special_collections_id)){
+            $plant->special_collections_id = null;
+        }
+        $statement->execute(array($plant->accession_number, $plant->name, $plant->scientific_name, $plant->class_name, $plant->tribe_name, $plant->subtribe_name, $plant->genus_name, $plant->variety_name, $plant->authority, $plant->species_name, $plant->phylum_name, $plant->distribution, $plant->habitat, $plant->origin_comment, $plant->received_from, $plant->donation_comment, $plant->description, $plant->parent_one, $plant->parent_two, $plant->grex_status, $plant->hybrid_comment, $plant->location_id, $plant->special_collections_id, $plant->date_received, $plant->countries_note, $plant->general_note));
+        $statement->closeCursor();
+        $newId = $database->lastInsertId();
+        self::photoCopy($id, $newId);
+        self::linkCountriesCopy($id, $newId);
+        return self::getById($newId);
+    }
+
+    private static function photoCopy($ori_id, $last_id){
+        $photos = Photos::getByPlantID($ori_id);
+        foreach ($photos as $photo){
+            $photo->plant_id = $last_id;
+            //To reuse the old model we will create an associative array
+            $bodyFake = array();
+            $bodyFake["plant_id"] = $photo->plant_id;
+            $bodyFake["url"] = $photo->url;
+            $bodyFake["type"] = $photo->type;
+            $bodyFake["fileName"] = $photo->fileName;
+            $bodyFake["thumb_url"] = $photo->thumb_url;
+            Photos::createPhoto($bodyFake);
+        }
+    }
+
+    private static function linkCountriesCopy($ori_id, $last_id){
+        $plantCountryLink = Plant_Country_Link::getByID($ori_id);
+        if($plantCountryLink != false){
+            $plantCountryLink->plant_id = $last_id;
+            //To reuse the old model we will create an associative array
+            $bodyFake = array();
+            $bodyFake["plant_id"] = $plantCountryLink->plant_id;
+            $bodyFake["country_id"] = $plantCountryLink->country_id;
+            Plant_Country_Link::createLink($bodyFake);
+        }
+    }
+
     //DELETE
     public static function delete($id)
     {
         global $database;
-        $statement = $database->prepare("DELETE FROM plants WHERE id = $id");
-        $statement->execute();
+        $statement = $database->prepare("DELETE FROM plants WHERE id = ?");
+        $statement->execute(array($id));
         $statement->closeCursor();
         if ($statement->rowCount() > 0) {
             return array('success' => true);

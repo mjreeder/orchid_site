@@ -80,7 +80,7 @@ class Plant_Country_Link implements \JsonSerializable
             return false;
         }
 
-        $p_c_link = $statement->fetch(PDO::FETCH_ASSOC);
+        $p_c_link = new Plant_Country_Link($statement->fetch(PDO::FETCH_ASSOC));
         return $p_c_link;
     }
 

@@ -97,8 +97,8 @@ class Photos implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = $plant_id AND active = 1");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM photos WHERE plant_id = ? AND active = 1");
+        $statement->execute(array($plant_id));
         $photos = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -111,8 +111,8 @@ class Photos implements \JsonSerializable
     public static function getByID($id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM photos WHERE id = $id");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM photos WHERE id = ?");
+        $statement->execute(array($id));
         $photos = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -200,9 +200,11 @@ class Photos implements \JsonSerializable
 
     public static function createPhoto($body){
         global $database;
+//        die(json_encode($body["thumb_url"]));
         $statement = $database->prepare("INSERT INTO photos (plant_id, url, type, active, fileName, thumb_url) VALUES (?,?,?,1, ?, ?)");
-        $statement->execute(array($body['plant_id'], $body['url'], $body['type'], $body['fileName'] , $body['thumb_url']));
-        $id = $database->lastInsertId();
+        $statement->execute(array($body['plant_id'], $body['url'], $body['type'], $body['fileName'], $body['thumb_url']));
+//        die(json_encode($database->lastInsertId()));
+        $id = intval($database->lastInsertId());
         $updateID = Photos::getByID($id);
 
         return $updateID;
