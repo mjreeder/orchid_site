@@ -226,8 +226,9 @@ class Plants implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'accession_number' => $this->accession_number,
             'genus' => $this->genus_name,
+            'species' => $this->species_name,
+            'accession_number' => $this->accession_number,
             'variety_name' => $this->variety_name,
             'authority' => $this->authority,
             'location' => $this->location,
@@ -257,7 +258,6 @@ class Plants implements \JsonSerializable
             'class' => $this->class_name,
             'tribe' => $this->tribe_name,
             'subtribe' => $this->subtribe_name,
-            'species' => $this->species_name,
             'phylum' => $this->phylum_name,
             'dead date' => $this->dead_date,
             'countries note' => $this->countries_note,
@@ -277,22 +277,6 @@ class Plants implements \JsonSerializable
         $plants = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plants[] = new self($row);
-        }
-
-        return $plants;
-    }
-
-    public static function getAccessionAndID(){
-        global $database;
-        $statement = $database->prepare('SELECT accession_number, id FROM plants');
-        $statement->execute();
-        if ($statement->rowCount() <= 0) {
-            return;
-        }
-        $plants = [];
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-           $plants[]  =  $row;
-//            $plants[] = new self($row);
         }
 
         return $plants;
@@ -713,8 +697,8 @@ class Plants implements \JsonSerializable
     public static function updateCulture($body)
     {
         global $database;
-        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ? WHERE id = ?');
-        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ?, countries_note = ? WHERE id = ?');
+        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['countries_note'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
@@ -743,8 +727,8 @@ class Plants implements \JsonSerializable
     public static function updateTaxonmic($body)
     {
         global $database;
-        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ? WHERE id = ?');
-        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ? WHERE id = ?');
+        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['phylum_name'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
