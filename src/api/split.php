@@ -169,6 +169,13 @@ $app->group('/api', function () use ($app){
             $response->getBody()->write(json_encode($output));
         })->add($validate_admin);
 
+        $app->put('/donation/{plant_id}', function($request, $response, $args) use ($app){
+            $id = $args['plant_id'];
+            $oldPlant = Split::addLetter($id, true);
+            $output = new Response($oldPlant);
+            $response->getBody()->write(json_encode($output));
+        })->add($validate_admin);
+
         /* ========================================================== *
          * DELETE
          * ========================================================== */
