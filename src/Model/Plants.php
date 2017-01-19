@@ -226,41 +226,41 @@ class Plants implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'accession_number' => $this->accession_number,
             'genus' => $this->genus_name,
-            'variety_name' => $this->variety_name,
+            'species' => $this->species_name,
+            'accession_number' => $this->accession_number,
+            'variety' => $this->variety_name,
             'authority' => $this->authority,
             'location' => $this->location,
             'distribution' => $this->distribution,
             'habitat' => $this->habitat,
             'culture' => $this->culture,
-            'general note' => $this->general_note,
-            'special collection' => $this->special_collection,
-            'parent one' => $this->parent_one,
-            'parent two' => $this->parent_two,
+            'general_note' => $this->general_note,
+            'special_collection' => $this->special_collection,
+            'parent_one' => $this->parent_one,
+            'parent_two' => $this->parent_two,
             'id' => $this->id,
             'name' => $this->name,
-            'scientific name' => $this->scientific_name,
-            'donation comment' => $this->donation_comment,
-            'date received' => $this->date_received,
-            'received from' => $this->received_from,
+            'scientific_name' => $this->scientific_name,
+            'donation_comment' => $this->donation_comment,
+            'date_received' => $this->date_received,
+            'received_from' => $this->received_from,
             'description' => $this->description,
             'username' => $this->username,
-            'inactive date' => $this->inactive_date,
-            'inactive comment' => $this->inactive_comment,
+            'inactive_date' => $this->inactive_date,
+            'inactive_comment' => $this->inactive_comment,
             'value' => $this->value,
-            'grex hybrid' => $this->grex_status,
-            'hybrid comment' => $this->hybrid_comment,
-            'hybrid status' => $this->hybrid_status,
-            'origin comment' => $this->origin_comment,
+            'grex_status' => $this->grex_status,
+            'hybrid_comment' => $this->hybrid_comment,
+            'hybrid_status' => $this->hybrid_status,
+            'origin_comment' => $this->origin_comment,
             'dead' => $this->dead,
             'class' => $this->class_name,
             'tribe' => $this->tribe_name,
             'subtribe' => $this->subtribe_name,
-            'species' => $this->species_name,
             'phylum' => $this->phylum_name,
-            'dead date' => $this->dead_date,
-            'countries note' => $this->countries_note,
+            'dead_date' => $this->dead_date,
+            'countries_note' => $this->countries_note,
         ];
     }
 
@@ -697,8 +697,8 @@ class Plants implements \JsonSerializable
     public static function updateCulture($body)
     {
         global $database;
-        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ? WHERE id = ?');
-        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET distribution = ?, habitat = ?, origin_comment = ?, countries_note = ? WHERE id = ?');
+        $statment->execute(array($body['distribution'], $body['habitat'], $body['origin_comment'], $body['countries_note'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);
@@ -727,8 +727,8 @@ class Plants implements \JsonSerializable
     public static function updateTaxonmic($body)
     {
         global $database;
-        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ? WHERE id = ?');
-        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['id']));
+        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ? WHERE id = ?');
+        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['phylum_name'], $body['id']));
         $statment->closeCursor();
 
         return self::getById($body['id']);

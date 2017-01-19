@@ -38,6 +38,12 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/accID', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getAccessionAndID();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     $app->get('/getBlooming', function ($request, $response, $args) use ($app) {
       $plants = Plants::getBlooming();
       $output = new Response($plants);
