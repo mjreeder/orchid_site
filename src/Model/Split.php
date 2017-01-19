@@ -175,10 +175,9 @@ class Split implements \JsonSerializable
             $plant->accession_number .= "A";
             $statement = $database->prepare('UPDATE plants SET `accession_number` = ? WHERE id = ?');
             $statement->execute(array($plant->accession_number, $id));
-            var_dump("I ran");
             return Plants::getByID($id);
         } else if ($firstLetter){
-            return null;
+            return Plants::getByID($id);
         }
 
         $plant->accession_number = substr($plant->accession_number, 0, -1);
