@@ -226,8 +226,9 @@ class Plants implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'accession_number' => $this->accession_number,
             'genus' => $this->genus_name,
+            'species' => $this->species_name,
+            'accession_number' => $this->accession_number,
             'variety_name' => $this->variety_name,
             'authority' => $this->authority,
             'location' => $this->location,
@@ -257,7 +258,6 @@ class Plants implements \JsonSerializable
             'class' => $this->class_name,
             'tribe' => $this->tribe_name,
             'subtribe' => $this->subtribe_name,
-            'species' => $this->species_name,
             'phylum' => $this->phylum_name,
             'dead date' => $this->dead_date,
             'countries note' => $this->countries_note,

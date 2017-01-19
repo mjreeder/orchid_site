@@ -14,7 +14,7 @@ $app->group('/api', function () use ($app) {
     * @SWG\Get(
     *     path="/plants",
     *     summary="Get All",
-    *     description="Get all plants",
+    *     description="Get all Books",
     *     tags={"Plants"},
     *     @SWG\Response(
     *         response=200,
@@ -38,345 +38,72 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/getBlooming",
-    *     summary="Get plants in bloom",
-    *     description="Get plants that are in bloom",
-    *     tags={"Plants"},
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="Error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
+    $app->get('/accID', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getAccessionAndID();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     $app->get('/getBlooming', function ($request, $response, $args) use ($app) {
       $plants = Plants::getBlooming();
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/getCountries/{country}",
-    *     summary="Get plants of country",
-    *     description="Get all of the plants that are in the specified country",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="country",
-    *         in="path",
-    *         description="The country to search plants for",
-    *         required=true,
-    *         type="char",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/getCountries/{country}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getCountries($args['country']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/getCollections/{collection}",
-    *     summary="Get plants of special collection",
-    *     description="Get all of the plants that are in the specified collection",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="collection",
-    *         in="path",
-    *         description="The collection to search plants for",
-    *         required=true,
-    *         type="char",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/getCollections/{collection}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getSpecialCollection($args['collection']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/commonName/{letter}",
-    *     summary="Get plants of special collection",
-    *     description="Get all of the plants that are in the specified collection",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="collection",
-    *         in="path",
-    *         description="The collection to search plants for",
-    *         required=true,
-    *         type="char",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/commonName/{letter}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getCommonNameFromAlphabet($args['letter']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/commonName/{letter}",
-    *     summary="Get plants of special collection",
-    *     description="Get all of the plants that are in the specified collection",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="collection",
-    *         in="path",
-    *         description="The collection to search plants for",
-    *         required=true,
-    *         type="char",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/subtribe/{subtribe}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getSubtribeNames($args['subtribe']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/specificCommonName/{name}",
-    *     summary="Get plants of name",
-    *     description="Get all of the plants that are in specified name",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="name",
-    *         in="path",
-    *         description="The name to search plants for",
-    *         required=true,
-    *         type="char",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/specificCommonName/{name}', function ($request, $response, $args) use ($app) {
       $plants = Plants::findCommonName($args['name']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/table/{id}",
-    *     summary="Get plants of table",
-    *     description="Get all of the plants that are in specified table",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="id",
-    *         in="path",
-    *         description="The id of the table to get plants",
-    *         required=true,
-    *         type="int",
-    *         format="int64"
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/table/{id}', function ($request, $response, $args) use ($app){
       $plants = Plants::getPlantsByTable($args['id']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/aaa/{id}",
-    *     summary="Get plants by id",
-    *     description="Get plants by id with health information",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="id",
-    *         in="path",
-    *         description="The id of the plant",
-    *         required=true,
-    *         type="int",
-    *         format="int64"
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/aaa/{id}', function ($request, $response, $args) use ($app){
       $plants = Plants::getById2($args['id']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/checkAccessionNumber/{accession_number}",
-    *     summary="check accession number",
-    *     description="check to see if given accession number is valid",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(ref="#/parameters/accession_number"),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->get('/checkAccessionNumber/{accession_number}', function($request, $response, $args) use ($app){
       $plants = Plants::checkAccessionNumber($args['accession_number']);
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
 
-    /**
-    * @SWG\Get(
-    *     path="/plants/getPlantsFromSubTribe/{subtribe}",
-    *     summary="Get plants by subtribe",
-    *     description="Get plants by given subtribe",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(
-    *         name="subtribe",
-    *         in="path",
-    *         description="The subtribe of the plant",
-    *         required=true,
-    *         type="char",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="Success",
-    *         @SWG\Schema(
-    *             ref="#/definitions/ArrayPlantsSuccess"
-    *         )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
+    $app->get('/checkOneAccessionNumber/{accession_number}', function($request, $response, $args) use ($app){
+      $plants = Plants::checkOneAccessionNumber($args['accession_number']);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     $app->get('/getPlantsFromSubTribe/{subtribe}', function($request, $response, $args) use ($app){
       $plants = Plants::getPlantsFromSubTribe($args['subtribe']);
       $output = new Response($plants);
@@ -838,6 +565,7 @@ $app->group('/api', function () use ($app) {
      *     )
      * )
      */
+
     $app->put('/', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
         $plant = Plants::update($body);
@@ -845,39 +573,6 @@ $app->group('/api', function () use ($app) {
         $response->getBody()->write(json_encode($output));
     })->add($validate_admin);
 
-    /**
-    * @SWG\Put(
-    *     path="/plants",
-    *     summary="Edit plant",
-    *     description="Edit the plant given a plant object",
-    *     tags={"Plants"},
-    *     @SWG\Parameter(ref="#/parameters/plant_id"),
-    *     @SWG\Parameter(ref="#parameters/plant_name"),
-    *     @SWG\Parameter(ref="#/parameters/accession_number"),
-    *     @SWG\Parameter(
-    *         name="scientific_name",
-    *         in="args",
-    *         description="The Plant's scientific name",
-    *         required=false,
-    *         type="string",
-    *         format=""
-    *     ),
-    *     @SWG\Response(
-    *         response=200,
-    *         description="plant response",
-    *         @SWG\Schema(
-    *              ref="#/definitions/Plants"
-    *          )
-    *     ),
-    *     @SWG\Response(
-    *         response="default",
-    *         description="unexpected error",
-    *         @SWG\Schema(
-    *             ref="#/definitions/Error"
-    *         )
-    *     )
-    * )
-    */
     $app->put('/updateCritical', function ($request, $response, $formData) use ($app) {
       $body = $request->getParsedBody();
       $plant = Plants::updateCritical($body["plant"]);
