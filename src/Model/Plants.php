@@ -282,6 +282,22 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+    public static function getAccessionAndID(){
+        global $database;
+        $statement = $database->prepare('SELECT accession_number, id FROM plants');
+        $statement->execute();
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+        $plants = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+           $plants[]  =  $row;
+//            $plants[] = new self($row);
+        }
+
+        return $plants;
+    }
+
     public static function getBlooming()
     {
         global $database;
