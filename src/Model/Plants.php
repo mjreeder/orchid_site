@@ -855,7 +855,36 @@ class Plants implements \JsonSerializable
         $statement->execute(array($plant->accession_number, $plant->name, $plant->scientific_name, $plant->class_name, $plant->tribe_name, $plant->subtribe_name, $plant->genus_name, $plant->variety_name, $plant->authority, $plant->species_name, $plant->phylum_name, $plant->distribution, $plant->habitat, $plant->origin_comment, $plant->received_from, $plant->donation_comment, $plant->description, $plant->parent_one, $plant->parent_two, $plant->grex_status, $plant->hybrid_comment, $plant->location_id, $plant->special_collections_id, $plant->date_received, $plant->countries_note, $plant->general_note));
         $statement->closeCursor();
         $newId = $database->lastInsertId();
+        self::photoCopy($id, $newId);
+        self::linkCountriesCopy($id, $newId);
         return self::getById($newId);
+    }
+
+    private static function photoCopy($ori_id, $last_id){
+        $photos = Photos::getByPlantID($ori_id);
+        foreach ($photos as $photo){
+            $photo->plant_id = $last_id;
+            //To reuse the old model we will create an associative array
+            $bodyFake = array();
+            $bodyFake["plant_id"] = $photo->plant_id;
+            $bodyFake["url"] = $photo->url;
+            $bodyFake["type"] = $photo->type;
+            $bodyFake["fileName"] = $photo->fileName;
+            $bodyFake["thumb_url"] = $photo->thumb_url;
+            Photos::createPhoto($bodyFake);
+        }
+    }
+
+    private static function linkCountriesCopy($ori_id, $last_id){
+        $plantCountryLink = Plant_Country_Link::getByID($ori_id);
+        if($plantCountryLink != false){
+            $plantCountryLink->plant_id = $last_id;
+            //To reuse the old model we will create an associative array
+            $bodyFake = array();
+            $bodyFake["plant_id"] = $plantCountryLink->plant_id;
+            $bodyFake["country_id"] = $plantCountryLink->country_id;
+            Plant_Country_Link::createLink($bodyFake);
+        }
     }
 
     //DELETE

@@ -167,7 +167,7 @@ $app->group('/api', function () use ($app){
             $newPlant = Split::addLetter($newPlant->id);
             $output = new Response($newPlant);
             $response->getBody()->write(json_encode($output));
-        });
+        })->add($validate_admin);
 
         /* ========================================================== *
          * DELETE
