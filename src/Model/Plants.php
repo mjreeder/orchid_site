@@ -159,29 +159,77 @@ class Plants implements \JsonSerializable
      * @var bool
      */
     public $dead;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var int
+     */
     public $special_collection;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $class_name;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $tribe_name;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $subtribe_name;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $genus_name;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $species_name;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $phylum_name;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $variety_name;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $dead_date;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $countries_note;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public $general_note;
-
+    /**
+     * @SWG\Property()
+     *
+     * @var string
+     */
     public function __construct($data)
     {
         if (is_array($data)) {
