@@ -367,6 +367,8 @@ class Plants implements \JsonSerializable
             return;
         }
         $plants = [];
+        $photo = [];
+
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plants[] = new self($row);
         }
@@ -493,7 +495,7 @@ class Plants implements \JsonSerializable
     {
         global $database;
 
-        $statement = $database->prepare('SELECT COUNT(*) as num, `tribe_name`, `accession_number` FROM plants GROUP BY `tribe_name` ORDER BY num DESC');
+        $statement = $database->prepare('SELECT COUNT(*) as num, `subtribe_name` , `accession_number` FROM plants GROUP BY `subtribe_name` ORDER BY num DESC');
         $statement->execute();
         $plant_ids = [];
 
@@ -682,7 +684,7 @@ class Plants implements \JsonSerializable
     public static function getPlantsFromSubTribe($tribe)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM plants WHERE tribe_name = ?');
+        $statement = $database->prepare('SELECT * FROM plants WHERE subtribe_name = ? AND (dead_date IS NULL AND inactive_date IS NULL)');
         $statement->execute(array($tribe));
 
         if ($statement->rowCount() <= 0) {
@@ -690,11 +692,27 @@ class Plants implements \JsonSerializable
         }
 
         $plants = [];
+        $photos = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $plants[] = new self($row);
         }
 
-        return $plants;
+        for($i = 0; $i < count($plants); $i++){
+            $statement2 = $database->prepare('SELECT * FROM photos WHERE plant_id = ?');
+            $statement2->execute(array($plants[$i]->id));
+            $photosRow = $statement2->fetch(PDO::FETCH_ASSOC);
+            if($photosRow != false){
+                array_push($photos, new Photos($photosRow));
+            }
+
+        }
+
+        $returnObject = (object) ['plants' => $plants, 'photos' => $photos];
+
+
+        return $returnObject;
+
+
     }
 //
 
