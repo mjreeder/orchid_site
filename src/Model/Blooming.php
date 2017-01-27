@@ -249,6 +249,18 @@ class Blooming implements \JsonSerializable
         return $updatID;
     }
 
+    public static function createGenericBloom($body)
+    {
+        global $database;
+        $statement = $database->prepare('INSERT INTO blooming (plant_id, start_date, end_date) VALUES (?,?,?) ');
+        $statement->execute(array($body['plant_id'], $body['start_date'], $body['end_date']));
+        $id = $database->lastInsertId();
+        $statement->closeCursor();
+        $updatID = self::getByID($id);
+
+        return $updatID;
+    }
+
     /* ========================================================== *
      * PUT
      * ========================================================== */
@@ -266,4 +278,13 @@ class Blooming implements \JsonSerializable
     /* ========================================================== *
      * DELETE
      * ========================================================== */
+
+    public static function deleteBloom($body)
+    {
+        global $database;
+        $statement = $database->prepare('DELETE FROM `blooming` WHERE id = ?');
+        $statement->execute(array($body['id']));
+
+        return;
+    }
 }

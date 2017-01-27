@@ -50,6 +50,12 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->get('/getCount', function ($request, $response, $args) use ($app) {
+      $plants = Plants::getCount();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     $app->get('/getCountries/{country}', function ($request, $response, $args) use ($app) {
       $plants = Plants::getCountries($args['country']);
       $output = new Response($plants);

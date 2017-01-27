@@ -376,6 +376,25 @@ class Plants implements \JsonSerializable
         return $plants;
     }
 
+//
+
+    public static function getCount($country)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT COUNT(*) FROM plants where dead_date IS NULL AND inactive_date IS NULL');
+        $statement->execute(array());
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        var_dump($row = $statement->fetch(PDO::FETCH_ASSOC));
+        die();
+
+        $count = $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $count;
+    }
+
     public static function findCommonName($commonName)
     {
         global $database;
@@ -714,7 +733,6 @@ class Plants implements \JsonSerializable
 
 
     }
-//
 
     public static function updateLocation($body)
     {

@@ -151,6 +151,18 @@ $app->group('/api', function () use ($app){
            return $formattedResponse;
        })->add($validate_admin);
 
+       $app->post('/createGenericBloom', function ($request, $response, $args) use ($app){
+           $body = $request->getParsedBody();
+           $blooming = Blooming::createGenericBloom($body);
+           $output = new Response($blooming);
+           $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
+       })->add($validate_admin);
+
        /* ========================================================== *
          * PUT
         * ========================================================== */
@@ -208,5 +220,19 @@ $app->group('/api', function () use ($app){
        /* ========================================================== *
          * DELETE
         * ========================================================== */
+
+       $app->put('/delete', function ($requst, $response, $args) use ($app){
+           $body = $requst->getParsedBody();
+           $blooming = Blooming::deleteBloom($body);
+           $output = new Response($blooming);
+           $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
+       })->add($validate_admin);
+
+
    });
 });
