@@ -126,7 +126,7 @@ class Potting implements \JsonSerializable
 
          return $updateID;
      }
-    
+
     /* ========================================================== *
      * PUT
      * ========================================================== */
@@ -144,4 +144,13 @@ class Potting implements \JsonSerializable
     /* ========================================================== *
      * DELETEs
      * ========================================================== */
+
+    public static function deletePotting($body)
+    {
+        global $database;
+        $statement = $database->prepare('DELETE FROM `potting` WHERE id = ?');
+        $statement->execute(array($body['id']));
+
+        return;
+    }
 }

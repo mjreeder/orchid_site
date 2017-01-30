@@ -158,4 +158,13 @@ class Health implements \JsonSerializable
     /* ========================================================== *
      * DELETE
      * ========================================================== */
+
+    public static function deleteHealth($body)
+    {
+        global $database;
+        $statement = $database->prepare('DELETE FROM `health` WHERE id = ?');
+        $statement->execute(array($body['id']));
+
+        return;
+    }
 }

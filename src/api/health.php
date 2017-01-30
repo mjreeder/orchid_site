@@ -226,5 +226,17 @@ $app->group('/api', function () use ($app) {
         /* ========================================================== *
         * DELETE
          * ========================================================== */
+
+        $app->put('/delete', function($request, $response, $args) use ($app){
+            $body = $request->getParsedBody();
+            $health = Health::deleteHealth($body);
+            $output = new Response($health);
+            $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
+        })->add($validate_admin);
     });
 });

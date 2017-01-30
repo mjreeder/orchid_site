@@ -171,4 +171,13 @@ class Sprayed implements \JsonSerializable
     /* ========================================================== *
      * DELETE
      * ========================================================== */
+
+    public static function deleteSpray($body)
+    {
+        global $database;
+        $statement = $database->prepare('DELETE FROM `sprayed` WHERE id = ?');
+        $statement->execute(array($body['id']));
+
+        return;
+    }
 }

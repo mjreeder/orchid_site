@@ -81,8 +81,8 @@ class Pests implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare("SELECT * FROM pests WHERE plant_id = $plant_id");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM pests WHERE plant_id = ?");
+        $statement->execute(array($plant_id));
         $pestControl = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {

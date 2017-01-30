@@ -190,6 +190,18 @@ $app->group('/api', function () use ($app){
         /* ========================================================== *
          * DELETE
          * ========================================================== */
+
+        $app->put('/delete', function ($requst, $response, $args) use ($app){
+            $body = $requst->getParsedBody();
+            $blooming = Sprayed::deleteSpray($body);
+            $output = new Response($blooming);
+            $response->getBody()->write(json_encode($output));
+            $formattedResponse = $response->withHeader(
+                'Content-type',
+                'application/json; charset=utf-8'
+            );
+            return $formattedResponse;
+        })->add($validate_admin);
     });
 });
 ?>
