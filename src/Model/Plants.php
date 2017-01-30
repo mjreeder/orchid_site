@@ -378,7 +378,7 @@ class Plants implements \JsonSerializable
 
 //
 
-    public static function getCount($country)
+    public static function getCount()
     {
         global $database;
         $statement = $database->prepare('SELECT COUNT(*) FROM plants where dead_date IS NULL AND inactive_date IS NULL');
@@ -386,9 +386,6 @@ class Plants implements \JsonSerializable
         if ($statement->rowCount() <= 0) {
             return;
         }
-
-        var_dump($row = $statement->fetch(PDO::FETCH_ASSOC));
-        die();
 
         $count = $row = $statement->fetch(PDO::FETCH_ASSOC);
 
