@@ -112,7 +112,7 @@ class Plant_Country_Link implements \JsonSerializable
 
         if (count($countryNames) <= 0){
             header('Content-Type: application/javascript');
-            http_response_code(400);
+            http_response_code(200);
 
             $response = array(
                 "status" => "fail",
