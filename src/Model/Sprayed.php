@@ -104,6 +104,25 @@ class Sprayed implements \JsonSerializable
         return $sprayed;
     }
 
+    public static function getAllByPlantId($id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM sprayed WHERE plant_id = ?');
+        $statement->execute(array($id));
+
+        if ($statement->rowCount() <= 0) {
+            return false;
+        }
+
+        $sprayed = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $sprayed[] = new self($row);
+        }
+
+        return $sprayed;
+    }
+
     public static function getByID($id)
     {
         global $database;

@@ -53,7 +53,7 @@ $app->group('/api', function () use ($app){
          */
         $app->get('/plant_id/{plant_id}', function($request, $response, $args) use ($app){
             $page = 1;
-           $sprayed = Sprayed::getByPlantID($args['plant_id'], $page);
+           $sprayed = Sprayed::getAllByPlantId($args['plant_id']);
             $output = new Response($sprayed);
             $response->getBody()->write(json_encode($output));
             $formattedResponse = $response->withHeader(

@@ -88,6 +88,20 @@ class Potting implements \JsonSerializable
         return $potting;
     }
 
+    public static function getAllPottingByPlantID($plant_id)
+    {
+        global $database;
+        $statement = $database->prepare('SELECT * FROM potting WHERE plant_id = ?');
+        $statement->execute(array($plant_id));
+        $potting = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $potting[] = new self($row);
+        }
+
+        return $potting;
+    }
+
     public static function getSinglePlantByID($plant_id)
     {
         global $database;

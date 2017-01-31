@@ -32,7 +32,7 @@ $app->group('/api', function () use ($app){
            $response->getBody()->write(json_encode($output));
        });
 
-       $app->get('/onePhotoCountry/{country}', function ($request, $response, $args) use ($app){
+       $app->post('/onePhotoCountry/{country}', function ($request, $response, $args) use ($app){
            $photos = Photos::onePhotoCountry($args['country']);
            $output = new Response($photos);
            $response->getBody()->write(json_encode($output));
