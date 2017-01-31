@@ -39,6 +39,18 @@ $app->group('/api', function () use ($app){
            return $formattedResponse;
        });
 
+       $app->get('/allPotting/{plant_id}', function($request, $response, $args) use ($app){
+           $page = 1;
+           $potting = Potting::getAllPottingByPlantID($args['plant_id'], $page);
+           $output = new Response($potting);
+           $response->getBody()->write(json_encode($output));
+           $formattedResponse = $response->withHeader(
+               'Content-type',
+               'application/json; charset=utf-8'
+           );
+           return $formattedResponse;
+       });
+
        /**
         * @SWG\Get(
         *     path="/potting/plant_id/{plant_id}",
