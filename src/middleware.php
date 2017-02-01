@@ -23,7 +23,7 @@ class Validator
         $row = $statement->fetch(PDO::FETCH_ASSOC);
         $authLevel = $row['auth_level'];
         $statement->closeCursor();
-        if ($authLevel == 1) {
+        if ($authLevel == 1 || $authLevel == 2) {
             $statement = $database->prepare('SELECT * FROM session WHERE session_key=? AND session_id=?');
             $statement->execute(array($session_key, $session_id));
             $session = $statement->fetch(PDO::FETCH_ASSOC);
