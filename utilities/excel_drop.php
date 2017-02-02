@@ -18,7 +18,7 @@ $file_ending = "xls";
 //header info for browser
 header("Content-Type: application/xls");
 header("Content-Disposition: attachment; filename=$filename.xls");
-header("Pragma: no-cache"); `
+header("Pragma: no-cache"); 
 header("Expires: 0");
 /*******Start of Formatting for Excel*******/   
 //define separator (defines columns in excel & tabs in word)
