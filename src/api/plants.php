@@ -103,6 +103,22 @@ $app->group('/api', function () use ($app) {
       $output = new Response($plants);
       $response->getBody()->write(json_encode($output));
     });
+//    getDistinctCount
+
+    $app->get('/getDistinctCount', function($request, $response, $args) use ($app){
+      $plants = Plants::getDistinctCount();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+//    dead_Date
+
+    $app->get('/dead_date_year', function($request, $response, $args) use ($app){
+      $plants = Plants::dead_Date();
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
 
     $app->get('/checkOneAccessionNumber/{accession_number}', function($request, $response, $args) use ($app){
       $plants = Plants::checkOneAccessionNumber($args['accession_number']);

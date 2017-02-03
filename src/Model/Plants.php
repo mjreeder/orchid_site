@@ -408,6 +408,62 @@ class Plants implements \JsonSerializable
         return $count;
     }
 
+    public static function dead_Date() {
+//        SELECT dead_date FROM plants where dead_date IS NOT NULL
+        global $database;
+        $statement = $database->prepare('SELECT DISTINCT(Year(dead_date)) AS dead_date FROM plants WHERE dead_date IS NOT NULL');
+        $statement->execute(array());
+
+        $dates = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $dates[] = $row;
+        }
+
+        $years = [];
+        for($i = 0; $i < count($dates); $i++){
+            $date_1 = $dates[$i]['dead_date'];
+            $year_1 = substr($date_1, 0 , 4);
+            $start_date = $year_1 . "-01-01";
+            $end_date = $year_1 . "-12-31";
+            $years[] = $start_date;
+            $years[] = $end_date;
+        }
+
+        $return_years = [];
+
+        for($j = 0; $j < count($years); $j = $j + 2){
+            $start_date1 = $years[$j];
+            $end_date1 = $years[$j+1];
+
+            $statement2 = $database->prepare("SELECT COUNT(*) FROM `plants` WHERE (dead_date BETWEEN ? AND ?)");
+            $statement2->execute(array($start_date1, $end_date1));
+
+            $row = $statement2->fetch(PDO::FETCH_ASSOC);
+
+            $message = $start_date1 . " - " . $end_date1 ." => " .  $row['COUNT(*)']. " deaths.";
+
+            $return_years[] = $message;
+
+        }
+
+        return $return_years;
+    }
+
+
+    public static function getDistinctCount()
+    {
+        global $database;
+        $statement = $database->prepare('SELECT COUNT(DISTINCT genus_name) FROM plants;');
+        $statement->execute(array());
+        if ($statement->rowCount() <= 0) {
+            return;
+        }
+
+        $count = $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $count;
+    }
+
     public static function findCommonName($commonName)
     {
         global $database;
