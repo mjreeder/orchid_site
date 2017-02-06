@@ -5,7 +5,7 @@ $DB_Username = "orchid"; //MySQL Username
 $DB_Password = "753G2rxYfsPxMQcT";             //MySQL Password
 $DB_DBName = "orchid";         //MySQL Database Name
 $DB_TBLName = "sprayed"; //MySQL Table Name
-$filename = "split_data_dump";         //File Name
+$filename = "sprayed_data_dump";         //File Name
 /*******YOU DO NOT NEED TO EDIT ANYTHING BELOW THIS LINE*******/
 //create MySQL connection
 $sql = "Select p.accession_number, p.genus_name, p.species_name, S.timestamp, S.note from $DB_TBLName S, plants p WHERE p.id = S.plant_id";
