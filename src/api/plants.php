@@ -32,6 +32,14 @@ $app->group('/api', function () use ($app) {
     *     )
     * )
     */
+
+    $app->put('/rankings', function ($request, $response, $args) use ($app) {
+      $body = $request->getParsedBody();
+      $plants = Plants::getTaxonomicRankings($body);
+      $output = new Response($plants);
+      $response->getBody()->write(json_encode($output));
+    });
+
     $app->get('', function ($request, $response, $args) use ($app) {
       $plants = Plants::getAll();
       $output = new Response($plants);
@@ -687,6 +695,16 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->put('/deletePlants', function ($request, $response, $data) use ($app){
+      $body = $request->getParsedBody();
+      $plant = Plants::deletePlant($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+//    inactivePlant
+//    inactivePlant
+
 
      /**
      * @SWG\Delete(
@@ -972,6 +990,16 @@ $app->group('/api', function () use ($app) {
       $response->getBody()->write(json_encode($output));
     });
 
+    $app->post('/createPlantWithNewAccessionNumber', function ($request, $response, $args) use ($app) {
+      $body = $request->getParsedBody();
+      $plant = Plants::createPlantWithNewAccessionNumber($body);
+      $output = new Response($plant);
+      $response->getBody()->write(json_encode($output));
+    });
+
+
+//    createPlantWithNewAccessionNumber
+
     /**
     * @SWG\Get(
     *     path="/plants/autofill/class/{class}",
@@ -1005,6 +1033,12 @@ $app->group('/api', function () use ($app) {
     $app->get('/autofill/class/{class}', function ($request, $response, $args) use ($app) {
       $classNames = Plants::getPlantTaxonomyNames($args['class'], 'class_name');
       $output = new Response($classNames);
+      $response->getBody()->write(json_encode($output));
+    });
+
+    $app->get('/autofill/family/{class}', function ($request, $response, $args) use ($app) {
+      $familyName = Plants::getPlantTaxonomyNames($args['family'], 'family_name');
+      $output = new Response($familyName);
       $response->getBody()->write(json_encode($output));
     });
 

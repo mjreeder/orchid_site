@@ -166,6 +166,62 @@ class Blooming implements \JsonSerializable
         }
     }
 
+    public static function calculateData($pla){
+        $plant_id = 4;
+        global $database;
+
+        $year = [];
+        for($i = 01; $i < 13; $i++){
+
+            //first time is for 1 - 10 => .3
+            $first_period_start_day = 1;
+            $first_period_last_day = 10;
+
+            //second time is for 11 - 20 => .6
+            $second_period_start_day = 11;
+            $seond_period_last_day = 20;
+
+            //third time is for 21 - 31 => .9
+            $third_period_start_day = 21;
+            $third_period_last_day = 31;
+
+
+
+            $statement = $database->prepare("SELECT COUNT(*) AS count FROM blooming WHERE MONTH(start_date) = ? AND DAY(start_date) BETWEEN ? and ? AND plant_id = ?");
+            $statement->execute(array($i, $first_period_start_day, $first_period_last_day, $plant_id));
+            $first = $statement->fetch(PDO::FETCH_ASSOC);
+
+            $statement = $database->prepare("SELECT COUNT(*) AS count FROM blooming WHERE MONTH(start_date) = ? AND DAY(start_date) BETWEEN ? and ? AND plant_id = ?");
+            $statement->execute(array($i, $second_period_start_day, $seond_period_last_day, $plant_id));
+            $second = $statement->fetch(PDO::FETCH_ASSOC);
+
+            $statement = $database->prepare("SELECT COUNT(*) AS count FROM blooming WHERE MONTH(start_date) = ? AND DAY(start_date) BETWEEN ? and ? AND plant_id = ?");
+            $statement->execute(array($i, $third_period_start_day, $third_period_last_day, $plant_id));
+            $third = $statement->fetch(PDO::FETCH_ASSOC);
+            $startMonth = (object) [".3" => $first, ".6" => $second, ".9" => $third];
+
+            $statement = $database->prepare("SELECT COUNT(*) AS count FROM blooming WHERE MONTH(end_date) = ? AND DAY(end_date) BETWEEN ? and ? AND plant_id = ?");
+            $statement->execute(array($i, $first_period_start_day, $first_period_last_day, $plant_id));
+            $Efirst = $statement->fetch(PDO::FETCH_ASSOC);
+
+            $statement = $database->prepare("SELECT COUNT(*) AS count FROM blooming WHERE MONTH(end_date) = ? AND DAY(end_date) BETWEEN ? and ? AND plant_id = ?");
+            $statement->execute(array($i, $second_period_start_day, $seond_period_last_day, $plant_id));
+            $Esecond = $statement->fetch(PDO::FETCH_ASSOC);
+
+            $statement = $database->prepare("SELECT COUNT(*) AS count FROM blooming WHERE MONTH(end_date) = ? AND DAY(end_date) BETWEEN ? and ? AND plant_id = ?");
+            $statement->execute(array($i, $third_period_start_day, $third_period_last_day, $plant_id));
+            $Ethird = $statement->fetch(PDO::FETCH_ASSOC);
+            $endMonth = (object) [".3" => $Efirst, ".6" => $Esecond, ".9" => $Ethird];
+
+            $singleGraphMonth = (object) ["month" => $i, 'startBreakDown' => $startMonth, "endBreakDown" => $endMonth];
+
+            array_push($year, $singleGraphMonth);
+        }
+
+        return $year;
+
+    }
+
     public static function getByID($id)
     {
         global $database;
@@ -229,7 +285,16 @@ class Blooming implements \JsonSerializable
         }
 
         return $blooming;
+    }
 
+    public static function isBloomingRightNow($plant_id){
+        global $database;
+        $statement = $database->prepare("SELECT * FROM blooming WHERE plant_id = ? AND end_date = 000-00-00 LIMIT 1");
+        $statement->execute(array($plant_id));
+        if ($statement->rowCount() <= 0){
+            return false;
+        }
+        return $statement->fetch(PDO::FETCH_ASSOC);
 
     }
 

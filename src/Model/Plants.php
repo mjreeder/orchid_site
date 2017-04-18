@@ -230,6 +230,12 @@ class Plants implements \JsonSerializable
      *
      * @var string
      */
+
+    public $inactive;
+
+    public $family_name;
+
+
     public function __construct($data)
     {
         if (is_array($data)) {
@@ -268,6 +274,8 @@ class Plants implements \JsonSerializable
             $this->dead_date = $data['dead_date'];
             $this->countries_note = $data['countries_note'];
             $this->general_note = $data['general_note'];
+            $this->inactive = $data['inactive'];
+            $this->family_name = $data['family_name'];
         }
     }
 
@@ -309,6 +317,9 @@ class Plants implements \JsonSerializable
             'phylum' => $this->phylum_name,
             'dead_date' => $this->dead_date,
             'countries_note' => $this->countries_note,
+            'inactive' => $this->inactive,
+            'family_name' => $this->family_name
+
         ];
     }
 
@@ -755,11 +766,11 @@ class Plants implements \JsonSerializable
     public static function getPlantsByTable($table_id)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM plants WHERE ? = location_id');
+        $statement = $database->prepare('SELECT * FROM plants WHERE location_id = ? AND dead_date IS NULL AND inactive_date IS NULL');
         $statement->execute(array($table_id));
 
         if ($statement->rowCount() <= 0) {
-            return false;
+            return "Table Empty";;
         }
 
         $plants = [];
@@ -767,7 +778,40 @@ class Plants implements \JsonSerializable
             $plants[] = new self($row);
         }
 
-        return $plants;
+        $totalPlantObject = [];
+
+        for ($i = 0; $i < count($plants); $i++){
+            $tagged = "";
+            $plantID = $plants[$i]->id;
+            $tagged = Tag::getByPlantID($plantID);
+            if($tagged == NULL){
+                $tagged = null;
+            }
+
+            $verified = Verified::getByPlantID($plantID);
+            if($verified == NULL){
+                $verified = null;
+            }
+
+            $blooming = Blooming::isBloomingRightNow($plantID);
+            if($blooming == NULL){
+                $blooming = null;
+            }
+
+            $string = $plants[$i]->accession_number;
+            $plant = $plants[$i];
+            $plantObject = (object) ["info" => $plant, 'tagged' => $tagged, "verified" => $verified, "blooming" =>$blooming];
+           array_push($totalPlantObject, $plantObject);
+        }
+
+        if(count($plants) == 0){
+            return "Table Empty";
+        }
+
+
+
+
+        return $totalPlantObject;
     }
     public static function getPlantsFromSubTribe($tribe)
     {
@@ -839,6 +883,25 @@ class Plants implements \JsonSerializable
         $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, phylum_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, countries_note = ? ,general_note = ?, username = ?');
 
         $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['phylum_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id'], $body['date_received'], $body['countries_note'], $body['general_note'], $body['username']));
+
+        $id = $database->lastInsertId();
+
+        $statment->closeCursor();
+
+        return self::getById($id);
+    }
+
+    public static function createPlantWithNewAccessionNumber($plantData)
+    {
+        global $database;
+        $bo = $plantData['plant'];
+        $body = $bo['data'];
+
+//       todo old_accession_numer - > copying the photo date
+
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, phylum_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, countries_note = ? ,general_note = ?, username = ?, family_name = ?');
+
+        $statment->execute(array($body['new_plant_accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['phylum_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], 4, $body['special_collections_id'], $body['date_received'], $body['countries_note'], $body['general_note'], $body['username'], "HELLO"));
 
         $id = $database->lastInsertId();
 
@@ -949,10 +1012,10 @@ class Plants implements \JsonSerializable
         $statement->execute(array($accession_number));
         $statement->closeCursor();
 
-        if ($statement->rowCount() <= 0) {
-            return false;
-        } else {
+        if ($statement->rowCount() == 0) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -1012,6 +1075,102 @@ class Plants implements \JsonSerializable
         }
     }
 
+    public static function getTaxonomicRankings($plant){
+            // 1) Phylum -> phylum_name
+            // 2) Class -> class_name
+            // 3) Family -> family_name
+            // 4) Tribe -> tribe_name
+            // 5) Sub tribe -> subtribe_name
+            // 6)genus -> genus_name
+            // 7)species -> species_name
+            // 8)variety -> variety_name
+            // 9) authority -> authority
+
+        global $database;
+        if($plant['authority'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name, species_name, variety_name, authority  FROM plants WHERE authority = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['variety_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name, species_name, variety_name  FROM plants WHERE variety_name = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['species_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name, species_name  FROM plants WHERE species_name = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['genus_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name  FROM plants WHERE genus_name = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['subtribe_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name  FROM plants WHERE subtribe_name = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['tribe_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name  FROM plants WHERE tribe_name = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['family_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name, family_name  FROM plants WHERE family_name = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['class_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name, class_name  FROM plants WHERE class_name = ?");
+            $statement->execute(array($plant['authority']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        } else if ($plant['phylum_name'] != ""){
+            $statement = $database->prepare("SELECT phylum_name  FROM plants WHERE phylum_name = ?");
+            $statement->execute(array($plant['phylum_name']));
+
+            $rankings = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $rankings[] = new self($row);
+            }
+            return $rankings;
+        }
+    }
+
     private static function linkCountriesCopy($ori_id, $last_id){
         $plantCountryLink = Plant_Country_Link::getByID($ori_id);
         if($plantCountryLink != false){
@@ -1024,17 +1183,41 @@ class Plants implements \JsonSerializable
         }
     }
 
-    //DELETE
-    public static function delete($id)
-    {
+    public static function deletePlant($body){
+        $plant_id = $body['plant_id'];
         global $database;
-        $statement = $database->prepare("DELETE FROM plants WHERE id = ?");
-        $statement->execute(array($id));
-        $statement->closeCursor();
-        if ($statement->rowCount() > 0) {
-            return array('success' => true);
-        } else {
-            return array('success' => false);
-        }
+        $delete1 = $database->prepare("DELETE FROM blooming WHERE plant_id = ?");
+        $delete1->execute(array($plant_id));
+        $delete2 = $database->prepare("DELETE FROM bloom_comment WHERE plant_id = ?");
+        $delete2->execute(array($plant_id));
+        $delete3 = $database->prepare("DELETE FROM health WHERE plant_id = ?");
+        $delete3->execute(array($plant_id));
+        $delete4 = $database->prepare("DELETE FROM pests WHERE plant_id = ?");
+        $delete4->execute(array($plant_id));
+        $delete5 = $database->prepare("DELETE FROM photos WHERE plant_id = ?");
+        $delete5->execute(array($plant_id));
+        $delete6 = $database->prepare("DELETE FROM plant_country_link WHERE plant_id = ?");
+        $delete6->execute(array($plant_id));
+        $delete7 = $database->prepare("DELETE FROM pests WHERE plant_id = ?");
+        $delete7->execute(array($plant_id));
+        $delete8 = $database->prepare("DELETE FROM potting WHERE plant_id = ?");
+        $delete8->execute(array($plant_id));
+        $delete9 = $database->prepare("DELETE FROM potting WHERE plant_id = ?");
+        $delete9->execute(array($plant_id));
+        $delete10 = $database->prepare("DELETE FROM split WHERE plant_id = ?");
+        $delete10->execute(array($plant_id));
+        $delete11 = $database->prepare("DELETE FROM sprayed WHERE plant_id = ?");
+        $delete11->execute(array($plant_id));
+        $delete12 = $database->prepare("DELETE FROM tag WHERE plant_id = ?");
+        $delete12->execute(array($plant_id));
+        $delete13 = $database->prepare("DELETE FROM verified WHERE plant_id = ?");
+        $delete13->execute(array($plant_id));
+
+        $statement = $database->prepare('DELETE FROM plants WHERE id = ?');
+        $statement->execute(array($plant_id));
+        return true;
+
     }
+
+
 }

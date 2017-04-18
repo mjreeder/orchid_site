@@ -106,7 +106,7 @@ class Tag implements \JsonSerializable
     public static function getByPlantID($plant_id)
     {
         global $database;
-        $statement = $database->prepare('SELECT * FROM tag WHERE plant_id = (?)');
+        $statement = $database->prepare('SELECT * FROM tag WHERE plant_id = (?) AND active = 1');
         $statement->execute(array($plant_id));
 
         if ($statement->rowCount() <= 0) {
