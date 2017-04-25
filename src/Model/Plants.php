@@ -559,7 +559,7 @@ class Plants implements \JsonSerializable
             return;
         }
 
-        return new self($statement->fetch(PDO::FETCH_ASSOC));
+        return new Plants($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     public static function getSimilarPlant($species_name)
@@ -656,7 +656,7 @@ class Plants implements \JsonSerializable
             $whereString .= " $attribute LIKE '%$searchItem%' ";
         }
 
-        $wildcardStatement = $database->prepare("SELECT * FROM plants WHERE $whereString LIMIT $limitIndex, 30");
+        $wildcardStatement = $database->prepare("SELECT * FROM plants WHERE $whereString ORDER BY genus_name, species_name  LIMIT $limitIndex, 30");
         $wildcardStatement->execute(array($whereString, $limitIndex));
 
         if (!$wildcardStatement->rowCount() <= 0) {
@@ -918,9 +918,6 @@ class Plants implements \JsonSerializable
             $photos[] = new Photos($row);
         }
 
-//        var_dump($photos);
-//        die();
-
         for($i = 0; $i < count($photos); $i++){
             $addPhotos = $database->prepare("INSERT INTO photos SET plant_id = ?, url = ?, fileName = ?, type = ?, active = 1, thumb_url = ? ");
             $addPhotos->execute(array($id, $photos[$i]->url, $photos[$i]->fileName, $photos[$i]->type, $photos[$i]->thumb_url));
@@ -961,7 +958,7 @@ class Plants implements \JsonSerializable
         return self::getById($body['id']);
     }
     //TODO
-    public static function updateTaxonmic($body)
+    public static function updateTaxonmic($data)
     {
         // 1) Phylum -> phylum_name
         // 2) Class -> class_name
@@ -972,52 +969,94 @@ class Plants implements \JsonSerializable
         // 7)species -> species_name
         // 8)variety -> variety_name
         // 9) authority -> authority
+
+        $body = $data['plant'];
         global $database;
+
 
         if($body['autofill'] == "true"){
 
-
             if($body['authority'] != ""){
                 $updateRankings = Plants::getTaxForAuthority($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings, "Authority", $body['id']);
             } else if($body['variety_name'] != ""){
                 $updateRankings = Plants::getTaxForVariety($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings,"Variety", $body['id']);
             } else if($body['species_name'] != ""){
                 $updateRankings = Plants::getTaxForSpecies($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings, "Species", $body['id']);
             } else if($body['genus_name'] != ""){
                 $updateRankings = Plants::getTaxForGenus($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings,"Genus", $body['id']);
             } else if($body['subtribe_name'] != ""){
                 $updateRankings = Plants::getTaxForSubtribe($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings,"Subtribe", $body['id']);
             } else if($body['tribe_name'] != ""){
                 $updateRankings = Plants::getTaxForTribe($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings,"Tribe", $body['id']);
             } else if($body['family_name'] != ""){
                 $updateRankings = Plants::getTaxForFamily($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings,"Family", $body['id']);
             } else if($body['class_name'] != ""){
                 $updateRankings = Plants::getTaxForClass($body);
-                return Plants::updateAutoFillRankings($updateRankings, $body['id']);
+                return Plants::updateAutoFillRankings($updateRankings, "Class", $body['id']);
             }
         } else {
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ?, family_name = ? WHERE id = ?');
+            $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['phylum_name'], $body['family_name'], $body['id']));
+            $statment->closeCursor();
 
+            return self::getById($body['id']);
         }
-//        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ?, family_name = ? WHERE id = ?');
-//        $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['phylum_name'], $body['family_name'], $body['id']));
-//        $statment->closeCursor();
-//
-//        return self::getById($body['id']);
-    }
-    public static function updateAutoFillRankings ($body, $id){
-        global $database;
-        $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ?, family_name = ? WHERE id = ?');
-        $statment->execute(array($body[0]->class_name, $body[0]->tribe_name, $body[0]->subtribe_name, $body[0]->genus_name, $body[0]->species_name, $body[0]->variety_name, $body[0]->authority, $body[0]->phylum_name, $body[0]->family_name, $id));
-        $statment->closeCursor();
 
-        return self::getById($id);
+    }
+    public static function updateAutoFillRankings ($body, $tax, $id){
+
+        global $database;
+        if($tax == "Class"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ?  WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'],"","","", $body[0]['phylum_name'], "","","","", $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        }else if($tax == "Family"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'], "","","", $body[0]['phylum_name'], $body[0]['family_name'],"","","", $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        }else if($tax == "Genus"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'], "", $body[0]['genus_name'],"", $body[0]['phylum_name'], $body[0]['family_name'],"","","", $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        }
+        else if($tax == "Tribe"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], "", "", $body[0]['phylum_name'], $body[0]['family_name'], "","","", $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        }
+        else if($tax == "Species"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ?WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], $body[0]['species_name'], $body[0]['phylum_name'], $body[0]['family_name'],  $body[0]['subtribe_name'], "", "", $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        } else if($tax == "Subtribe"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], "", "", $body[0]['phylum_name'], $body[0]['family_name'], $body[0]['subtribe_name'],  "", "", $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        } else if($tax == "Variety"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], $body[0]['species_name'], $body[0]['phylum_name'], $body[0]['family_name'], $body[0]['subtribe_name'], $body[0]['variety_name'],  "", $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        } else if($tax == "Authority"){
+            $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], $body[0]['species_name'], $body[0]['phylum_name'], $body[0]['family_name'], $body[0]['subtribe_name'], $body[0]['variety_name'], $body[0]['authority'], $id));
+            $statment->closeCursor();
+            return self::getById($id);
+        }
+
     }
 
 
@@ -1155,7 +1194,7 @@ class Plants implements \JsonSerializable
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new Plants($row);
+            $rankings[] = ($row);
         }
 
         return $rankings;
@@ -1163,37 +1202,38 @@ class Plants implements \JsonSerializable
 
     public static function getTaxForVariety($tax){
         global $database;
-        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name, species_name, variety_name  FROM plants WHERE variety_name = ?");
+        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name, species_name, variety_name  FROM plants WHERE variety_name = ?  LIMIT 1");
         $statement->execute(array($tax['variety_name']));
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] =($row);
         }
         return $rankings;
     }
 
     public static function getTaxForSpecies($tax){
         global $database;
-        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name, species_name  FROM plants WHERE species_name = ?");
+        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name, species_name  FROM plants WHERE species_name = ? LIMIT 1");
         $statement->execute(array($tax['species_name']));
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] = ($row);
         }
+
         return $rankings;
     }
 
     public static function getTaxForGenus($tax){
 
         global $database;
-        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name  FROM plants WHERE genus_name = ?");
+        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name, genus_name  FROM plants WHERE genus_name = ?  LIMIT 1");
         $statement->execute(array($tax['genus_name']));
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] = ($row);
         }
         return $rankings;
     }
@@ -1201,24 +1241,24 @@ class Plants implements \JsonSerializable
     public static function getTaxForSubtribe($tax){
         global $database;
 
-        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name  FROM plants WHERE subtribe_name = ?");
+        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name, subtribe_name FROM plants WHERE subtribe_name = ?  LIMIT 1");
         $statement->execute(array($tax['subtribe_name']));
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] = ($row);
         }
         return $rankings;
     }
 
     public static function getTaxForTribe($tax){
         global $database;
-        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name  FROM plants WHERE tribe_name = ?");
+        $statement = $database->prepare("SELECT phylum_name, class_name, family_name, tribe_name  FROM plants WHERE tribe_name = ?  LIMIT 1");
         $statement->execute(array($tax['tribe_name']));
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] = ($row);
         }
         return $rankings;
     }
@@ -1230,32 +1270,31 @@ class Plants implements \JsonSerializable
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] = ($row);
         }
-
         return $rankings;
     }
 
     public static function getTaxForClass($tax){
         global $database;
-        $statement = $database->prepare("SELECT phylum_name, class_name  FROM plants WHERE class_name = ?");
+        $statement = $database->prepare("SELECT phylum_name, class_name  FROM plants WHERE class_name = ?  LIMIT 1");
         $statement->execute(array($tax['class_name']));
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] = ($row);
         }
         return $rankings;
     }
 
     public static function getTaxForPhylum($tax){
         global $database;
-        $statement = $database->prepare("SELECT phylum_name  FROM plants WHERE phylum_name = ?");
+        $statement = $database->prepare("SELECT phylum_name  FROM plants WHERE phylum_name = ?  LIMIT 1");
         $statement->execute(array($tax['phylum_name']));
 
         $rankings = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $rankings[] = new self($row);
+            $rankings[] =($row);
         }
         return $rankings;
 

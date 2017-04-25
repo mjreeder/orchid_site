@@ -214,14 +214,30 @@ class Photos implements \JsonSerializable
      * PUT
      * ========================================================== */
 
-    public static function updatePhoto($body){
+    public static function updatePhoto($allData){
         global $database;
+        $data = $allData['allPhotos'];
+        for($i = 0; $i < count($data); $i++){
+            $id = $data[$i]["plant_id"];
+            if($data[$i]["type"] == "del"){
+                Photos::deactive($data[$i]);
+            } else if($data[$i]["type"] == "profile"){
+                $body = $data[$i];
+                $statement = $database->prepare("UPDATE photos SET url = ?, type = ?, plant_id = ?, fileName = ?, active = 1 WHERE id = ?");
+                $statement->execute(array($body['url'], "profile", $body['plant_id'], $body['fileName'] ,$body['id']));
+            } else if($data[$i]["type"] == "other"){
+                $body = $data[$i];
+                $statement = $database->prepare("UPDATE photos SET url = ?, type = ?, plant_id = ?, fileName = ?, active = 1 WHERE id = ?");
+                $statement->execute(array($body['url'], "other", $body['plant_id'], $body['fileName'] ,$body['id']));
+            } else if($data[$i]["type"] == "habitat"){
+                $body = $data[$i];
+                $statement = $database->prepare("UPDATE photos SET url = ?, type = ?, plant_id = ?, fileName = ?, active = 1 WHERE id = ?");
+                $statement->execute(array($body['url'], "habitat", $body['plant_id'], $body['fileName'] ,$body['id']));
+            }
 
-        $statement = $database->prepare("UPDATE photos SET url = ?, type = ?, plant_id = ?, fileName = ?, active = 1 WHERE id = ?");
-        $statement->execute(array($body['url'], $body['type'], $body['plant_id'], $body['fileName'] ,$body['id']));
-        $updateID = Photos::getByID($body['id']);
-
-        return $updateID;
+        }
+//        var_dump($id);
+        return Photos::getByPlantID($id);
     }
 
     public static function deactive($body){
