@@ -166,8 +166,7 @@ class Blooming implements \JsonSerializable
         }
     }
 
-    public static function calculateData($pla){
-        $plant_id = 4;
+    public static function calculateData($plant_id){
         global $database;
 
         $year = [];
