@@ -885,9 +885,9 @@ class Plants implements \JsonSerializable
         $bo = $plantData['plant'];
         $body = $bo['data'];
 
-        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, phylum_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, countries_note = ? ,general_note = ?, username = ?');
+        $statment = $database->prepare('INSERT INTO plants SET accession_number = ?, name = ?, scientific_name = ?, class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, variety_name = ?, authority = ?, species_name = ?, phylum_name = ?, distribution = ?, habitat = ?, origin_comment = ?, received_from = ?, donation_comment = ?, description = ?, parent_one = ?, parent_two = ?, grex_status = ?, hybrid_comment = ?, `location_id` = ?, special_collections_id = ?, date_received = ?, countries_note = ? ,general_note = ?, username = ?, family_name = ?');
 
-        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['phylum_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id'], $body['date_received'], $body['countries_note'], $body['general_note'], $body['username']));
+        $statment->execute(array($body['accession_number'], $body['name'], $body['scientific_name'], $body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['variety_name'], $body['authority'], $body['species_name'], $body['phylum_name'], $body['distribution'], $body['habitat'], $body['origin_comment'], $body['received_from'], $body['donation_comment'], $body['description'], $body['parent_one'], $body['parent_two'], $body['grex_status'], $body['hybrid_comment'], $body['location_id'], $body['special_collections_id'], $body['date_received'], $body['countries_note'], $body['general_note'], $body['username'], $body['family_name']));
 
         $id = $database->lastInsertId();
 
@@ -1003,7 +1003,7 @@ class Plants implements \JsonSerializable
             }
         } else {
             $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, subtribe_name = ?, genus_name = ?, species_name = ?, variety_name = ?, authority = ?, phylum_name = ?, family_name = ? WHERE id = ?');
-            $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], $body['species_name'], $body['variety_name'], $body['authority'], $body['phylum_name'], $body['family_name'], $body['id']));
+            $statment->execute(array($body['class_name'], $body['tribe_name'], $body['subtribe_name'], $body['genus_name'], strtolower($body['species_name']), $body['variety_name'], $body['authority'], $body['phylum_name'], $body['family_name'], $body['id']));
             $statment->closeCursor();
 
             return self::getById($body['id']);
@@ -1037,7 +1037,7 @@ class Plants implements \JsonSerializable
         }
         else if($tax == "Species"){
             $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ?WHERE id = ?');
-            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], $body[0]['species_name'], $body[0]['phylum_name'], $body[0]['family_name'],  $body[0]['subtribe_name'], "", "", $id));
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], strtolower($body[0]['species_name']), $body[0]['phylum_name'], $body[0]['family_name'],  $body[0]['subtribe_name'], "", "", $id));
             $statment->closeCursor();
             return self::getById($id);
         } else if($tax == "Subtribe"){
@@ -1047,12 +1047,12 @@ class Plants implements \JsonSerializable
             return self::getById($id);
         } else if($tax == "Variety"){
             $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
-            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], $body[0]['species_name'], $body[0]['phylum_name'], $body[0]['family_name'], $body[0]['subtribe_name'], $body[0]['variety_name'],  "", $id));
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], strtolower($body[0]['species_name']), $body[0]['phylum_name'], $body[0]['family_name'], $body[0]['subtribe_name'], $body[0]['variety_name'],  "", $id));
             $statment->closeCursor();
             return self::getById($id);
         } else if($tax == "Authority"){
             $statment = $database->prepare('UPDATE plants SET class_name = ?, tribe_name = ?, genus_name = ?, species_name = ?, phylum_name = ?, family_name = ?, subtribe_name = ?, variety_name = ?, authority = ? WHERE id = ?');
-            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], $body[0]['species_name'], $body[0]['phylum_name'], $body[0]['family_name'], $body[0]['subtribe_name'], $body[0]['variety_name'], $body[0]['authority'], $id));
+            $statment->execute(array($body[0]['class_name'], $body[0]['tribe_name'], $body[0]['genus_name'], strtolower($body[0]['species_name']), $body[0]['phylum_name'], $body[0]['family_name'], $body[0]['subtribe_name'], $body[0]['variety_name'], $body[0]['authority'], $id));
             $statment->closeCursor();
             return self::getById($id);
         }
